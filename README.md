@@ -9,7 +9,7 @@ Description
 
 #### Python 3.x
 
-### Arduino 1.5.6 or compatible
+#### Arduino 1.5.6 or compatible
 
 Refer to [**ARDUINO(1) Manual Page**](https://github.com/arduino/Arduino/blob/master/build/shared/manpage.adoc)
 
