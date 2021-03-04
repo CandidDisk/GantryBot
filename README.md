@@ -2,6 +2,10 @@
 
 
 Description
+<<<<<<< Updated upstream
+=======
+* Automate data collection for fall detection system via 3 axis stepper 
+>>>>>>> Stashed changes
 * To be updated 
 ##### *Currently requires an instance of Arduino IDE*
 
@@ -27,4 +31,7 @@ $ git clone https://github.com/CandidDisk/GantryBot.git GantryBot
 #To be updated once installation is standardized
 ```
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
