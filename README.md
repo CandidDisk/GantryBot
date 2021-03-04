@@ -4,7 +4,7 @@
 #### Description
 Gantry Bot is a dual axis, dual servomotor driven machine automating data collection w/ MuMos. It uses an arduino for servomotor locomotion and a Pi for higher level tasks and camera control / image processing.
 
-
+See [changelog](https://github.com/CandidDisk/GantryBot/blob/main/CHANGELOG.md) for more info
 ##### *Currently requires an instance of Arduino IDE*
 
 ## Prerequisites
