@@ -2,10 +2,7 @@
 
 
 Description
-<<<<<<< Updated upstream
-=======
 * Automate data collection for fall detection system via 3 axis stepper 
->>>>>>> Stashed changes
 * To be updated 
 ##### *Currently requires an instance of Arduino IDE*
 

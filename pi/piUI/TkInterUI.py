@@ -1,5 +1,6 @@
-from tkinter import *
 #Redundant import for sake of testing
+from tkinter import *
+
 import tkinter as tk
 
 import math
