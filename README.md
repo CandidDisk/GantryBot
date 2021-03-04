@@ -28,7 +28,3 @@ $ git clone https://github.com/CandidDisk/GantryBot.git GantryBot
 #To be updated once installation is standardized
 ```
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
