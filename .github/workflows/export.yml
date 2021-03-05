@@ -1,5 +1,6 @@
 name: Export issues
 on:
+  workflow_dispatch:
   schedule:
     # run every 8 hours
     - cron:  '0 0,8,16 * * *'
