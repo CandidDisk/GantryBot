@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Updated README.md description
 ### Removed
 - Removed temp.py 
+- Removed non-functional workflows
+### Added
+- Added Zapier issue to google sheet export
 
 ## [0.1.0] - 2021-03-04
 ### Added
