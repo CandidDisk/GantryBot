@@ -13,7 +13,7 @@ jobs:
       uses: niteoweb/export-issues-action@v2
       with:
         repo: https://github.com/CandidDisk/GantryBot
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         out: issues
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
