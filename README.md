@@ -25,7 +25,10 @@ Refer to [**ARDUINO(1) Manual Page**](https://github.com/arduino/Arduino/blob/ma
 ``` bash
 #Clone the repo w/ 
 $ git clone https://github.com/CandidDisk/GantryBot.git GantryBot
+#Install required python libraries w/
+$ pip install -r requirements.txt
 
 #To be updated once installation is standardized
 ```
 
+* also stick to camel case plz

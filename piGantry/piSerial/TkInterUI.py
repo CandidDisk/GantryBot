@@ -5,6 +5,8 @@ import tkinter as tk
 
 import math
 
+#I'm declaring classes explicitly w/ Object for redundancy & backwards compatability
+
 class pointConfigUI(object):
     def __init__(self, master):
 
@@ -273,12 +275,12 @@ def stepResolv(total: float, pointCount: int):
 
 
 
-window = Tk()
-window.title('Hello Python')
-window.geometry("800x300+10+10")
+#window = Tk()
+#window.title('Hello Python')
+#window.geometry("800x300+10+10")
 
 
 
-m = mainUI(window)
-window.mainloop()
+#m = mainUI(window)
+#window.mainloop()
 
