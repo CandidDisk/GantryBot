@@ -16,7 +16,7 @@ jobs:
           id: github-project-issue-to-sheets
           uses: https://github.com/CandidDisk/GantryBot@dev
           with:
-            repo-token: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             google-api-service-account-credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_DATA }}
             document-id: '1ZQtOTfS8lqGmyDWiXWoFxiaLJ0jgGWPHpgpqXdisUAg'
             sheet-name: 'test1'
