@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Dual axis locomotion w/ arduinoManual.ino
 - TKinter python UI for raspberry pi.
 
-## [Test]
+## Compare [Test] w/ Unreleased
 
 [Test]: https://github.com/CandidDisk/GantryBot/compare/main...test
+[Unreleased]: https://github.com/CandidDisk/GantryBot/compare/0.1.0...main
