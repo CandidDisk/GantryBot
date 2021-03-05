@@ -11,12 +11,13 @@ jobs:
     github-project-issue-to-sheets:
         runs-on: ubuntu-latest
         name: github-project-issue-to-sheets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         steps:
         - name: github-project-issue-to-sheets
           id: github-project-issue-to-sheets
           uses: CandidDisk/github-project-issue-to-sheets@dev
           with:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             google-api-service-account-credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_DATA }}
             document-id: '1ZQtOTfS8lqGmyDWiXWoFxiaLJ0jgGWPHpgpqXdisUAg'
             sheet-name: 'test1'
