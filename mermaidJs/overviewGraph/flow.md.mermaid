@@ -1,18 +1,22 @@
-graph TD
-  ganrob[Project Structure] --> Pi
+flowchart TD
+  ganrob[Current Repository Structure] --> Pi
   ganrob --> Arduino
 
   Pi --> B(piGantry)
-  B --> C(imageProcess)
-  B --> D(piSerial)
+  B --> imageProcess
+  B --> piSerial
 
+  subgraph piSerial [piSerial module]
+  E([serialInter.py]) --> F
+  F([TkInterUI.py]) --> E
+  end
 
-  E([serialInter.py]) --> D
-  D --> F([TkInterUI.py])
-  F --> E
-  E --> F
+  subgraph imageProcess [imageProcess module]
+  G(Not yet started)
+  end
+
   E --> loco
-
   Arduino --> loco([arduinoMotor.ino])
   loco --> E
+
 
