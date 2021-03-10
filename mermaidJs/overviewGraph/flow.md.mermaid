@@ -1,0 +1,18 @@
+graph TD
+  ganrob[Project Structure] --> Pi
+  ganrob --> Arduino
+
+  Pi --> B(piGantry)
+  B --> C(imageProcess)
+  B --> D(piSerial)
+
+
+  E([serialInter.py]) --> D
+  D --> F([TkInterUI.py])
+  F --> E
+  E --> F
+  E --> loco
+
+  Arduino --> loco([arduinoMotor.ino])
+  loco --> E
+		
