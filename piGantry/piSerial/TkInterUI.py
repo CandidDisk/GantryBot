@@ -275,12 +275,12 @@ def stepResolv(total: float, pointCount: int):
 
 
 
-#window = Tk()
-#window.title('Hello Python')
-#window.geometry("800x300+10+10")
+window = Tk()
+window.title('Hello Python')
+window.geometry("800x300+10+10")
 
 
 
-#m = mainUI(window)
-#window.mainloop()
+m = mainUI(window)
+window.mainloop()
 
