@@ -1,11 +1,11 @@
-#Redundant import for sake of testing
+# Redundant import for sake of testing
 from tkinter import *
 
 import tkinter as tk
 
 import math
 
-#I'm declaring classes explicitly w/ Object for redundancy & backwards compatability
+# I'm declaring classes explicitly w/ Object for redundancy & backwards compatability
 
 class pointConfigUI(object):
     def __init__(self, master):
@@ -222,15 +222,18 @@ class mainUI(object):
 
 def stepResolv(total: float, pointCount: int):
     newPointCount = int(pointCount)
+    # Rounding interval distance to hundreths | May not be necessary, but helps reduce potential sources of errors
     intervDist = round(float(total) / int(newPointCount), 2)
     uncorrectedPointCount = round((float(total) / intervDist), 0)
     uncorrectedDist = (uncorrectedPointCount) * intervDist 
 
     roundUp = math.ceil(intervDist)
     roundDown = math.floor(intervDist)
-
+    
+    # Naming of pointCount values should be revised w/ legibility in mind
     values = {
         'intervDistFinal': 0,
+        # The distance between each point
         'intervDist': intervDist,
         'pointCountFinal': pointCount,
         'uncorrectedPointCount': uncorrectedPointCount,
@@ -238,27 +241,33 @@ def stepResolv(total: float, pointCount: int):
         'valid': FALSE,
         'roundUp': roundUp,
         'roundDown': roundDown,
+        # Dict of point counts
         'pointCounts': {
+            # Number of unrounded points 
             'uncorrectedPoints': {
                 'points': uncorrectedPointCount,
                 'total': uncorrectedDist,
                 'dist': intervDist
             },
+            # Number of points w/ rounded up interval dist. , rounded up
             'pointCountUpCeil': {
                 'points': math.ceil((float(total) / roundUp) - 1),
                 'total': (math.ceil((float(total) / roundUp) - 1)) * roundUp,
                 'dist': roundUp
             },
+            # Number of points w/ rounded down interval dist. , rounded up
             'pointCountDownCeil': {
                 'points': math.ceil((float(total) / roundDown) - 1),
                 'total': (math.ceil((float(total) / roundDown) - 1)) * roundDown,
                 'dist': roundDown
             },
+            # Number of points w/ rounded up interval dist. , rounded down 
             'pointCountUpFloor': {
                 'points': math.floor((float(total) / roundUp) - 1),
                 'total': (math.floor((float(total) / roundUp) - 1)) * roundUp,
                 'dist': roundUp
             },
+            # Number of points w/ rounded down interval dist. , rounded down
             'pointCountDownFloor': {
                 'points': math.floor((float(total) / roundDown) - 1),
                 'total': (math.floor((float(total) / roundDown) - 1)) * roundDown,
@@ -267,6 +276,7 @@ def stepResolv(total: float, pointCount: int):
         }
     }
 
+    # This input error handling is out of date & needs to be rewritten & currently isn't used
     if (uncorrectedPointCount*intervDist <= 100):
         values['valid'] = TRUE
         values['intervDistFinal'] = intervDist
@@ -274,13 +284,13 @@ def stepResolv(total: float, pointCount: int):
     return values
 
 
+# Uncomment to run UI manually
+# Should create proper test case in lieu of commented section below
 
-window = Tk()
-window.title('Hello Python')
-window.geometry("800x300+10+10")
-
-
-
-m = mainUI(window)
-window.mainloop()
-
+# !! UNCOMMENT !!
+#window = Tk()
+#window.title('Hello Python')
+#window.geometry("800x300+10+10")
+#m = mainUI(window)
+#window.mainloop()
+# !! ME !!

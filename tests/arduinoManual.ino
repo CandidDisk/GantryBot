@@ -1,13 +1,13 @@
 #include <Stepper.h>
 #include <math.h>
-//Open source library for simple, low overhead serial menu
+// Open source library for simple, low overhead serial menu
 #define SERIALMENU_MINIMAL_FOOTPRINT true
 #define SERIALMENU_DISABLE_HEARTBEAT_ON_IDLE true
 #include <SerialMenu.hpp>
 SerialMenu& menu = SerialMenu::get();
-//Open source library for handling output to serial
+// Open source library for handling output to serial
 #include <PrintEx.h>
-//Open source library for handing higher level stepper function
+// Open source library for handing higher level stepper function
 #include <SpeedyStepper.h>
 
 SpeedyStepper stepperX;

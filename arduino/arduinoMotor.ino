@@ -22,6 +22,10 @@ void setup() {
 
 }
 
+void moveToPoints(){
+      
+}
+
 void motorEnable(int hi, int lo) {
     digitalWrite(hi, HIGH);
     digitalWrite(lo, LOW);

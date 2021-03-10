@@ -1,6 +1,6 @@
 import serial
 
-#I'm declaring classes explicitly w/ Object for redundancy & backwards compatability
+# I'm declaring classes explicitly w/ Object for redundancy & backwards compatability
 
 class mainSerial(Object, baudRate, serialDevice):
     def __init__(self):
