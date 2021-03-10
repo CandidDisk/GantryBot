@@ -6,14 +6,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 - Updated README.md description
 - Modified math for X\Y point configuration. Thx William
-- Renamed /pi to /piGantry *Done for posterity 
+- Renamed ./pi to ./piGantry *Done for posterity 
 - Moved TkInterUI.py into /piGantry/piSerial
-- Moved serialInter.py into /piGantry/piSerial
+- Moved serialInter.py into ./piGantry/piSerial
+- Renamed ./muMos to imageProcess
+  - * Name more accurately reflects scope & function of directory 
+      (Not actual muMos software, only image processing for verifying data within scope of Gantry)
 ### Removed
 - Removed temp.py 
 - Removed non-functional workflows
-- Removed /piUi
-- Removed /library, redundant as arduino pre-requisites can be installed via arduino-cli 
+- Removed ./piUi
+- Removed ./library, redundant as arduino pre-requisites can be installed via arduino-cli 
 ### Added
 - Added Zapier issue to google sheet export
 - Created serialInter.py to compartmentalise serial communication
