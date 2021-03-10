@@ -5,6 +5,8 @@ on:
     paths:
       - '**/*.mermaid'
       - '**/*.md'
+      
+  workflow_dispatch:
 
 jobs:
   build:
@@ -37,6 +39,8 @@ jobs:
     - name: Create Pull Request
       id: cpr
       uses: peter-evans/create-pull-request@v2
+      env: 
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: Add compiled mermaid
