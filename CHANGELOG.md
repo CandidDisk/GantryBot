@@ -10,8 +10,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Moved TkInterUI.py into /piGantry/piSerial
 - Moved serialInter.py into ./piGantry/piSerial
 - Renamed ./muMos to imageProcess
-  - * Name more accurately reflects scope & function of directory 
-      (Not actual muMos software, only image processing for verifying data within scope of Gantry)
+  - Name more accurately reflects scope & function of directory 
+    (Not actual muMos software, only image processing for verifying data within scope of Gantry)
+- Changed changelog link in README.md from absolute to relative
 ### Removed
 - Removed temp.py 
 - Removed non-functional workflows
@@ -23,7 +24,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Created muMos directory
 - Setup piSerial as module
 - MermaidJS-to-svg for flowchart in readme
-
 ## [0.1.0] - 2021-03-04
 ### Added
 - Fixed versioning to semantic
