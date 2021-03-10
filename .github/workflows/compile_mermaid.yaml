@@ -5,6 +5,8 @@ on:
     paths:
       - '**/*.mermaid'
       - '**/*.md'
+      
+  workflow_dispatch:
 
 jobs:
   build:
