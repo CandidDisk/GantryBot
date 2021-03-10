@@ -13,11 +13,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Removed temp.py 
 - Removed non-functional workflows
 - Removed /piUi
+- Removed /library, redundant as arduino pre-requisites can be installed via arduino-cli 
 ### Added
 - Added Zapier issue to google sheet export
 - Created serialInter.py to compartmentalise serial communication
 - Created muMos directory
 - Setup piSerial as module
+- MermaidJS-to-svg for flowchart in readme
 
 ## [0.1.0] - 2021-03-04
 ### Added
