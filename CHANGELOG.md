@@ -18,12 +18,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Removed non-functional workflows
 - Removed ./piUi
 - Removed ./library, redundant as arduino pre-requisites can be installed via arduino-cli 
+- * Removed mermaidjs-github-svg-generator | build script not functional
 ### Added
 - Added Zapier issue to google sheet export
 - Created serialInter.py to compartmentalise serial communication
 - Created muMos directory
 - Setup piSerial as module
-- MermaidJS-to-svg for flowchart in readme
+- * MermaidJS-to-svg for flowchart in readme !!Removed!!
+- compile-mermaid-markdown-action | Any commits w/ change to .mermaid files will be compiled into a .png & pull request automatically made
 ## [0.1.0] - 2021-03-04
 ### Added
 - Fixed versioning to semantic
