@@ -1,0 +1,102 @@
+flowchart TB
+Pi[Raspberry Pi] -->|#1 Raspberry Pi| piGantry(piGantry)
+
+piGantry -->|#2 Arduino|ArduinoInit
+piGantry -.->|#2 Raspberry Pi| PiInit
+Ui(Control UI)
+
+subgraph PiInit
+initArduino(Arduino CLI - Upload sketch)
+receiveStartPi(Start Pi)
+initArduinoLib(Arduino CLI - Install libraries)
+end
+
+initArduinoState
+G(Success)
+H(Exception)
+
+subgraph ArduinoInit
+receiveArduinoStart(Start Arduino)
+ArduinoCli(Arduino CLI)
+initArd(Initialize arduino)
+
+setZero(set position as zero)
+end
+
+initArduinoState
+
+receiveStartPi-.->
+initArduinoLib -.->
+initArduino -.-> ArduinoCli
+
+initArduinoState -->G-.->Ui
+initArduinoState -->H-.->initArduino
+
+receiveArduinoStart-->ArduinoCli
+ArduinoCli --> initArd --> setZero
+initArd --> initArduinoState
+setZero(set position as zero)
+
+
+subgraph ArduinoCommands[Set X / Y Point configuration - Arduino]
+setVal(Set X / Y Point config)
+pointSet
+ArduinoCmnd(Arduino)
+end
+
+subgraph ArduinoCommandStates[Arduino command states]
+D
+Success
+Error
+returnCommandComplete(Return command completed)
+returnCommandError(Exception occured)
+end
+
+subgraph ArduinoMotors
+Arduino
+Arduino --> motorX(X Motor)
+Arduino --> motorY(Y Motor)
+end
+
+Ui -.->|User pressed button| Commands
+
+Commands -.-> stop(Emergency stop)
+Commands -.-> goHome(Reset home/zero)
+Commands -.-> execPoints(Run points)
+execPoints -.-> C{X / Y points configured?}
+C -.-> Yes -.-> executeCmnd(Send instructions)
+C -.-> No -.->|Return exception| execPoints
+
+subgraph IO[I/O Handler]
+serialComm
+commandState
+E
+F
+end
+
+executeCmnd -.-> serialComm
+commandState(State of command) --> pointConfig
+commandState --> E(Success)
+commandState --> F(Exception) -.->No
+
+Ui -.->|User input| Data(Data entry field)
+
+subgraph pointConfigSect[X / Y Point configuration - Pi]
+pointConfig
+end
+
+Data -.->|1A. User submits| pointConfig(Send x / y point configuration) -.-> 
+executeCmnd -.->|2A. I/O Handler called on w/ values| serialComm(I/O Handler) -->|3A. Calls on arduino-side set x / y point function w/ values| pointSet(Set x / y point configuration) -->
+|4A. Instruction issued| ArduinoCmnd -->|5A. Values set| setVal -->|6A. On completion or interruption| D(Command state)
+--> Success
+ --> returnCommandComplete --> serialComm
+D --> Error --> returnCommandError --> serialComm
+serialComm --- Arduino
+
+serialComm --> commandState
+
+
+
+
+
+
