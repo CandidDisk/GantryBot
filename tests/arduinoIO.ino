@@ -5,12 +5,11 @@ char receivedChars[numChars];
 boolean newData = false;
 
 
-//===============
 
 void setup() {
     Serial.begin(115200);
 
-    pinMode(LED_BUILTIN, OTPUT);
+    pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, HIGH);
     delay(200);
     digitalWrite(LED_BUILTIN, LOW);
@@ -20,14 +19,12 @@ void setup() {
     Serial.println("<Arduino is ready>");
 }
 
-//===============
-
 void loop() {
     recvWithStartEndMarkers();
     replyToPython();
 }
 
-//===============
+
 
 void recvWithStartEndMarkers() {
     static boolean recvInProgress = false;
@@ -48,7 +45,7 @@ void recvWithStartEndMarkers() {
                 }
             }
             else {
-                receivedChars[ndx] = '\0'; // terminate the string
+                receivedChars[ndx] = '\0'; 
                 recvInProgress = false;
                 ndx = 0;
                 newData = true;
@@ -61,16 +58,15 @@ void recvWithStartEndMarkers() {
     }
 }
 
-//===============
+
 
 void replyToPython() {
     if (newData == true) {
-        Serial.print("<This just in ... ");
+        Serial.print("<Message start ... ");
         Serial.print(receivedChars);
         Serial.print("   ");
         Serial.print(millis());
         Serial.print('>');
-            // change the state of the LED everytime a reply is sent
         digitalWrite(LED_BUILTIN, ! digitalRead(LED_BUILTIN));
         newData = false;
     }

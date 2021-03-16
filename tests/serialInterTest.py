@@ -64,9 +64,7 @@ def recvLikeArduino():
 
 def waitForArduino():
 
-    # wait until the Arduino sends 'Arduino is ready' - allows time for Arduino reset
-    # it also ensures that any bytes left over from a previous message are discarded
-    
+ 
     print("Waiting for Arduino to reset")
     
     msg = ""
@@ -77,21 +75,17 @@ def waitForArduino():
 
 
 
-#====================
-#====================
-    # the program
 
-
-setupSerial(9600, "/dev/ttyACM0")
+setupSerial(115200, "/dev/ttyACM0")
 count = 0
 prevTime = time.time()
 while True:
-            # check for a reply
+
     arduinoReply = recvLikeArduino()
     if not (arduinoReply == 'XXX'):
         print ("Time %s  Reply %s" %(time.time(), arduinoReply))
         
-        # send a message at intervals
+
     if time.time() - prevTime > 1.0:
         sendToArduino("this is a test " + str(count))
         prevTime = time.time()
