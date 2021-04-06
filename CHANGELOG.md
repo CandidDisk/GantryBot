@@ -13,13 +13,18 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - Name more accurately reflects scope & function of directory 
     (Not actual muMos software, only image processing for verifying data within scope of Gantry)
 - Changed changelog link in README.md from absolute to relative
+- Switched to using AccelStepper & Arduino Stepper
 ### Removed
 - Removed temp.py 
 - Removed non-functional workflows
 - Removed ./piUi
 - Removed ./library, redundant as arduino pre-requisites can be installed via arduino-cli 
 - * Removed mermaidjs-github-svg-generator | build script not functional
+- mermaidjs workflow
+- mermaidjs
 ### Added
+- arduinoZero & arduinoZero2, for first time zero 
+- Secondary arduino for y axis
 - Added Zapier issue to google sheet export
 - Created serialInter.py to compartmentalise serial communication
 - Created muMos directory
