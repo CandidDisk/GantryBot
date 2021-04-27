@@ -30,7 +30,7 @@ class pointConfigUI(object):
         self.eX1=Entry(top)
         self.eX1.place(x=200, y=20)
 
-        self.l=Label(top, text="Num. of points X axis")
+        self.l=Label(top, text="Interval distance X axis")
         self.l.place(x=30, y=60)
         self.eX2=Entry(top)
         self.eX2.place(x=200, y=60)
@@ -43,7 +43,7 @@ class pointConfigUI(object):
         self.eY1=Entry(top)
         self.eY1.place(x=200, y=140)
 
-        self.l=Label(top, text="Num. of points Y axis")
+        self.l=Label(top, text="Interval distance Y axis")
         self.l.place(x=30, y=180)
         self.eY2=Entry(top)
         self.eY2.place(x=200, y=180)
@@ -107,9 +107,9 @@ class pointConfigUI(object):
     def cleanup(self, axis):
         self.values = {
             'valueDistX': self.eX1.get(),
-            'valueNumX': self.eX2.get(),
+            'valueInterX': self.eX2.get(),
             'valueDistY': self.eY1.get(),
-            'valueNumY': self.eY2.get()
+            'valueInterY': self.eY2.get()
         }
         
         if (axis == 0):
@@ -190,7 +190,7 @@ class mainUI(object):
         self.xYBtn=Button(master, text="Setup number of x/y positions", command = self.popup)
         self.xYBtn.place(x=30, y=20)
 
-        self.zBtn=Button(master, text="Set zero")
+        self.zBtn=Button(master, text="Go to zero")
         self.zBtn.place(x=30, y=60)
 
         self.eBtn=Button(master, text="Emergency Stop", fg="red")
@@ -220,10 +220,12 @@ class mainUI(object):
     def entryValue(self):
         return self.w.values
 
-def stepResolv(total: float, pointCount: int):
+def stepResolv(total: float, intervDistStep: int):
     newPointCount = int(pointCount)
-    # Rounding interval distance to hundreths | May not be necessary, but helps reduce potential sources of errors
-    intervDist = round(float(total) / int(newPointCount), 2)
+    intervDist = intervDistStep * 26.67
+    pointCountUp = math.ceil(intervDist / total)
+    pointCountDown = math.floor(intervDist / total)
+
     uncorrectedPointCount = round((float(total) / intervDist), 0)
     uncorrectedDist = (uncorrectedPointCount) * intervDist 
 
@@ -288,9 +290,9 @@ def stepResolv(total: float, pointCount: int):
 # Should create proper test case in lieu of commented section below
 
 # !! UNCOMMENT !!
-#window = Tk()
-#window.title('Hello Python')
-#window.geometry("800x300+10+10")
-#m = mainUI(window)
-#window.mainloop()
+window = Tk()
+window.title('Hello Python')
+window.geometry("800x300+10+10")
+m = mainUI(window)
+window.mainloop()
 # !! ME !!
