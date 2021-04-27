@@ -1,0 +1,2 @@
+class inputProcess(object):
+    

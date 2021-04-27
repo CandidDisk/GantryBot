@@ -14,8 +14,24 @@ class mainSerial(Object, baudRate, serialDevice):
         
 
     def setUpSerial(self):
-        self.serialPort = serial.Serial(port = serialDevice, baudrate = baudRate, timeout=0)
-    
-    def waitResponse();
-        if (serial.in_waiting > 0):
+        self.serialPort = serial.Serial(port = serialDevice, baudrate = baudRate, timeout=0, rtscts=True)
+
+        waitResponse()
+
+    def receiveResponse(self);
+
+        if (self.serialPort.in_waiting > 0 and self.messageComplete == False):
+            x = self.serialPort.read().decode("utf-8")
+
+            if (dataStarted == True):
+                if x != endMarker:
+                    dataBuf = dataBuf + x
+                else:
+                    dataStarted = False
+                    messageComplete = True
+            elif x == startMarker:
+                dataBuf = ""
+                dataStarted = True
+
+        
             

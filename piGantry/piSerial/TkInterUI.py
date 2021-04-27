@@ -190,7 +190,7 @@ class mainUI(object):
         self.xYBtn=Button(master, text="Setup number of x/y positions", command = self.popup)
         self.xYBtn.place(x=30, y=20)
 
-        self.zBtn=Button(master, text="Set zero")
+        self.zBtn=Button(master, text="Go to zero")
         self.zBtn.place(x=30, y=60)
 
         self.eBtn=Button(master, text="Emergency Stop", fg="red")
