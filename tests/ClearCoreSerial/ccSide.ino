@@ -104,11 +104,11 @@ void loop() {
             moveAtVelocity(-200);
         }
         if (strcmp(receivedChars,"s2-")==0) {
-            moveDistance(-5);
+            MoveDistance(-2);
             delay(50);
         }
         if (strcmp(receivedChars,"s0+")==0) {
-            moveDistance(5);
+            MoveDistance(2);
             delay(50);
         }
     }
@@ -242,5 +242,3 @@ bool moveDistanceToMag(int velocity) {
     return true;
 }
 */
-
-
