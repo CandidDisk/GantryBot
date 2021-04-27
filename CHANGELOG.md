@@ -33,7 +33,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - opencv2test.py | Light dot recognition, counting, & grouping
 - ClearCore arduino ide wrapper
 - ClearCore library
-- ~~arduinoZero & arduinoZero2, for first time zero ~~
+- ~~arduinoZero & arduinoZero2, for first time zero~~
 - ~~Secondary arduino for y axis~~
 - Added Zapier issue to google sheet export
 - Created serialInter.py to compartmentalise serial communication
