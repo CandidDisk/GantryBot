@@ -181,6 +181,11 @@ def runMoves():
             temp = input("Press q to read measure...")
         
         if (temp == "q"):
+
+            digDial.flushInput()
+            digDial.flushOutput()
+            time.sleep(1)
+
             bytesToReadDial = digDial.inWaiting()
 
             if bytesToReadDial > 0:
