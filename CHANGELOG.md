@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Changed changelog link in README.md from absolute to relative
 - ~~Switched to using AccelStepper & Arduino Stepper~~
 ### Removed
+- Arduino directory
 - AccelStepper & Arduino Stepper
 - Arduino Uno
 - SpeedyStepper
@@ -32,6 +33,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - mermaidjs workflow
 - mermaidjs
 ### Added
+- test move after zeroing completes in zeroing test
 - Refactor of test sendInput.py to better manage scopes  
 - Proper handshaking for serial I/O between CC & Pi
 - opencv2test.py | Light dot recognition, counting, & grouping
@@ -45,7 +47,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Setup piSerial as module
 - * MermaidJS-to-svg for flowchart in readme !!Removed!!
 - compile-mermaid-markdown-action | Any commits w/ change to .mermaid files will be compiled into a .png & pull request automatically made
-## [0.1.0] - 2021-03-04
+## [0.1.0-alpha] - 2021-03-04
 ### Added
 - Fixed versioning to semantic
 - README.md
