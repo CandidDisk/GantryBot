@@ -16,14 +16,21 @@ bool MoveDistance(int distance);
 const byte numChars = 64;
 
 char receivedChars[numChars];
+char inputData[numChars];
+
+int tempVal = 0;
 
 bool newData = false;
 
 bool moveAtVelocity(int32_t velocity);
 
-bool zeroDone = false;
+bool zeroDone = true;
 
 bool MoveAbsolutePosition(int32_t position);
+
+bool setupDone = false;
+
+bool moveReady = true;
 
 
 void setup() {
@@ -48,6 +55,31 @@ void setup() {
 
     Serial.setTimeout(50);
 
+    newData = true;
+
+    while (true) {
+        if (strcmp(readDataPi(),"start")==0) {
+            zeroDone = false;
+            break;
+        } else {
+            Serial.println("start");}
+        
+        delay(100);
+        /*
+        if (newData) {
+            Serial.println("start");
+            newData = false;
+        }
+        if (!newData) {
+            if (strcmp(readDataPi(),"start")==0) {
+                newData = true;
+                zeroDone = false;
+                break;
+            } else {newData = false;}
+        }*/
+
+    }
+
     while (motor.HlfbState() != MotorDriver::HLFB_ASSERTED) {
         continue;
     }
@@ -55,18 +87,61 @@ void setup() {
     if (digitalRead(SENSOR_DIG) == HIGH){
         moveAtVelocity(-10000);
     }
-    
 
     while (digitalRead(SENSOR_DIG) == HIGH) {
         
     }
+
     if (digitalRead(SENSOR_DIG) == LOW) {
         moveAtVelocity(0);
     }
 
+
+
+    while (!zeroDone) {
+        zeroMotor(readDataPi());
+        if (tempVal > 50) {
+            zeroDone = true;
+        }
+    }
+    newData = true;
+
+    while (!setupDone) {
+        if (commHandShake("done")) {
+            setupDone = true;
+        }
+
+    }
 }
 
 void loop() {
+
+    while (moveReady) {
+        moveDistance(64000);
+    }
+    
+    Serial.println("great");
+    delay(300);
+
+
+
+
+}
+
+bool commHandShake(String check) {
+    const char* checkStr = check.c_str(); 
+    if (newData) {
+        Serial.println(check);
+        newData = false;
+    } else {
+        if (strcmp(readDataPi(), checkStr)==0) {
+            newData = true;
+            return true;
+        }
+    }
+}
+
+char* readDataPi(){
     static byte ndx = 0;
     char val;
     char endMarker = '\n';
@@ -84,90 +159,51 @@ void loop() {
         else {
             receivedChars[ndx] = '\0'; // terminate the string
             ndx = 0;
-            //newData = true;
+            newData = true;
+            return receivedChars;
         }
-    }
-    /*if (newData == true) {
-        Serial.print(receivedChars);
-        newData = false;
-    }*/
     
-    if (strcmp(receivedChars,"stp")==0) {
+    }
+    
+}
+
+void zeroMotor(char* received){
+    if (strcmp(received,"stp")==0) {
         motor.MoveStopAbrupt();
         moveAtVelocity(0);
-        zeroDone = true;
+        tempVal++;
     } else {
-        if (strcmp(receivedChars,"m0-")==0) {
+        if (strcmp(received,"m0-")==0) {
             moveAtVelocity(-1000);
         }
-        if (strcmp(receivedChars,"s1-")==0) {
+        if (strcmp(received,"s1-")==0) {
             moveAtVelocity(-200);
         }
-        if (strcmp(receivedChars,"s2-")==0) {
-            MoveDistance(-2);
+        if (strcmp(received,"s2-")==0) {
+            MoveDistance(-1);
             delay(50);
         }
-        if (strcmp(receivedChars,"s0+")==0) {
-            MoveDistance(2);
+        if (strcmp(received,"s0+")==0) {
+            MoveDistance(1);
             delay(50);
         }
     }
-    /*
-    while (Serial.available() > 0) {
-
-        val = val + (char)Serial.read(); 
-        
-        //val = Serial.readString();
-    }
-
-    Serial.print(val);
-    if (val.equals("m0-\n")) {
-        Serial.print("Yes!");
-    } else {
-        Serial.print(val);
-    }
-    Serial.print(val.equals("m0-\n")); */
-
-    
-    /*if (val == "stp\n") {
-        motor.MoveStopAbrupt();
-        moveAtVelocity(0);
-    } else {
-        if (val == "m0-\n") {
-            moveAtVelocity(-5000);
-        }
-        if (val == "s1-\n") {
-            moveAtVelocity(-1000);
-        }
-        if (val == "s2-\n") {
-            moveAtVelocity(-10);
-        }
-        if (val == "s0+\n") {
-            moveAtVelocity(100);
-       d }
-    }*/
-
 }
-bool MoveDistance(int distance) {
+
+bool moveDistance(int distance) {
     // Check if an alert is currently preventing motion
     if (motor.StatusReg().bit.AlertsPresent) {
-        Serial.println("Motor status: 'In Alert'. Move Canceled.");
         return false;
     }
-
-    Serial.print("Moving distance: ");
-    Serial.println(distance);
 
     // Command the move of incremental distance
     motor.Move(distance);
 
     // Waits for HLFB to assert (signaling the move has successfully completed)
-    Serial.println("Moving.. Waiting for HLFB");
     while (!motor.StepsComplete() || motor.HlfbState() != MotorDriver::HLFB_ASSERTED) {
         continue;
     }
 
-    Serial.println("Move Done");
     return true;
 }
 
@@ -188,57 +224,18 @@ bool moveAtVelocity(int velocity) {
 bool MoveAbsolutePosition(int position) {
     // Check if an alert is currently preventing motion
     if (motor.StatusReg().bit.AlertsPresent) {
-        Serial.println("Motor status: 'In Alert'. Move Canceled.");
         return false;
     }
 
-    Serial.print("Moving to absolute position: ");
-    Serial.println(position);
+
 
     // Command the move of absolute distance
     motor.Move(position, MotorDriver::MOVE_TARGET_ABSOLUTE);
 
     // Waits for HLFB to assert (signaling the move has successfully completed)
-    Serial.println("Moving.. Waiting for HLFB");
     while (!motor.StepsComplete() || motor.HlfbState() != MotorDriver::HLFB_ASSERTED) {
         continue;
     }
 
-    Serial.println("Move Done");
     return true;
 }
-/*
-bool moveDistanceToMag(int velocity) {
-    // Check if an alert is currently preventing motion
-    if (motor.StatusReg().bit.AlertsPresent) {
-        return false;
-    }
-
-
-
-    //SerialPort.print("<Moving velocity: >");
-    //SerialPort.println(velocity);
-
-    if (digitalRead(SENSOR_DIG) == LOW){
-        SerialPort.println(digitalRead(SENSOR_DIG));
-        //motor.MoveStopAbrupt();
-        return true;
-    } else {
-        //motor.MoveVelocity(velocity);
-
-        // Waits for HLFB to assert (signaling the move has successfully completed)
-        while (!motor.StepsComplete() || motor.HlfbState() != MotorDriver::HLFB_ASSERTED) {
-            if (digitalRead(SENSOR_DIG) == LOW){
-                //motor.MoveStopAbrupt();
-                return true;
-                break;
-            } else {continue;}
-        }
-    }
-    // Command the move of incremental distance
-
-
-
-    return true;
-}
-*/

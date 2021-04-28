@@ -1,17 +1,28 @@
 import serial
 import time
+import threading
+
+
+zeroDone = True
+
+runZeroStat = True
+
 newData = False
-zeroDone = False
+
+msgInString = "no msg"
+
+lastMsg = "nothing"
+
+sendDial = "no dial"
 
 
-def setupSerial(baudRate, serialPortName, name):
+def setupSerialPort(baudRate, serialPortName, name):
 
-    port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 10, rtscts = False)
+    port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 10,  write_timeout=10, rtscts = False)
 
     if name == 1:
         global serialPort
         serialPort = port
-        
 
     elif name == 2:
         global digDial
@@ -24,89 +35,133 @@ def setupSerial(baudRate, serialPortName, name):
 def sendToCC(msg):
     msg = msg + '\n'
     out = msg.encode('ascii')
+    print("output msg {0}".format(out))
     serialPort.write(out)
 
 def readFromCC():
-    #read_until() more convenient than waiting for bytes? Not sure how blocking
-    msg = serialPort.read_until()
-    inString = msg.decode('ascii')
-    return inString
-
-
-setupSerial(1000000, "/dev/ttyACM0", 1)
-setupSerial(9600, "/dev/ttyUSB0", 2)
-setupSerial(38400, '/dev/ttyUSB1', 3)
-
-#laserRange.write("iACM".encode('utf-8'))
-
-while True:
-
-    sendDial = "no dial"
-
-    #bytesToReadLaser = laserRange.inWaiting()
-
-    #if bytesToReadLaser > 0:
-    #    laser = laserRange.read(bytesToReadLaser)
-    bytesToReadDial = digDial.inWaiting()
-    if bytesToReadDial > 0:
-        slicedDial = digDial.read(bytesToReadDial)[0:9]
-        sendDial = str(slicedDial)
-
-        one = int(sendDial[6])
-        tenth = int(sendDial[8])
-        hundredth = int(sendDial[9])
-        thousandth = int(sendDial[10])
-
-        #print(one+tenth+hundredth+thousandth)
-        print("\n")
-        print(one)
-        print(".")
-        print(tenth)
-        print(hundredth)
-        print(thousandth)
-        print("\n")
-
-        #print(laser)
-        print("\n")
-
-        outMsg = "none"
-
-        #if (one > 2):
-        #    outMsg = "s0+"
-        #else:
-        if (one == 2):
-            if (tenth+hundredth+thousandth == 0):
-                outMsg = "stp"
-            else:
-                outMsg = "s0+"
+    global zeroDone
+    global newData 
+    global msgInString
+    global lastMsg
+    while True:
+        #read_until() more convenient than waiting for bytes? Not sure how blocking
+        if (serialPort.inWaiting() > 0):
+            #this reads even when port is unavailable, hence blocking occurs w/o inWaiting conditional
+            msg = serialPort.read_until()
+            msgInString = msg.decode('ascii').strip()
+            lastMsg = msgInString
+            #msgInString
+            print("received msg {0}\n".format(msgInString))
+            if (msgInString == "start"):
+                zeroDone = False
+                print("zero start! {0}".format(zeroDone))
+                sendToCC(msgInString)
+            if (msgInString == "done"):
+                sendToCC(msgInString)
+            newData = True
         else:
-            if (one == 1):
-                if (tenth > 7):
+            newData = False
 
-                    outMsg="s2-"
-                else:
 
-                    outMsg = "s1-"
+def zeroFunc():
+    global sendDial
 
+    one = int(sendDial[6])
+    tenth = int(sendDial[8])
+    hundredth = int(sendDial[9])
+    thousandth = int(sendDial[10])
+
+    print("\n")
+    print(one)
+    print(".")
+    print(tenth)
+    print(hundredth)
+    print(thousandth)
+    print("\n")
+
+    outMsg = "no"
+
+    if (one == 2):
+        if (tenth+hundredth+thousandth == 0):
+            outMsg = "stp"
+            #print(readFromCC())
+            print("\n")
+        else:
+            outMsg = "s0+"
+    else:
+        if (one == 1):
+            if (tenth > 7):
+
+                outMsg="s2-"
             else:
-                outMsg = "m0-"
+                outMsg = "s1-"
+        else:
+            outMsg = "m0-"
+    return outMsg
 
 
-        #if (newData == False):
-        sendToCC(outMsg)
-        #newData = True
+def setupSerial():
+    setupSerialPort(1000000, "/dev/ttyACM0", 1)
+    setupSerialPort(9600, "/dev/ttyUSB1", 2)
+    setupSerialPort(38400, '/dev/ttyUSB0', 3)
 
-        #if (newData == True):
-        #received = readFromCC()
-        #newData = False
+    laserRange.write("iACM".encode('utf-8'))
 
-        #print('\n')
-        #print(received)
-        #print('\n')
+    readThread = threading.Thread(target=readFromCC)
+    readThread.start()
+
+
+def runZero():
+
+    global zeroDone
+    global newData 
+    global msgInString
+    global lastMsg
+    global sendDial
+    global runZeroStat
+
+    setupSerial()
+
+    while runZeroStat:
         
+        if (lastMsg != "nothing"):
+            print(lastMsg)
+
+        #print(msgInString == "start")
+        #readFromCC()
+
+        while not zeroDone:
+            #print("yesy")
+            if (msgInString == "done"):
+                zeroDone = True
+                runZeroStat = False
+                sendToCC(msgInString)
+                print("break!!!")
+                break
+            else:
+                
+
+                #bytesToReadLaser = laserRange.inWaiting(``)
+
+                #if bytesToReadLaser > 0:
+                #    laser = laserRange.read(bytesToReadLaser)
+                bytesToReadDial = digDial.inWaiting()
+                #print(bytesToReadDial)
+
+                if bytesToReadDial > 0:
+                    slicedDial = digDial.read(bytesToReadDial)[0:9]
+                    sendDial = str(slicedDial)
+                    print(sendDial)
+                    try:
+                        print("zero done {0}".format(zeroDone))
+                        sendToCC(zeroFunc())
+                    except Exception as e:
+                        print(e)
+
+def main():
+    runZero()
     
-    
-    
+main()
 
 
 

@@ -30,6 +30,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - mermaidjs workflow
 - mermaidjs
 ### Added
+- Refactor of test sendInput.py to better manage scopes  
+- Proper handshaking for serial I/O between CC & Pi
 - opencv2test.py | Light dot recognition, counting, & grouping
 - ClearCore arduino ide wrapper
 - ClearCore library
