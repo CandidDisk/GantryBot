@@ -3,6 +3,7 @@ import time
 import threading
 
 
+
 zeroDone = True
 
 runZeroStat = True
@@ -14,6 +15,10 @@ msgInString = "no msg"
 lastMsg = "nothing"
 
 sendDial = "no dial"
+
+moveReady = False
+
+movePos = False
 
 
 def setupSerialPort(baudRate, serialPortName, name):
@@ -43,6 +48,7 @@ def readFromCC():
     global newData 
     global msgInString
     global lastMsg
+    global moveReady
     while True:
         #read_until() more convenient than waiting for bytes? Not sure how blocking
         if (serialPort.inWaiting() > 0):
@@ -58,6 +64,10 @@ def readFromCC():
                 sendToCC(msgInString)
             if (msgInString == "done"):
                 sendToCC(msgInString)
+            if (msgInString == "move"):
+                moveReady = True
+                runMoves()
+
             newData = True
         else:
             newData = False
@@ -135,13 +145,13 @@ def runZero():
             if (msgInString == "done"):
                 zeroDone = True
                 runZeroStat = False
-                sendToCC(msgInString)
+                sendToCC("done")
                 print("break!!!")
                 break
             else:
                 
 
-                #bytesToReadLaser = laserRange.inWaiting(``)
+                #bytesToReadLaser = laserRange.inWaiting()
 
                 #if bytesToReadLaser > 0:
                 #    laser = laserRange.read(bytesToReadLaser)
@@ -158,8 +168,54 @@ def runZero():
                     except Exception as e:
                         print(e)
 
+def runMoves():
+    global moveReady
+    global movePos
+    if (moveReady):
+        #laser = "no"
+
+        temp = "not"
+        print("ok!")
+
+        while (temp != "q"):
+            temp = input("Press q to read measure...")
+        
+        if (temp == "q"):
+            bytesToReadDial = digDial.inWaiting()
+
+            if bytesToReadDial > 0:
+                slicedDial = digDial.read(bytesToReadDial)[0:9]
+                sendDial = str(slicedDial)
+                print("dial {0}".format(sendDial))
+
+            laserRange.flushInput()
+            laserRange.flushOutput()
+            time.sleep(1)
+
+            bytesToReadLaser = laserRange.inWaiting()
+            if bytesToReadLaser > 0:
+                laser = laserRange.read(bytesToReadDial)
+                print("laser {0}".format(laser))
+        #tempLaser = laserRange.read_until()
+        #laser = tempLaser.decode('ascii').strip()
+        #print("laser {0}, dial {1} ".format(laser, sendDial))
+        temp = "not"
+        while (temp != "q"):
+            temp = input("Press q to send continue move...")
+        if (movePos):
+            sendToCC("move2")
+            movePos = False
+        elif (not movePos):
+            sendToCC("move1")
+            movePos = True
+        
+        moveReady = False
+        sendToCC("not")
+        
+
 def main():
     runZero()
+
     
 main()
 

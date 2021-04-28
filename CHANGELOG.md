@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- ClearCore zeroing test IO handshake is now proper function
+- renamed MoveDistance to moveDistance to keep camel case 
 - Digital dial now read by Pi using ch340 based USB To Ser chip included in digital dial cable.
 - Laser rangefinder read by Pi
 - Removed start bit from serial comm, only read stop bit / new line

@@ -9,28 +9,30 @@
 #define SENSOR_DIG IO4
 
 int velocityLimit = 10000;
-int accelerationLimit = 100000;
 
-bool MoveDistance(int distance);
+int accelerationLimit = 100000;
 
 const byte numChars = 64;
 
 char receivedChars[numChars];
+
 char inputData[numChars];
 
 int tempVal = 0;
 
 bool newData = false;
 
-bool moveAtVelocity(int32_t velocity);
-
 bool zeroDone = true;
-
-bool MoveAbsolutePosition(int32_t position);
 
 bool setupDone = false;
 
 bool moveReady = true;
+
+bool moveDistance(int32_t distance);
+
+bool moveAtVelocity(int32_t velocity);
+
+bool MoveAbsolutePosition(int32_t position);
 
 
 void setup() {
@@ -115,17 +117,55 @@ void setup() {
 }
 
 void loop() {
+    moveReady = false;
+    delay(2000);
+    moveTest1();
+}
 
-    while (moveReady) {
+void moveTest1() {
+
+    
+    Serial.println("move");
+    delay(100);
+    if (strcmp(readDataPi(), "move1")==0) {
+        moveReady = true;
         moveDistance(64000);
+
+    }
+    else if (strcmp(readDataPi(), "move2")==0) {
+        moveReady = true;
+        moveDistance(-64000);
+
     }
     
-    Serial.println("great");
-    delay(300);
+}
+void moveTest2() {
+
+    while (!moveReady) {
+        Serial.println("move2");
+        delay(100);
+        if (strcmp(readDataPi(), "move2")==0) {
+            moveReady = true;
+            moveDistance(-64000);
+            break;
+        }
+    }
+}
 
 
-
-
+void moveTest3(int steps) {
+    while (moveReady) {
+        moveDistance(steps);
+        moveReady = false;
+    }
+    while (!moveReady) {
+        if (commHandShake("move")) {
+            moveReady = true;
+        } else {
+            moveReady = false;
+        }
+        delay(10000);
+    }
 }
 
 bool commHandShake(String check) {
@@ -180,11 +220,11 @@ void zeroMotor(char* received){
             moveAtVelocity(-200);
         }
         if (strcmp(received,"s2-")==0) {
-            MoveDistance(-1);
+            moveDistance(-1);
             delay(50);
         }
         if (strcmp(received,"s0+")==0) {
-            MoveDistance(1);
+            moveDistance(1);
             delay(50);
         }
     }
