@@ -33,7 +33,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - mermaidjs workflow
 - mermaidjs
 ### Added
-- test move after zeroing completes in zeroing test
+- Writing data of each move to json during test move
+- Steps to mm conversion function
+- Test move after zeroing completes in zeroing test
 - Refactor of test sendInput.py to better manage scopes  
 - Proper handshaking for serial I/O between CC & Pi
 - opencv2test.py | Light dot recognition, counting, & grouping
