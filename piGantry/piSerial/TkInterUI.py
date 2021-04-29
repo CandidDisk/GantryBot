@@ -290,9 +290,9 @@ def stepResolv(total: float, intervDistStep: int):
 # Should create proper test case in lieu of commented section below
 
 # !! UNCOMMENT !!
-window = Tk()
-window.title('Hello Python')
-window.geometry("800x300+10+10")
-m = mainUI(window)
-window.mainloop()
+#window = Tk()
+#window.title('Hello Python')
+#window.geometry("800x300+10+10")
+#m = mainUI(window)
+#window.mainloop()
 # !! ME !!

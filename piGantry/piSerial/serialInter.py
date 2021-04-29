@@ -1,37 +1,49 @@
 import serial
 import time
 
-# I'm declaring classes explicitly w/ Object for redundancy & backwards compatability
 
-class mainSerial(Object, baudRate, serialDevice):
-    def __init__(self):
-        self.baud = baudRate
-        self.arduino = serialDevice
-        self.startMarker = '<'
-        self.endMarker = '>'
-        self.dataBuf = ""
-        self.messageComplete = False
+def __init__(self):
+    self.newDataOut = False
+    self.newDataIn = False
+
+def setupSerialPort(baudRate, serialPortName):
+    return serial.Serial(serialPortName, baudrate = baudRate, timeout= 10,  write_timeout=10, rtscts = False)
+
+def writeOut(self, port, msg):
+    msg = msg + '\n'
+    out = msg.encode("ascii")
+    port.write(out)
+    self.newDataOut = True
+
+def readIn(self, port):
+    msgInString = "no new message"
+    if (port.inWaiting() > 0):
+        msg = port.read_until()
+        msgInString = msg.decode("ascii").strip()
+        self.newDataIn = True
+        return msgInString
+    else:
+        self.newDataIn = False
+    return msgInString
         
+def readDial(port):
+    bytesToReadDial = port.inWaiting()
+    if (bytesToReadDial > 8):
+        slicedDial = port.read(bytesToReadDial)[0:9]
+        sendDial = str(slicedDial)
+        return sendDial
 
-    def setUpSerial(self):
-        self.serialPort = serial.Serial(port = serialDevice, baudrate = baudRate, timeout=0, rtscts=True)
+def readLaser(self, port):
+    #Laser rangefinder requires write "iACM" before it starts sending reading
+    port.write("iACM".encode('utf-8'))
 
-        waitResponse()
+    #Flushing input buffer as laser rangefinder output buffer is quite large
+    #Not flushing the input will result in delayed readings
+    port.flushInput()
+    port.flushOutput()
 
-    def receiveResponse(self);
+    #Giving time for laser rangefinder to fill buffer
+    time.sleep(0.5)
 
-        if (self.serialPort.in_waiting > 0 and self.messageComplete == False):
-            x = self.serialPort.read().decode("utf-8")
-
-            if (dataStarted == True):
-                if x != endMarker:
-                    dataBuf = dataBuf + x
-                else:
-                    dataStarted = False
-                    messageComplete = True
-            elif x == startMarker:
-                dataBuf = ""
-                dataStarted = True
-
-        
-            
+    unformatLaser = laserRange.read_until()
+    sendLaser = unformatLaser.decode("ascii").strip()

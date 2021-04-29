@@ -1,4 +1,4 @@
-from piSerial import serialInter as serialComm
+from piGantry.piSerial import serialInter as serialComm
 
 micro = serialComm.setupSerialPort(9600, "COM8")
 while True:

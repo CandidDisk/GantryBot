@@ -4,11 +4,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
-
+- Reworked piSerial serialInter.py
+- piSerial now functional module
 ### Removed
 
 ### Added
-
+- New serial test case using piSerial module serialInterTest.py
 ## [1.0.0-alpha] - 2021-04-29
 ### Changed
 - Updated requirements.txt to include opencv-python v4.5.1
