@@ -1,6 +1,9 @@
 import serial
 import time
 import threading
+import json
+import sys
+from pathlib import Path
 
 
 
@@ -18,7 +21,17 @@ sendDial = "no dial"
 
 moveReady = False
 
-movePos = False
+moveMsg = "no msg"
+
+mvtCount = 0
+
+data = {}
+
+# I didn't use proper constructors to handle scope since I wrote this 
+# w/ the expectation of it being < 50 lines
+# As I'm going to be cannibalizing this for proper "production" use, I'll update
+# this once I finish serial & zeroing modules.
+# Am using globals as temporary quick solution
 
 def setupSerialPort(baudRate, serialPortName, name):
 
@@ -48,6 +61,7 @@ def readFromCC():
     global msgInString
     global lastMsg
     global moveReady
+
     while True:
         #read_until() more convenient than waiting for bytes? Not sure how blocking
         if (serialPort.inWaiting() > 0):
@@ -61,15 +75,16 @@ def readFromCC():
                 zeroDone = False
                 print("zero start! {0}".format(zeroDone))
                 sendToCC(msgInString)
-            if (msgInString == "done"):
-                sendToCC(msgInString)
-            if (msgInString == "move"):
-                moveReady = True
-                runMoves()
+            #if (msgInString == "done"):
+            #    print(msgInString == "done")
+            #    print(msgInString)
+            #    sendToCC(msgInString)
+
 
             newData = True
         else:
             newData = False
+    
 
 
 def zeroFunc():
@@ -110,16 +125,16 @@ def zeroFunc():
 
 
 def calcDist(stpPerTurn, steps):
-    stepPerGBTurn = stpPerTurn * 20 #20 = gear ratio
-    stepPerMM = stepPerGBTurn / 150 #150 = mm/turn
-    traveledDistMM = steps / stepPerMM
+    stepPerGBTurn = float(stpPerTurn) * 20 #20 = gear ratio
+    stepPerMM = float(stepPerGBTurn) / 150 #150 = mm/turn
+    traveledDistMM = float(steps) / float(stepPerMM)
     return traveledDistMM
 
 
 def setupSerial():
     setupSerialPort(1000000, "/dev/ttyACM0", 1)
-    setupSerialPort(9600, "/dev/ttyUSB1", 2)
-    setupSerialPort(38400, '/dev/ttyUSB0', 3)
+    setupSerialPort(9600, "/dev/ttyUSB0", 2)
+    setupSerialPort(38400, '/dev/ttyUSB1', 3)
 
     laserRange.write("iACM".encode('utf-8'))
 
@@ -143,11 +158,7 @@ def runZero():
         if (lastMsg != "nothing"):
             print(lastMsg)
 
-        #print(msgInString == "start")
-        #readFromCC()
-
         while not zeroDone:
-            #print("yesy")
             if (msgInString == "done"):
                 zeroDone = True
                 runZeroStat = False
@@ -176,57 +187,108 @@ def runZero():
 
 def runMoves():
     global moveReady
-    global movePos
+    global lastMsg
+    global mvtCount
+    steps = 0
+    msg = "no msg"
+    #print(lastMsg)
+    #print(lastMsg == "done")
+
+
+    if ("move" in lastMsg):
+        moveReady = True
+
     if (moveReady):
         #laser = "no"
 
         temp = "not"
         print("ok!")
+        print(lastMsg)
+        storeMsg = "no msg"
+
+
+        if (lastMsg == "move1"):
+            steps = "+640000"
+        if (lastMsg == "move1z"):
+            steps = "-640000"
+        if (lastMsg == "move2"):
+            steps = "+2560000"
+        if (lastMsg == "move2z"):
+            steps = "-2560000"
 
         while (temp != "q"):
-            temp = input("Press q to read measure...")
-        
-        if (temp == "q"):
+            temp = input("\nPress q to send continue move | w to take read | r to skip: ")
+            if (temp == "r"):
+                break
+            if (temp == "w"):
 
-            digDial.flushInput()
-            digDial.flushOutput()
-            time.sleep(1)
+                digDial.flushInput()
+                digDial.flushOutput()
+                time.sleep(1)
 
-            bytesToReadDial = digDial.inWaiting()
+                bytesToReadDial = digDial.inWaiting()
 
-            if bytesToReadDial > 0:
-                slicedDial = digDial.read(bytesToReadDial)[0:9]
-                sendDial = str(slicedDial)
-                print("dial {0}".format(sendDial))
+                if bytesToReadDial > 0:
+                    slicedDial = digDial.read(bytesToReadDial)[0:9]
+                    sendDial = str(slicedDial)
+                    print("dial {0}".format(sendDial))
 
-            laserRange.flushInput()
-            laserRange.flushOutput()
-            time.sleep(1)
+                laserRange.flushInput()
+                laserRange.flushOutput()
+                time.sleep(1)
 
-            bytesToReadLaser = laserRange.inWaiting()
-            if bytesToReadLaser > 0:
-                laser = laserRange.read(bytesToReadDial)
+                tempLaser = laserRange.read_until()
+                laser = tempLaser.decode('ascii').strip()
                 print("laser {0}".format(laser))
-        #tempLaser = laserRange.read_until()
-        #laser = tempLaser.decode('ascii').strip()
-        #print("laser {0}, dial {1} ".format(laser, sendDial))
+
+                #bytesToReadLaser = laserRange.inWaiting()
+                #if bytesToReadLaser > 0:
+                #    laser = laserRange.read(bytesToReadDial)
+                #    print("laser {0}".format(laser))
+
+                print("steps {0}".format(steps))
+                temp == "q"
+
+                mmDistance = calcDist(6400, steps)
+
+                dataMove = {
+                    int(mvtCount): {
+                        "steps": steps,
+                        "dial": sendDial,
+                        "laser": laser,
+                        "stepsToMM": mmDistance
+                    }
+                }
+                data.update(dataMove)
+
+                mvtCount += 1
+
+            if (temp == "q"):
+                print("sending {0}".format(lastMsg))
+                sendToCC(lastMsg)
+                moveReady = False
+
         temp = "not"
-        while (temp != "q"):
-            temp = input("Press q to send continue move...")
-        if (movePos):
-            sendToCC("move2")
-            movePos = False
-        elif (not movePos):
-            sendToCC("move1")
-            movePos = True
         
-        moveReady = False
+        while (temp != "e"):
+            temp = input("\nPress e to save & exit | r to skip: ")
+            if (temp == "r"):
+                break
+            if (temp == "e"):
+                with open("data_file.json", "w") as write_file:
+                    json.dump(data, write_file, indent=4) 
+                sys.exit()
+
+        #print("laser {0}, dial {1} ".format(laser, sendDial))
+
         sendToCC("not")
         
 
 def main():
     runZero()
-
+    print("zero done")
+    while True:
+        runMoves()
     
 main()
 

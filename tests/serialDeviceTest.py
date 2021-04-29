@@ -28,8 +28,8 @@ def setupSerial(baudRate, serialPortName, name):
     print("Serial port " + serialPortName + " opened  Baudrate " + str(baudRate))
 
 
-setupSerial(9600, "/dev/ttyUSB1", 2)
-setupSerial(38400, "/dev/ttyUSB0", 3)
+setupSerial(9600, "/dev/ttyUSB0", 2)
+setupSerial(38400, "/dev/ttyUSB1", 3)
 laser.write("iACM".encode('utf-8'))
 
 while True:

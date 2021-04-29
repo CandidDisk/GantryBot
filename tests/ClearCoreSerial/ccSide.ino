@@ -111,9 +111,12 @@ void setup() {
     while (!setupDone) {
         if (commHandShake("done")) {
             setupDone = true;
+            break;
         }
-
     }
+    velocityLimit = 500000;
+
+    accelerationLimit = 100000;
 }
 
 void loop() {
@@ -124,45 +127,46 @@ void loop() {
 
 void moveTest() {
 
-    while (strcmp(readDataPi(), "move1")==1) {
-        Serial.println("move1");
-        delay(50);
+    while (!moveReady) {
+        if (commHandShake("move1")) {
+            moveReady = true;
+            moveDistance(640000);
+            moveReady = false;
+            break;
+        }
     }
-    if (strcmp(readDataPi(), "move1")==0) {
-        moveReady = true;
-        moveDistance(640000);
-        moveReady = false;
-    }
-
-    while (strcmp(readDataPi(), "move1z")==1) {
-        Serial.println("move1z");
-        delay(50);
-    }
-    if (strcmp(readDataPi(), "move1z")==0) {
-        moveReady = true;
-        moveDistance(-640000);
-        moveReady = false;
+    delay(2000);
+    while (!moveReady) {
+        if (commHandShake("move1z")) {
+            moveReady = true;
+            moveDistance(-640000);
+            moveReady = false;
+            break;
+        }
     }
 
-    while (strcmp(readDataPi(), "move2")==0) {
-        Serial.println("move2");
-        delay(50);
+    delay(2000);
+
+    while (!moveReady) {
+        if (commHandShake("move2")) {
+            moveReady = true;
+            moveDistance(2560000);
+            moveReady = false;
+            break;
+        }
     }
-    if (strcmp(readDataPi(), "move2")==0) {
-        moveReady = true;
-        moveDistance(2560000);
-        moveReady = false;
+    delay(2000);
+    while (!moveReady) {
+        if (commHandShake("move2z")) {
+            moveReady = true;
+            moveDistance(-2560000);
+            moveReady = false;
+            break;
+        }
     }
-    
-    while (strcmp(readDataPi(), "move2z")==0) {
-        Serial.println("move2z");
-        delay(50);
-    }
-    if (strcmp(readDataPi(), "move2z")==0) {
-        moveReady = true;
-        moveDistance(2560000);
-        moveReady = false;
-    }
+    delay(2000);
+
+
 }
 
 bool commHandShake(String check) {
@@ -172,9 +176,12 @@ bool commHandShake(String check) {
         newData = false;
     } else {
         if (strcmp(readDataPi(), checkStr)==0) {
-            newData = true;
+            
             return true;
-        }
+        } else{
+            return false;
+        };
+        newData = true;
     }
 }
 
