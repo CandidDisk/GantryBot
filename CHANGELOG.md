@@ -4,6 +4,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+
+### Removed
+
+### Added
+
+## [1.0.0-alpha] - 2021-04-29
+### Changed
+- Updated requirements.txt to include opencv-python v4.5.1
+- Updated README.md w/ ClearCore prerequisites 
+- Renamed 0.1.0 tag to 0.1.0-alpha
 - ClearCore zeroing test IO handshake is now proper function
 - renamed MoveDistance to moveDistance to keep camel case 
 - Digital dial now read by Pi using ch340 based USB To Ser chip included in digital dial cable.
@@ -64,4 +74,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 [Unreleased]: https://github.com/CandidDisk/GantryBot/compare/v0.1.0...main
 [Test]: https://github.com/CandidDisk/GantryBot/compare/main...test
-[0.1.0]: https://github.com/CandidDisk/GantryBot/compare/0.1.0...main
+[0.1.0-alpha]: https://github.com/CandidDisk/GantryBot/compare/0.1.0...main

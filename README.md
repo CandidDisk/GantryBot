@@ -11,13 +11,19 @@ See [changelog](CHANGELOG.md) for more info
 
 #### Python 3.x
 
-#### Arduino 1.5.6 or compatible
+#### Arduino 1.5.6 or compatible (for ClearCore wrapper)
 
 Refer to [**ARDUINO(1) Manual Page**](https://github.com/arduino/Arduino/blob/master/build/shared/manpage.adoc)
 
 #### Arduino IDE 1.8.13 or compatible
 * [Arduino IDE downloads **All**](https://www.arduino.cc/en/software)
 * [Arduino IDE guide **Linux**](https://www.arduino.cc/en/guide/linux)
+
+#### ClearCore Board Manager URL for Arduino IDE
+* [Board Manager URL](https://www.teknic.com/files/downloads/package_clearcore_index.json)
+
+#### ClearCore wrapper library
+* [See teknic guide for installation instructions](https://www.teknic.com/files/downloads/manual_install_instructions_arduino.pdf)
 
 
 ## Installation

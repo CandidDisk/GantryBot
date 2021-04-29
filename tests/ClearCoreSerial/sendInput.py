@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-
+# There are a couple excess variables I forgot to take out during debugging
 
 zeroDone = True
 
@@ -33,6 +33,9 @@ data = {}
 # this once I finish serial & zeroing modules.
 # Am using globals as temporary quick solution
 
+# For all intents & purposes, current state of this test is fine. However, I need to revisit this
+# post completion of outstanding modules before this can serve as a proper test case 
+
 def setupSerialPort(baudRate, serialPortName, name):
 
     port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 10,  write_timeout=10, rtscts = False)
@@ -49,11 +52,13 @@ def setupSerialPort(baudRate, serialPortName, name):
         global laserRange
         laserRange = port
 
+
 def sendToCC(msg):
     msg = msg + '\n'
     out = msg.encode('ascii')
     print("output msg {0}".format(out))
     serialPort.write(out)
+
 
 def readFromCC():
     global zeroDone
@@ -61,7 +66,6 @@ def readFromCC():
     global msgInString
     global lastMsg
     global moveReady
-
     while True:
         #read_until() more convenient than waiting for bytes? Not sure how blocking
         if (serialPort.inWaiting() > 0):
@@ -69,23 +73,16 @@ def readFromCC():
             msg = serialPort.read_until()
             msgInString = msg.decode('ascii').strip()
             lastMsg = msgInString
-            #msgInString
+
             print("received msg {0}\n".format(msgInString))
             if (msgInString == "start"):
                 zeroDone = False
                 print("zero start! {0}".format(zeroDone))
                 sendToCC(msgInString)
-            #if (msgInString == "done"):
-            #    print(msgInString == "done")
-            #    print(msgInString)
-            #    sendToCC(msgInString)
-
-
             newData = True
         else:
             newData = False
     
-
 
 def zeroFunc():
     global sendDial
@@ -108,8 +105,6 @@ def zeroFunc():
     if (one == 2):
         if (tenth+hundredth+thousandth == 0):
             outMsg = "stp"
-            #print(readFromCC())
-            print("\n")
         else:
             outMsg = "s0+"
     else:
@@ -143,7 +138,6 @@ def setupSerial():
 
 
 def runZero():
-
     global zeroDone
     global newData 
     global msgInString
@@ -154,7 +148,6 @@ def runZero():
     setupSerial()
 
     while runZeroStat:
-        
         if (lastMsg != "nothing"):
             print(lastMsg)
 
@@ -163,18 +156,9 @@ def runZero():
                 zeroDone = True
                 runZeroStat = False
                 sendToCC("done")
-                print("break!!!")
                 break
             else:
-                
-
-                #bytesToReadLaser = laserRange.inWaiting()
-
-                #if bytesToReadLaser > 0:
-                #    laser = laserRange.read(bytesToReadLaser)
                 bytesToReadDial = digDial.inWaiting()
-                #print(bytesToReadDial)
-
                 if bytesToReadDial > 0:
                     slicedDial = digDial.read(bytesToReadDial)[0:9]
                     sendDial = str(slicedDial)
@@ -191,21 +175,12 @@ def runMoves():
     global mvtCount
     steps = 0
     msg = "no msg"
-    #print(lastMsg)
-    #print(lastMsg == "done")
-
 
     if ("move" in lastMsg):
         moveReady = True
 
     if (moveReady):
-        #laser = "no"
-
         temp = "not"
-        print("ok!")
-        print(lastMsg)
-        storeMsg = "no msg"
-
 
         if (lastMsg == "move1"):
             steps = "+640000"
@@ -241,15 +216,11 @@ def runMoves():
                 laser = tempLaser.decode('ascii').strip()
                 print("laser {0}".format(laser))
 
-                #bytesToReadLaser = laserRange.inWaiting()
-                #if bytesToReadLaser > 0:
-                #    laser = laserRange.read(bytesToReadDial)
-                #    print("laser {0}".format(laser))
-
                 print("steps {0}".format(steps))
                 temp == "q"
 
                 mmDistance = calcDist(6400, steps)
+                print("calculated distance {0}".format(mmDistance))
 
                 dataMove = {
                     int(mvtCount): {
@@ -279,8 +250,6 @@ def runMoves():
                     json.dump(data, write_file, indent=4) 
                 sys.exit()
 
-        #print("laser {0}, dial {1} ".format(laser, sendDial))
-
         sendToCC("not")
         
 
@@ -292,23 +261,3 @@ def main():
     
 main()
 
-
-
-    
-#    if bytesToReadSer > 0:
-#        arduinoReply = serialPort.read()
-#        print(arduinoReply)
-#    else:
-#        serialPort.write("hello".encode('utf-8'))
-
-    #print("writing manual")
-
-    #serialPort.write("hello".encode('utf-8'))
-
-    #print("writing manual end")
-        
-        # send a message at intervals
-    #if time.time() - prevTime > 1.0:
-    #sendToArduino("this is a test ")
-    #prevTime = time.time()
-    #count += 1

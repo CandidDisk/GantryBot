@@ -67,18 +67,6 @@ void setup() {
             Serial.println("start");}
         
         delay(100);
-        /*
-        if (newData) {
-            Serial.println("start");
-            newData = false;
-        }
-        if (!newData) {
-            if (strcmp(readDataPi(),"start")==0) {
-                newData = true;
-                zeroDone = false;
-                break;
-            } else {newData = false;}
-        }*/
 
     }
 
