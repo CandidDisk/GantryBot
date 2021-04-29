@@ -20,7 +20,6 @@ moveReady = False
 
 movePos = False
 
-
 def setupSerialPort(baudRate, serialPortName, name):
 
     port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 10,  write_timeout=10, rtscts = False)
@@ -108,6 +107,13 @@ def zeroFunc():
         else:
             outMsg = "m0-"
     return outMsg
+
+
+def calcDist(stpPerTurn, steps):
+    stepPerGBTurn = stpPerTurn * 20 #20 = gear ratio
+    stepPerMM = stepPerGBTurn / 150 #150 = mm/turn
+    traveledDistMM = steps / stepPerMM
+    return traveledDistMM
 
 
 def setupSerial():

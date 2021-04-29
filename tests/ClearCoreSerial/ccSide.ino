@@ -119,52 +119,49 @@ void setup() {
 void loop() {
     moveReady = false;
     delay(2000);
-    moveTest1();
+    moveTest();
 }
 
-void moveTest1() {
+void moveTest() {
 
-    
-    Serial.println("move");
-    delay(100);
+    while (strcmp(readDataPi(), "move1")==1) {
+        Serial.println("move1");
+        delay(50);
+    }
     if (strcmp(readDataPi(), "move1")==0) {
         moveReady = true;
-        moveDistance(64000);
-
-    }
-    else if (strcmp(readDataPi(), "move2")==0) {
-        moveReady = true;
-        moveDistance(-64000);
-
-    }
-    
-}
-void moveTest2() {
-
-    while (!moveReady) {
-        Serial.println("move2");
-        delay(100);
-        if (strcmp(readDataPi(), "move2")==0) {
-            moveReady = true;
-            moveDistance(-64000);
-            break;
-        }
-    }
-}
-
-
-void moveTest3(int steps) {
-    while (moveReady) {
-        moveDistance(steps);
+        moveDistance(640000);
         moveReady = false;
     }
-    while (!moveReady) {
-        if (commHandShake("move")) {
-            moveReady = true;
-        } else {
-            moveReady = false;
-        }
-        delay(10000);
+
+    while (strcmp(readDataPi(), "move1z")==1) {
+        Serial.println("move1z");
+        delay(50);
+    }
+    if (strcmp(readDataPi(), "move1z")==0) {
+        moveReady = true;
+        moveDistance(-640000);
+        moveReady = false;
+    }
+
+    while (strcmp(readDataPi(), "move2")==0) {
+        Serial.println("move2");
+        delay(50);
+    }
+    if (strcmp(readDataPi(), "move2")==0) {
+        moveReady = true;
+        moveDistance(2560000);
+        moveReady = false;
+    }
+    
+    while (strcmp(readDataPi(), "move2z")==0) {
+        Serial.println("move2z");
+        delay(50);
+    }
+    if (strcmp(readDataPi(), "move2z")==0) {
+        moveReady = true;
+        moveDistance(2560000);
+        moveReady = false;
     }
 }
 
