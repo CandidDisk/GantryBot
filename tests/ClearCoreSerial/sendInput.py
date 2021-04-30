@@ -219,15 +219,18 @@ def runMoves():
                 print("steps {0}".format(steps))
                 temp == "q"
 
-                mmDistance = calcDist(6400, steps)
+                mmDistance = calcDist(6400, steps) / 1000
                 print("calculated distance {0}".format(mmDistance))
+
+                distanceDiff = 
 
                 dataMove = {
                     int(mvtCount): {
                         "steps": steps,
                         "dial": sendDial,
                         "laser": laser,
-                        "stepsToMM": mmDistance
+                        "calcMeters": mmDistance,
+                        "LaserCalcDiff":
                     }
                 }
                 data.update(dataMove)

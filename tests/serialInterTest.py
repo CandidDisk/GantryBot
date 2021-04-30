@@ -1,6 +1,9 @@
 from piGantry.piSerial import serialInter as serialComm
 
-micro = serialComm.setupSerialPort(9600, "COM8")
+def setupSerial():
+    micro = serialComm.setupSerialPort(9600, "COM8")
+    laser = serialComm.setupSerialPort(36000, "COM8")
+
 while True:
     input = serialComm.readDial(micro)
 
