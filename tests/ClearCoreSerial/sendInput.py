@@ -175,6 +175,7 @@ def runMoves():
     global mvtCount
     steps = 0
     msg = "no msg"
+    distFromZero = 0
 
     if ("move" in lastMsg):
         moveReady = True
@@ -182,16 +183,19 @@ def runMoves():
     if (moveReady):
         temp = "not"
 
-        if (lastMsg == "move1"):
-            steps = "+640000"
-        if (lastMsg == "move1z"):
-            steps = "-640000"
-        if (lastMsg == "move2"):
-            steps = "+2560000"
-        if (lastMsg == "move2z"):
-            steps = "-2560000"
+
 
         while (temp != "q"):
+            if (lastMsg == "move1"):
+                steps = "+640000"
+            if (lastMsg == "move1z"):
+                steps = "-640000"
+                distFromZero = 0
+            if (lastMsg == "move2"):
+                steps = "+2560000"
+            if (lastMsg == "move2z"):
+                steps = "-2560000"
+                distFromZero = 0
             temp = input("\nPress q to send continue move | w to take read | r to skip: ")
             if (temp == "r"):
                 break
@@ -212,25 +216,23 @@ def runMoves():
                 laserRange.flushOutput()
                 time.sleep(1)
 
-                tempLaser = laserRange.read_until()
+                tempLaser = laserRange.read_until()[2:7]
                 laser = tempLaser.decode('ascii').strip()
                 print("laser {0}".format(laser))
 
                 print("steps {0}".format(steps))
-                temp == "q"
 
-                mmDistance = calcDist(6400, steps) / 1000
-                print("calculated distance {0}".format(mmDistance))
+                mmDistance = calcDist(6400, steps)
+                meterDistance = float(mmDistance) / 1000
+                print("calculated distance {0}".format(meterDistance))
 
-                distanceDiff = 
 
                 dataMove = {
                     int(mvtCount): {
                         "steps": steps,
                         "dial": sendDial,
                         "laser": laser,
-                        "calcMeters": mmDistance,
-                        "LaserCalcDiff":
+                        "calcMeters": meterDistance
                     }
                 }
                 data.update(dataMove)
@@ -241,6 +243,7 @@ def runMoves():
                 print("sending {0}".format(lastMsg))
                 sendToCC(lastMsg)
                 moveReady = False
+
 
         temp = "not"
         

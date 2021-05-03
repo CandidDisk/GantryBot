@@ -1,31 +1,30 @@
 import serial
 import time
 
-
-def __init__(self):
-    self.newDataOut = False
-    self.newDataIn = False
-
-def setupSerialPort(baudRate, serialPortName):
-    return serial.Serial(serialPortName, baudrate = baudRate, timeout= 10,  write_timeout=10, rtscts = False)
-
-def writeOut(self, port, msg):
-    msg = msg + '\n'
-    out = msg.encode("ascii")
-    port.write(out)
-    self.newDataOut = True
-
-def readIn(self, port):
-    msgInString = "no new message"
-    if (port.inWaiting() > 0):
-        msg = port.read_until()
-        msgInString = msg.decode("ascii").strip()
-        self.newDataIn = True
-        return msgInString
-    else:
+class serialObject(object):
+    def __init__(self, baudRate, serialPortName):
+        self.newDataOut = False
         self.newDataIn = False
-    return msgInString
-        
+        self.confirmMessage = False
+        self.port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 10,  write_timeout=10, rtscts = False)
+
+    def writeOut(self, msg):
+        msg = msg + '\n'
+        out = msg.encode("ascii")
+        self.port.write(out)
+        self.newDataOut = True
+
+    def readIn(self):
+        msgInString = "no new message"
+        if (self.port.inWaiting() > 0):
+            msg = self.port.read_until()
+            msgInString = msg.decode("ascii").strip()
+            self.newDataIn = True
+            return msgInString
+        else:
+            self.newDataIn = False
+        return msgInString
+            
 def readDial(port):
     bytesToReadDial = port.inWaiting()
     if (bytesToReadDial > 8):
@@ -33,7 +32,7 @@ def readDial(port):
         sendDial = str(slicedDial)
         return sendDial
 
-def readLaser(self, port):
+def readLaser(port):
     #Laser rangefinder requires write "iACM" before it starts sending reading
     port.write("iACM".encode('utf-8'))
 
