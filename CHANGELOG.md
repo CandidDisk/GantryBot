@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Removed
 
 ### Added
+- mathFunc.py for handling math related functions
 - serialObject class in piSerial serialInter module to handle each device as it's own object
 - New piSerial motor module to handle motor related data & functions
 - New serial test case using piSerial module serialInterTest.py

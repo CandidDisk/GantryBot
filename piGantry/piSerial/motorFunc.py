@@ -1,7 +1,9 @@
-class zeroFunc():
+class motor():
     def __init__(self):
         self.zeroDone = False
         self.startZero = False
+        self.moveReady = False
+        self.moveCount = 0
 
 def formatMsg(dialRead):
     outMsg = "no"
