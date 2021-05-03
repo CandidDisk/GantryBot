@@ -6,10 +6,10 @@
         "calcMeters": 0.75
     },
     "1": {
-        "steps": "-640000",
+        "steps": "+2560000",
         "dial": "b'+0002.010'",
         "laser": "0.040",
-        "calcMeters": -0.75
+        "calcMeters": 3.0
     },
     "2": {
         "steps": "+2560000",

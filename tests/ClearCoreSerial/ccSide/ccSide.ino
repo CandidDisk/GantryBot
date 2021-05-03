@@ -63,30 +63,20 @@ void setup() {
         if (strcmp(readDataPi(),"start")==0) {
             zeroDone = false;
             break;
-        } else {
-            Serial.println("start");}
-        
+        } else {Serial.println("start");}
         delay(100);
 
     }
 
-    while (motor.HlfbState() != MotorDriver::HLFB_ASSERTED) {
-        continue;
-    }
+    while (motor.HlfbState() != MotorDriver::HLFB_ASSERTED) {continue;}
 
-    if (digitalRead(SENSOR_DIG) == HIGH){
-        moveAtVelocity(-10000);
-    }
+    if (digitalRead(SENSOR_DIG) == HIGH) {moveAtVelocity(-10000);}
 
-    while (digitalRead(SENSOR_DIG) == HIGH) {
-        
-    }
+    while (digitalRead(SENSOR_DIG) == HIGH) {}
 
     if (digitalRead(SENSOR_DIG) == LOW) {
         moveAtVelocity(0);
     }
-
-
 
     while (!zeroDone) {
         zeroMotor(readDataPi());
@@ -123,7 +113,9 @@ void moveTest() {
             break;
         }
     }
+
     delay(2000);
+    
     while (!moveReady) {
         if (commHandShake("move1z")) {
             moveReady = true;

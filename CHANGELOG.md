@@ -4,11 +4,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
-
+- Reworked piSerial serialInter.py
+- piSerial now functional module
 ### Removed
 
 ### Added
-
+- serialObject class in piSerial serialInter module to handle each device as it's own object
+- New piSerial motor module to handle motor related data & functions
+- New serial test case using piSerial module serialInterTest.py
 ## [1.0.0-alpha] - 2021-04-29
 ### Changed
 - Updated requirements.txt to include opencv-python v4.5.1
@@ -75,3 +78,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [Unreleased]: https://github.com/CandidDisk/GantryBot/compare/v0.1.0...main
 [Test]: https://github.com/CandidDisk/GantryBot/compare/main...test
 [0.1.0-alpha]: https://github.com/CandidDisk/GantryBot/compare/0.1.0...main
+[1.0.0-alpha]: https://github.com/CandidDisk/GantryBot/compare/1.0.0-alpha...main

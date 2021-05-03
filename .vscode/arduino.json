@@ -1,5 +1,5 @@
 {
-    "board": "arduino:avr:uno",
+    "board": "esp8266:esp8266:d1",
     "sketch": "tests\\arduinoZero.ino",
-    "port": "COM4"
+    "port": "COM9"
 }
