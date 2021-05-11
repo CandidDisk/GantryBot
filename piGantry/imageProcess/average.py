@@ -31,6 +31,7 @@ k = []
 temp = []
 temp2 = []
 temp3 = []
+temp4 = []
 data = {"dots": []}
 count = 0
 
@@ -109,15 +110,16 @@ for index, i in enumerate(temp2):
     
     centreObj = {"x": int((colFirst + colLast)/2),
                  "y": int((rowFirst + rowLast)/2)}
-
-    dataFinal[index] = temp2[index]
-    dataFinal[index]["yFirst"] = rowFirst
-    dataFinal[index]["yLast"] = rowLast
-    dataFinal[index]["xFirst"] = colFirst
-    dataFinal[index]["xLast"] = colLast
-    dataFinal[index]["centre"] = centreObj
-    dataFinal[index]["height"] = int(rowLast - rowFirst)
-    dataFinal[index]["coords"] = coords
+    
+    dotObj = {"yFirst": rowFirst,
+              "yLast": rowLast,
+              "xFirst": colFirst,
+              "xLast": colLast,
+              "centre": centreObj,
+              "height": int(rowLast - rowFirst),
+              "width": int(colLast - colFirst),
+              "coords": coords}
+    dataFinal[index] = dotObj
     cv2.circle(image3,(centreObj["x"],centreObj["y"]), 1, (0,0,255), -1)
 
 cv2.imwrite("image3.png", image3)
