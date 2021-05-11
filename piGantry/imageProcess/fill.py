@@ -45,7 +45,7 @@ while True:
     if k%256 == 27:
 
         image = cv2.imread(img_name, cv2.IMREAD_GRAYSCALE)
-
+        image4 = np.zeros((2448,3264,3),np.uint8)
         #image = cv2.imread(img_name)
         #img_yuv = cv2.cvtColor(image, cv2.COLOR_BGR2YUV)
         #l_channel = cv2.cvtColor(img_yuv, cv2.COLOR_RGB2LUV)[:, :, 0]
@@ -89,9 +89,11 @@ while True:
 
         for center in centers:
             cv2.circle(drawing, center, 1, (255, 0, 0), -1)
+            cv2.circle(image4, center, 1, (255, 0, 0), -1)
             #cv2.circle(drawing, center, radius, (0, 255, 0), 1)
 
         cv2.imwrite("drawing.png", drawing)
+        cv2.imwrite("image4.png", image4)
 
     elif k%256 == 32:
         img_name = "{0}opencv_frame_{1}.png".format(dt_string, img_counter)
