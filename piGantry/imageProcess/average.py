@@ -80,10 +80,9 @@ for i in range(rows):
                         "colLast": colLast,
                         "centre": centreObj
                     }
-                    if (obj in dataFinal):
-                        continue
-                    else:
+                    if (obj not in dataFinal):
                         dataFinal.append(obj)
+                        
             prevLength = len(dotArr)
         except Exception as e:
             continue

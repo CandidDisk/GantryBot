@@ -54,3 +54,70 @@ def retContour(img, minArea, maxArea, exemptArea):
 
 def pixelWiseScan(img):
     xRow, yCol = img.shape
+
+    refDot = []
+    dataFinal = []
+    dotArr = []
+
+    count = 0
+    prevLength = 0
+
+    for i in range(xRow):
+        pointRow = {"xRow": int(i),
+                    "yCol": []}
+        for j in range(yCol):
+            pixel = img[i,j]
+            if (pixel != 0):
+                num = count - 1
+                
+                if (int(j) not in pointRow["yCol"]):
+                    pointRow["yCol"].append(int(j))
+                if (pointRow not in refDot):
+                    refDot.append(pointRow)
+                    count += 1
+                    try:
+                        if (i - refDot[num]["xRow"] <= 1):
+                            if (pointRow not in dotArr):
+                                dotArr.append(pointRow)
+                        else:
+                            dotArr = []
+                    except:
+                        continue
+        if (count > 0):
+            try:
+                if (len(dotArr) == prevLength):
+                    if (len(dotArr) > 2):
+                        colLast = 0
+                        colFirst = 0
+                        rowFirst = dotArr[0]["xRow"]
+                        try:
+                            rowLast = dotArr[len(dotArr)-1]["xRow"]
+                        except:
+                            continue
+                        for i in dotArr:
+                            lastVal = i["yCol"][len(i["yCol"])-1]
+                            firstVal = i["yCol"][0]
+                            if (colLast == 0 and colFirst == 0):
+                                colLast = lastVal
+                                colFirst = firstVal
+                            else:
+                                if (firstVal < colFirst):
+                                    colFirst = firstVal
+                                if (lastVal > colLast):
+                                    colLast = lastVal
+                        centreObj = {"x": int((colFirst + colLast)/2),
+                                    "y": int((rowFirst + rowLast)/2)}
+                        obj = {
+                            "dot": dotArr,
+                            "rowFirst": rowFirst,
+                            "rowLast": rowLast,
+                            "colFirst": colFirst,
+                            "colLast": colLast,
+                            "centre": centreObj
+                        }
+                        if (obj not in dataFinal):
+                            dataFinal.append(obj)
+                prevLength = len(dotArr)
+            except:
+                continue
+    return dataFinal
