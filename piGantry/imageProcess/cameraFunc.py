@@ -8,12 +8,12 @@ class cameraObj(object):
         self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
-    def grabFrame(self, imgName):
+    def grabFrame(self):
         ret, frame = self.cam.read()
         if not ret:
             return "Failed to grab frame"
         self.cam.release()
-        return cv2.imwrite(imgName, frame)
+        return frame
         
 def preProcImg(img):
     imageGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -68,7 +68,7 @@ def pixelWiseScan(img):
                     "yCol": []}
         for j in range(yCol):
             pixel = img[i,j]
-            if (pixel != 0):
+            if (pixel == 0):
                 num = count - 1
                 
                 if (int(j) not in pointRow["yCol"]):

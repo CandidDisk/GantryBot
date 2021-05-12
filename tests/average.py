@@ -9,7 +9,7 @@ image = cv2.imread(img_name, cv2.IMREAD_GRAYSCALE)
 image2 = np.zeros((2448,3264,3),np.uint8)
 image3 = np.zeros((2448,3264,3),np.uint8)
 
-retval, image = cv2.threshold(image, 50, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+retval, image = cv2.threshold(image, 50, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
 el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
 
@@ -31,7 +31,7 @@ for i in range(rows):
                 "col": []}
     for j in range(cols):
         pixel = image[i,j]
-        if (pixel != 0):
+        if (pixel == 0):
             num = count - 1
             image2[i,j] = [0,0,255]
 
@@ -72,6 +72,7 @@ for i in range(rows):
                                 colLast = lastVal
                     centreObj = {"x": int((colFirst + colLast)/2),
                                  "y": int((rowFirst + rowLast)/2)}
+                    cv2.circle(image3,(centreObj["x"],centreObj["y"]), 1, (0,0,255), -1)
                     obj = {
                         "dot": dotArr,
                         "rowFirst": rowFirst,
@@ -89,3 +90,5 @@ for i in range(rows):
         
 with open("data.json", "w") as write_file:
     json.dump(dataFinal, write_file, indent=4)
+
+cv2.imwrite("image3.png", image)
