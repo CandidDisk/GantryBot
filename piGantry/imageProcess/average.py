@@ -19,110 +19,74 @@ cv2.imwrite("dilatedAvg.png", image)
 
 rows,cols = image.shape
 
-dot = False
+refDot = []
+dataFinal = []
+dotArr = []
 
-dotCount = 1
-
-lastRow = 0
-
-dataFinal = {}
-
-k = []
-temp = []
-temp2 = []
-temp3 = []
-temp4 = []
-data = {"dots": []}
 count = 0
+prevLength = 0
 
 for i in range(rows):
-    pointRow = {"row": [int(i)]}
+    pointRow = {"row": int(i),
+                "col": []}
     for j in range(cols):
         pixel = image[i,j]
         if (pixel != 0):
             num = count - 1
-            data["dots"].append(i)
             image2[i,j] = [0,0,255]
-            k.append(int(image[i,j]))
-            pointObj = {
-                "col": int(j),
-                "val": int(pixel)
-            }
-            if (pointObj not in pointRow["row"]):
-                pointRow["row"].append(pointObj)
-            if (pointRow not in temp):
-                temp.append(pointRow)
+
+            if (int(j) not in pointRow["col"]):
+                pointRow["col"].append(int(j))
+            if (pointRow not in refDot):
+                refDot.append(pointRow)
                 count += 1
                 try:
-                    if (i - temp[num]["row"][0] <= 1):
-                        if (pointRow not in temp3):
-                            temp3.append(pointRow)
+                    if (i - refDot[num]["row"] <= 1):
+                        if (pointRow not in dotArr):
+                            dotArr.append(pointRow)
                     else:
-                        temp3 = []
+                        dotArr = []
                 except:
-                    print()
+                    continue
     if (count > 0):
         try:
-            obj = {
-                "dot": temp3
-            }
-            if (obj not in temp2):
-                temp2.append(obj)
-            print(obj in temp2)
+            if (len(dotArr) == prevLength):
+                if (len(dotArr) > 2):
+                    colLast = 0
+                    colFirst = 0
+                    rowFirst = dotArr[0]["row"]
+                    try:
+                        rowLast = dotArr[len(dotArr)-1]["row"]                        
+                    except:
+                        continue
+                    for i in dotArr:
+                        lastVal = i["col"][len(i["col"])-1]
+                        firstVal = i["col"][0]
+                        if (colLast == 0 and colFirst == 0):
+                            colLast = lastVal
+                            colFirst = firstVal
+                        else:
+                            if (firstVal < colFirst):
+                                colFirst = firstVal
+                            if (lastVal > colLast):
+                                colLast = lastVal
+                    centreObj = {"x": int((colFirst + colLast)/2),
+                                 "y": int((rowFirst + rowLast)/2)}
+                    obj = {
+                        "dot": dotArr,
+                        "rowFirst": rowFirst,
+                        "rowLast": rowLast,
+                        "colFirst": colFirst,
+                        "colLast": colLast,
+                        "centre": centreObj
+                    }
+                    if (obj in dataFinal):
+                        continue
+                    else:
+                        dataFinal.append(obj)
+            prevLength = len(dotArr)
         except Exception as e:
-            print(e)
-
+            continue
+        
 with open("data.json", "w") as write_file:
-    json.dump(temp2, write_file, indent=4)
-
-cv2.imwrite("image2.png", image2)
-
-
-
-for index, i in enumerate(temp2):
-    colLast = 0
-    colFirst = 0
-    rowLast = temp2[index]["dot"][len(temp2[index]["dot"])-1]["row"][0]
-    rowFirst = temp2[index]["dot"][0]["row"][0]
-    coords = []
-    for x in temp2[index]["dot"]:
-        xObj = []
-        firstCol = x["row"][1]["col"]
-        lastCol = x["row"][len(x["row"])-1]["col"]
-        print(len(x["row"]))
-        print(x["row"])
-        if (colLast == 0 and colFirst == 0):
-            colLast = lastCol
-            colFirst = firstCol
-        else:
-            if (firstCol < colFirst):
-                colFirst = firstCol
-            if (lastCol > colLast):
-                colLast = lastCol
-        for y in x["row"]:
-            try:
-                xObj.append(y["col"])
-            except:
-                yVal = y
-        modObj = {"y": yVal,
-                  "x": xObj}
-        coords.append(modObj)
-    
-    centreObj = {"x": int((colFirst + colLast)/2),
-                 "y": int((rowFirst + rowLast)/2)}
-    
-    dotObj = {"yFirst": rowFirst,
-              "yLast": rowLast,
-              "xFirst": colFirst,
-              "xLast": colLast,
-              "centre": centreObj,
-              "height": int(rowLast - rowFirst),
-              "width": int(colLast - colFirst),
-              "coords": coords}
-    dataFinal[index] = dotObj
-    cv2.circle(image3,(centreObj["x"],centreObj["y"]), 1, (0,0,255), -1)
-
-cv2.imwrite("image3.png", image3)
-
-with open("dataFinal.json", "w") as write_file:
     json.dump(dataFinal, write_file, indent=4)

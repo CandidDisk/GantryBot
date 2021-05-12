@@ -34,7 +34,7 @@ def runMoves():
     lastMsg = clearCore.readIn()
     if (lastMsg == "move"):
         motor.moveRead = True
-    if (moveReady):
+    if (motor.moveReady):
         temp = "not"
 
         while (temp != "q"):
@@ -59,7 +59,7 @@ def runMoves():
                 meterDistance = float(mmDistance) / 1000
 
 
-runZero():
+runZero()
 
 print("finished!")
 
