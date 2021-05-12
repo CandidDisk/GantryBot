@@ -36,6 +36,8 @@ data = {}
 # For all intents & purposes, current state of this test is fine. However, I need to revisit this
 # post completion of outstanding modules before this can serve as a proper test case 
 
+# UPDATE - See serialInterTest for proper unit test! :)
+
 def setupSerialPort(baudRate, serialPortName, name):
 
     port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 10,  write_timeout=10, rtscts = False)
