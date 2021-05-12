@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+#Initializes camera as new instance of opencv videocapture class when called on
 class cameraObj(object):
     def __init__(self, width, height):
         self.cam = cv2.VideoCapture(0)
