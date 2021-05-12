@@ -44,5 +44,5 @@ def readLaser(port):
     #Giving time for laser rangefinder to fill buffer
     time.sleep(0.5)
 
-    unformatLaser = laserRange.read_until()
+    unformatLaser = port.read_until()
     sendLaser = unformatLaser.decode("ascii").strip()

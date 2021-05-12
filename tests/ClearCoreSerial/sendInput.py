@@ -244,7 +244,6 @@ def runMoves():
                 sendToCC(lastMsg)
                 moveReady = False
 
-
         temp = "not"
         
         while (temp != "e"):

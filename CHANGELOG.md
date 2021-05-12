@@ -7,13 +7,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Reworked piSerial serialInter.py
 - piSerial now functional module
 ### Removed
-
+- opencv2test.py
+- imageDiff.py
+- imageProcess redundant files 
 ### Added
+- dotTest.py unit test for imageProcess module
+- cameraFunc.py for handling image processing functions
+- Added average.py for pixelwise alternative to opencv contouring
+- mathFunc.py for handling math related functions
 - serialObject class in piSerial serialInter module to handle each device as it's own object
 - New piSerial motor module to handle motor related data & functions
 - New serial test case using piSerial module serialInterTest.py
 ## [1.0.0-alpha] - 2021-04-29
 ### Changed
+- Refactored average.py & fixed tons of spaghetti + redundancy
 - Updated requirements.txt to include opencv-python v4.5.1
 - Updated README.md w/ ClearCore prerequisites 
 - Renamed 0.1.0 tag to 0.1.0-alpha

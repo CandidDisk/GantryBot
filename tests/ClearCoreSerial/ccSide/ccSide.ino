@@ -84,7 +84,6 @@ void setup() {
             zeroDone = true;
         }
     }
-
     newData = true;
 
     while (!setupDone) {
