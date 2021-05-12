@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - imageDiff.py
 - imageProcess redundant files 
 ### Added
+- dotTest.py unit test for imageProcess module
 - cameraFunc.py for handling image processing functions
 - Added average.py for pixelwise alternative to opencv contouring
 - mathFunc.py for handling math related functions
