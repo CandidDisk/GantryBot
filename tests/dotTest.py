@@ -2,7 +2,8 @@ from piGantry.imageProcess import cameraFunc as camera
 import cv2
 import time
 import json
-import numpy as np
+
+
 
 # Set width & height to high value to set resolution as max 
 cam = camera.cameraObj(10000, 10000)
@@ -51,5 +52,6 @@ def main():
     with open("dataPixel.json", "w") as write_file:
         json.dump(pixelWise, write_file, indent=4)
 
-    print(np.subtract(contours1, contours2))
+    print("Passes subtraction: {}".format(camera.compareContour(contours1, contours2, (1, 1), (-1, -1))))
+    
 main()

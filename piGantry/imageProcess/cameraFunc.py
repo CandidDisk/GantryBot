@@ -101,3 +101,16 @@ def pixelWiseScan(img, minPix, maxPix):
 
     # inverts array 
     return dataFinal[::-1]
+
+# compareContour(contourArray1, contourArray2, (maxValX, maxValY), (minValX, minValY))
+def compareContour(arr1, arr2, maxTuple, minTuple):
+    try:
+        subtracted = np.subtract(arr1, arr2)
+        maxVal = (max(subtracted, key=itemgetter(0))[0], max(subtracted, key=itemgetter(1))[1])
+        minVal = (min(subtracted, key=itemgetter(0))[0], min(subtracted, key=itemgetter(1))[1])
+        if (maxVal <= maxTuple and minTuple <= minVal):
+            return True
+        else:
+            return False
+    except:
+        return False
