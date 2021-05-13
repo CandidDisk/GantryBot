@@ -1,3 +1,5 @@
+import numpy as np
+
 class inputProcess():
     def __init__(self):
         self.steps

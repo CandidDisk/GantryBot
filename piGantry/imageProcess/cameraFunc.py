@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+from operator import itemgetter
+
 #Initializes camera as new instance of opencv videocapture class when called on
 class cameraObj(object):
     def __init__(self, width, height):
@@ -16,14 +18,18 @@ class cameraObj(object):
         return frame
         
 def preProcImg(img):
+    img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+    y, u, v = cv2.split(img_yuv)
+    l_channel = cv2.cvtColor(img_yuv, cv2.COLOR_RGB2LUV)[:, :, 0]
     imageGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    ret, image = cv2.threshold(imageGray, 50, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    ret, image = cv2.threshold(l_channel, 20, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
     el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
     image = cv2.dilate(image, el, iterations=1)
     return image
 
-def retContour(img, minArea, maxArea, exemptArea):
+def retContour(img, minArea, maxArea, exemptArea, file):
+    image2 = np.zeros((2448,3264,3),np.uint8)
 
     contours, hierarchy = cv2.findContours(
         img,
@@ -34,6 +40,7 @@ def retContour(img, minArea, maxArea, exemptArea):
     dotCenters = []
 
     for contour in contours:
+        # Check dot area 
         if minArea < cv2.contourArea(contour) < maxArea:
             area = cv2.contourArea(contour)
             
@@ -45,80 +52,52 @@ def retContour(img, minArea, maxArea, exemptArea):
             contourMoment = cv2.moments(contour)
 
             try:
-                intensity = img[int(contourMoment['m10'] / contourMoment['m00'])][int(contourMoment['m01'] / contourMoment['m00'])]
+                #intensity = img[int(contourMoment['m10'] / contourMoment['m00'])][int(contourMoment['m01'] / contourMoment['m00'])]
                 center = (int(contourMoment['m10'] / contourMoment['m00']), int(contourMoment['m01'] / contourMoment['m00']))
                 dotCenters.append(center)
+                cv2.circle(image2,center, 1, (255,0,0), -1)
             except:
                 continue
-    
+    cv2.imwrite(file, image2)
+    # x, y
     return dotCenters
 
-def pixelWiseScan(img):
-    xRow, yCol = img.shape
 
-    refDot = []
-    dataFinal = []
+def pixelWiseScan(img, minPix, maxPix):
+    image3 = np.zeros((2448,3264,3),np.uint8)
+    threshPixel = []
     dotArr = []
+    dataFinal = []
 
-    count = 0
-    prevLength = 0
+    # Flattens threshold array into dimension for x & for y
+    nonZero = np.nonzero(img)
 
-    for i in range(xRow):
-        pointRow = {"xRow": int(i),
-                    "yCol": []}
-        for j in range(yCol):
-            pixel = img[i,j]
-            if (pixel == 0):
-                num = count - 1
-                
-                if (int(j) not in pointRow["yCol"]):
-                    pointRow["yCol"].append(int(j))
-                if (pointRow not in refDot):
-                    refDot.append(pointRow)
-                    count += 1
-                    try:
-                        if (i - refDot[num]["xRow"] <= 1):
-                            if (pointRow not in dotArr):
-                                dotArr.append(pointRow)
-                        else:
-                            dotArr = []
-                    except:
-                        continue
-        if (count > 0):
-            try:
-                if (len(dotArr) == prevLength):
-                    if (len(dotArr) > 2):
-                        colLast = 0
-                        colFirst = 0
-                        rowFirst = dotArr[0]["xRow"]
-                        try:
-                            rowLast = dotArr[len(dotArr)-1]["xRow"]
-                        except:
-                            continue
-                        for i in dotArr:
-                            lastVal = i["yCol"][len(i["yCol"])-1]
-                            firstVal = i["yCol"][0]
-                            if (colLast == 0 and colFirst == 0):
-                                colLast = lastVal
-                                colFirst = firstVal
-                            else:
-                                if (firstVal < colFirst):
-                                    colFirst = firstVal
-                                if (lastVal > colLast):
-                                    colLast = lastVal
-                        centreObj = {"x": int((colFirst + colLast)/2),
-                                    "y": int((rowFirst + rowLast)/2)}
-                        obj = {
-                            "dot": dotArr,
-                            "rowFirst": rowFirst,
-                            "rowLast": rowLast,
-                            "colFirst": colFirst,
-                            "colLast": colLast,
-                            "centre": centreObj
-                        }
-                        if (obj not in dataFinal):
-                            dataFinal.append(obj)
-                prevLength = len(dotArr)
-            except:
-                continue
-    return dataFinal
+    def getCenter(dot):
+        xCenter = int((min(dot, key=itemgetter(1))[1] + max(dot, key=itemgetter(1))[1])/2)
+        yCenter = int((min(dot, key=itemgetter(0))[0] + max(dot, key=itemgetter(0))[0])/2)
+        return (xCenter, yCenter)
+
+    for i in range(len(nonZero[0])):
+        # Formatting key of both dimensions into x, y tuple
+        threshPixel.append((int(nonZero[0][i]), int(nonZero[1][i])))
+        try:
+            # Subtract current x,y tuple w/ previous 
+            priorDiff = tuple(map(lambda x, y: x - y, threshPixel[i], threshPixel[i-1]))
+            if (priorDiff[0] > 1):
+                # Check dot area 
+                if (minPix < len(dotArr) < maxPix):
+                    center = getCenter(dotArr)
+                    cv2.circle(image3,center, 1, (255,0,0), -1)
+                    dataFinal.append(center)
+                    
+                dotArr = []
+                dotArr.append((int(nonZero[0][i]), int(nonZero[1][i])))
+            else:
+                dotArr.append((int(nonZero[0][i]), int(nonZero[1][i])))
+        except:
+            continue
+
+    cv2.imwrite("image4test.png", image3)
+
+    # inverts array 
+    return dataFinal[::-1]

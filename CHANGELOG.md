@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- Reworked pixelWiseScan to use numpy nonzero func instead of iteratively accessing threshold array
 - Reworked piSerial serialInter.py
 - piSerial now functional module
 ### Removed
