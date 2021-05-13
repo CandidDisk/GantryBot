@@ -37,7 +37,7 @@ $ pip install -r requirements.txt
 #To be updated once installation is standardized
 ```
 
-* also stick to mixed case for now plz
+* also stick to camel case for now plz
 
 ## Project Overview
 
