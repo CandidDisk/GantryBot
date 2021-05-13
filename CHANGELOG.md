@@ -4,6 +4,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+
+### Removed
+
+### Added
+
+## [1.1.0-alpha] - 2021-05-13
+### Changed
 - Reworked pixelWiseScan to use numpy nonzero func instead of iteratively accessing threshold array
 - Reworked piSerial serialInter.py
 - piSerial now functional module
@@ -84,7 +91,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## Compare [Test] w/ Unreleased
 
 
-[Unreleased]: https://github.com/CandidDisk/GantryBot/compare/v0.1.0...main
+[Unreleased]: https://github.com/CandidDisk/GantryBot/compare/main...v1.1.0-alpha
 [Test]: https://github.com/CandidDisk/GantryBot/compare/main...test
 [0.1.0-alpha]: https://github.com/CandidDisk/GantryBot/compare/0.1.0...main
 [1.0.0-alpha]: https://github.com/CandidDisk/GantryBot/compare/1.0.0-alpha...main
+[1.1.0-alpha]: https://github.com/CandidDisk/GantryBot/compare/1.1.0-alpha...main
