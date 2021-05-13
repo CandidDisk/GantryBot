@@ -2,3 +2,9 @@ pi\piUI\temp.py
 pi\piUI\temp2.py
 pi\venv
 pi\pyvenv.cfg
+tests/testImg.png
+data1.json
+dataContour.json
+image2test.png
+image3test.png
+image4test.png
