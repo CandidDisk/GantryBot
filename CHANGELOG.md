@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - imageDiff.py
 - imageProcess redundant files 
 ### Added
+- compareContour function for comparison of two image's contour center dots, AKA "check camera wobble / is lightrod still" 
 - dotTest.py unit test for imageProcess module
 - cameraFunc.py for handling image processing functions
 - Added average.py for pixelwise alternative to opencv contouring
