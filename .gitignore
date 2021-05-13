@@ -6,7 +6,7 @@ dataContour.json
 image2test.png
 image3test.png
 image4test.png
-vscode
+.vscode
 venv
 piGantry/__pycache__
 piGantry/imageProcess/__pycache__
