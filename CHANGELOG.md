@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Reworked piSerial serialInter.py
 - piSerial now functional module
 ### Removed
+- Luminosity test
 - opencv2test.py
 - imageDiff.py
 - imageProcess redundant files 
