@@ -29,7 +29,7 @@ def preProcImg(img):
     return image
 
 def retContour(img, minArea, maxArea, exemptArea, file):
-    image2 = np.zeros((2448,3264,3),np.uint8)
+    #image2 = np.zeros((2448,3264,3),np.uint8)
 
     contours, hierarchy = cv2.findContours(
         img,
@@ -55,16 +55,16 @@ def retContour(img, minArea, maxArea, exemptArea, file):
                 #intensity = img[int(contourMoment['m10'] / contourMoment['m00'])][int(contourMoment['m01'] / contourMoment['m00'])]
                 center = (int(contourMoment['m10'] / contourMoment['m00']), int(contourMoment['m01'] / contourMoment['m00']))
                 dotCenters.append(center)
-                cv2.circle(image2,center, 1, (255,0,0), -1)
+                #cv2.circle(image2,center, 1, (255,0,0), -1)
             except:
                 continue
-    cv2.imwrite(file, image2)
+    #cv2.imwrite(file, image2)
     # x, y
     return dotCenters
 
 
 def pixelWiseScan(img, minPix, maxPix):
-    image3 = np.zeros((2448,3264,3),np.uint8)
+    #image3 = np.zeros((2448,3264,3),np.uint8)
     threshPixel = []
     dotArr = []
     dataFinal = []
@@ -87,7 +87,7 @@ def pixelWiseScan(img, minPix, maxPix):
                 # Check dot area 
                 if (minPix < len(dotArr) < maxPix):
                     center = getCenter(dotArr)
-                    cv2.circle(image3,center, 1, (255,0,0), -1)
+                    #cv2.circle(image3,center, 1, (255,0,0), -1)
                     dataFinal.append(center)
                     
                 dotArr = []
@@ -97,7 +97,7 @@ def pixelWiseScan(img, minPix, maxPix):
         except:
             continue
 
-    cv2.imwrite("image4test.png", image3)
+    #cv2.imwrite("image4test.png", image3)
 
     # inverts array 
     return dataFinal[::-1]
