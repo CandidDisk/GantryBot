@@ -22,6 +22,8 @@ def main():
 
     img2 = cv2.imread("tests/gray.png")
     img3 = cv2.imread("tests/gray1.png")
+
+    #print(camera.compareImg(img2,img3))
     
     t1 = time.perf_counter()
     procImg = camera.preProcImg(img2)
@@ -55,6 +57,14 @@ def main():
 
     time1 += t2
 
+    t1 = time.perf_counter()
+    passed = camera.compareContour(contours1, contours2, (1, 1), (-1, -1))
+    t2 = time.perf_counter()
+
+    print("compare end in {0}\n".format((t2-t1)))
+
+    time1 += t2
+
     print("contour & compare end in {0}".format(time1))
 
     with open("dataContour1.json", "w") as write_file:
@@ -64,6 +74,6 @@ def main():
     with open("dataPixel.json", "w") as write_file:
         json.dump(pixelWise, write_file, indent=4)
 
-    print("Passes subtraction: {}".format(camera.compareContour(contours1, contours2, (1, 1), (-1, -1))))
+    print("Passes subtraction: {}".format(passed))
     
 main()

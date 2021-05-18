@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import time
 
 from operator import itemgetter
 
@@ -18,14 +19,16 @@ class cameraObj(object):
         return frame
         
 def preProcImg(img):
+    t1 = time.perf_counter()
     img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
-    y, u, v = cv2.split(img_yuv)
+    #y, u, v = cv2.split(img_yuv)
     l_channel = cv2.cvtColor(img_yuv, cv2.COLOR_RGB2LUV)[:, :, 0]
-    imageGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #imageGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ret, image = cv2.threshold(l_channel, 20, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
     el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
     image = cv2.dilate(image, el, iterations=1)
+    t2 = time.perf_counter()
+    print("preProcImg end in {0}\n".format((t2-t1)))
     return image
 
 def retContour(img, minArea, maxArea, exemptArea, file):
@@ -114,3 +117,6 @@ def compareContour(arr1, arr2, maxTuple, minTuple):
             return False
     except:
         return False
+
+def compareImg(img1, img2):
+    return img1.shape == img2.shape and not(np.bitwise_xor(img1,img2).any())
