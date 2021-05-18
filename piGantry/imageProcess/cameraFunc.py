@@ -10,6 +10,8 @@ class cameraObj(object):
         self.cam = cv2.VideoCapture(0)
         self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        self.cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
+        self.cam.set(cv2.CAP_PROP_EXPOSURE, 0.05)
 
     def grabFrame(self):
         ret, frame = self.cam.read()
@@ -25,7 +27,7 @@ def preProcImg(img):
     l_channel = cv2.cvtColor(img_yuv, cv2.COLOR_RGB2LUV)[:, :, 0]
     #imageGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ret, image = cv2.threshold(l_channel, 20, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+    el = cv2.getStructuringElement(cv2.MORPH_CROSS, (2, 2))
     image = cv2.dilate(image, el, iterations=1)
     t2 = time.perf_counter()
     print("preProcImg end in {0}\n".format((t2-t1)))
@@ -118,5 +120,18 @@ def compareContour(arr1, arr2, maxTuple, minTuple):
     except:
         return False
 
-def compareImg(img1, img2):
-    return img1.shape == img2.shape and not(np.bitwise_xor(img1,img2).any())
+def compareImg(img1, img2, thresh):
+    imgGray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    imgGray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+    diffArr = cv2.subtract(imgGray1, imgGray2)
+
+    imgMean = np.mean(diffArr)
+    nonZero = np.nonzero(diffArr)
+    imgMean2 = np.mean(nonZero)
+
+
+    if (imgMean < thresh):
+        return True
+    else:
+        return False
+    #return diffArr

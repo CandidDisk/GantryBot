@@ -11,3 +11,10 @@ venv
 piGantry/__pycache__
 piGantry/imageProcess/__pycache__
 piGantry/piSerial/__pycache__
+testDiff.png
+testDiff1.png
+testDiff2.png
+tests/takeImg.py
+tests/grey1.jpg
+tests/grey.png
+tests/grayDiffLum.png

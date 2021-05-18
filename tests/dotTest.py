@@ -18,12 +18,19 @@ def main():
             print(e)
     print("camera done")
 
-    time1 = 0
+    t3 = time.perf_counter()
 
     img2 = cv2.imread("tests/gray.png")
     img3 = cv2.imread("tests/gray1.png")
+    img4 = cv2.imread("tests/grey.png")
 
-    #print(camera.compareImg(img2,img3))
+    print("compareImg1 {0}".format(camera.compareImg(img2,img3, 0.005)))
+    print("compareImg2 {0}".format(camera.compareImg(img2,img4, 0.005)))
+    print("compareImg3 {0}".format(camera.compareImg(img3,img4, 0.005)))
+
+    #cv2.imwrite("testDiff.png", camera.compareImg(img2,img3, 0.005))
+    #cv2.imwrite("testDiff1.png", camera.compareImg(img2,img4, 0.005))
+    #cv2.imwrite("testDiff2.png", camera.compareImg(img4,img2, 0.005))
     
     t1 = time.perf_counter()
     procImg = camera.preProcImg(img2)
@@ -32,7 +39,6 @@ def main():
 
     print(t2)
 
-    time1 = t2
     
     print("\npixel start\n")
     t1 = time.perf_counter()
@@ -47,25 +53,22 @@ def main():
     t2 = time.perf_counter()
     print("contour1 end in {0} \n contour: {1} \n dots: {2}\n".format((t2-t1),contours1,len(contours1)))
 
-    time1 += t2
-
     print("\ncontour2 start\n")
     t1 = time.perf_counter()
     contours2=camera.retContour(procImg2, 1, 50, 100, "image3test.png")
     t2 = time.perf_counter()
     print("contour2 end in {0} \n contour: {1} \n dots: {2}\n".format((t2-t1),contours2,len(contours2)))
 
-    time1 += t2
-
     t1 = time.perf_counter()
     passed = camera.compareContour(contours1, contours2, (1, 1), (-1, -1))
     t2 = time.perf_counter()
 
+    t4 = time.perf_counter()
+
     print("compare end in {0}\n".format((t2-t1)))
 
-    time1 += t2
 
-    print("contour & compare end in {0}".format(time1))
+    print("contour & compare end in {0}".format((t4-t3)))
 
     with open("dataContour1.json", "w") as write_file:
         json.dump(contours1, write_file, indent=4)
