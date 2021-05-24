@@ -24,18 +24,18 @@ class cameraObj(object):
         
 def preProcImg(img):
     t1 = time.perf_counter()
-    img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+    #img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
     #y, u, v = cv2.split(img_yuv)
-    l_channel = cv2.cvtColor(img_yuv, cv2.COLOR_RGB2LUV)[:, :, 0]
+    #l_channel = cv2.cvtColor(img_yuv, cv2.COLOR_RGB2LUV)[:, :, 0]
     imageGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    ret, image = cv2.threshold(l_channel, 20, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    ret, image = cv2.threshold(imageGray, 1, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     el = cv2.getStructuringElement(cv2.MORPH_CROSS, (2, 2))
     image = cv2.dilate(image, el, iterations=1)
     t2 = time.perf_counter()
     print("preProcImg end in {0}\n".format((t2-t1)))
     return image
 
-def retContour(img, minArea, maxArea, exemptArea, file):
+def retContour(img, origImg, minArea, maxArea, exemptArea, file):
     image2 = np.zeros((2448,3264,3),np.uint8)
     backtorgb = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
 
@@ -45,7 +45,11 @@ def retContour(img, minArea, maxArea, exemptArea, file):
         cv2.CHAIN_APPROX_SIMPLE
     )
 
+    xCoords = []
+    yCoords = []
+
     dotCenters = []
+    plotCoords = [xCoords, yCoords]
 
     for contour in contours:
         # Check dot area 
@@ -62,13 +66,15 @@ def retContour(img, minArea, maxArea, exemptArea, file):
             try:
                 #intensity = img[int(contourMoment['m10'] / contourMoment['m00'])][int(contourMoment['m01'] / contourMoment['m00'])]
                 center = (int(contourMoment['m10'] / contourMoment['m00']), int(contourMoment['m01'] / contourMoment['m00']))
+                plotCoords[0].append(contourMoment['m10'] / contourMoment['m00'])
+                plotCoords[1].append(contourMoment['m01'] / contourMoment['m00'])
                 dotCenters.append(center)
-                cv2.circle(backtorgb,center, 2, (255,0,0), -1)
+                cv2.circle(origImg,center, 1, (255,0,0), -1)
             except:
                 continue
-    cv2.imwrite(file, backtorgb)
+    cv2.imwrite(file, origImg)
     # x, y
-    return dotCenters
+    return (dotCenters, plotCoords)
 
 
 def pixelWiseScan(img, minPix, maxPix):

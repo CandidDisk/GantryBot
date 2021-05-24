@@ -4,10 +4,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- Refactored dotTest.py unit test to be more pythonic & remove reoccuring clutter
 
 ### Removed
 
 ### Added
+- imgData dir
+- matPlot best fit graphs
+- imgData laser leveller mounted camera 24v PSU img data set
+- imgData laser leveller mounted camera img data set
+- imgData regular tripod mounted camera img data set
+- imgData wall mounted camera img data set
+- takeImg.py Lightrod imsub & photo taking test unit
+- compareImg write to csv imsub values between two given images
+- dotTest.py unit test includes bestFitPoly 
+- bestFitPoly for mathFunc module to find best fit given x list y list & degree
+
 
 ## [1.1.0-alpha] - 2021-05-13
 ### Changed
