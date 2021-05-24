@@ -1,5 +1,8 @@
 import cv2
 import numpy as np
+import time
+import json
+
 
 from operator import itemgetter
 
@@ -9,6 +12,8 @@ class cameraObj(object):
         self.cam = cv2.VideoCapture(0)
         self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        self.cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
+        self.cam.set(cv2.CAP_PROP_EXPOSURE, 0.05)
 
     def grabFrame(self):
         ret, frame = self.cam.read()
@@ -18,18 +23,21 @@ class cameraObj(object):
         return frame
         
 def preProcImg(img):
-    img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
-    y, u, v = cv2.split(img_yuv)
-    l_channel = cv2.cvtColor(img_yuv, cv2.COLOR_RGB2LUV)[:, :, 0]
+    t1 = time.perf_counter()
+    #img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+    #y, u, v = cv2.split(img_yuv)
+    #l_channel = cv2.cvtColor(img_yuv, cv2.COLOR_RGB2LUV)[:, :, 0]
     imageGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    ret, image = cv2.threshold(l_channel, 20, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-    el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+    ret, image = cv2.threshold(imageGray, 1, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    el = cv2.getStructuringElement(cv2.MORPH_CROSS, (2, 2))
     image = cv2.dilate(image, el, iterations=1)
+    t2 = time.perf_counter()
+    print("preProcImg end in {0}\n".format((t2-t1)))
     return image
 
-def retContour(img, minArea, maxArea, exemptArea, file):
+def retContour(img, origImg, minArea, maxArea, exemptArea, file):
     image2 = np.zeros((2448,3264,3),np.uint8)
+    backtorgb = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
 
     contours, hierarchy = cv2.findContours(
         img,
@@ -37,7 +45,11 @@ def retContour(img, minArea, maxArea, exemptArea, file):
         cv2.CHAIN_APPROX_SIMPLE
     )
 
+    xCoords = []
+    yCoords = []
+
     dotCenters = []
+    plotCoords = [xCoords, yCoords]
 
     for contour in contours:
         # Check dot area 
@@ -54,13 +66,15 @@ def retContour(img, minArea, maxArea, exemptArea, file):
             try:
                 #intensity = img[int(contourMoment['m10'] / contourMoment['m00'])][int(contourMoment['m01'] / contourMoment['m00'])]
                 center = (int(contourMoment['m10'] / contourMoment['m00']), int(contourMoment['m01'] / contourMoment['m00']))
+                plotCoords[0].append(contourMoment['m10'] / contourMoment['m00'])
+                plotCoords[1].append(contourMoment['m01'] / contourMoment['m00'])
                 dotCenters.append(center)
-                cv2.circle(image2,center, 1, (255,0,0), -1)
+                cv2.circle(origImg,center, 1, (255,0,0), -1)
             except:
                 continue
-    cv2.imwrite(file, image2)
+    cv2.imwrite(file, origImg)
     # x, y
-    return dotCenters
+    return (dotCenters, plotCoords)
 
 
 def pixelWiseScan(img, minPix, maxPix):
@@ -88,6 +102,7 @@ def pixelWiseScan(img, minPix, maxPix):
                 if (minPix < len(dotArr) < maxPix):
                     center = getCenter(dotArr)
                     cv2.circle(image3,center, 1, (255,0,0), -1)
+                    
                     dataFinal.append(center)
                     
                 dotArr = []
@@ -114,3 +129,33 @@ def compareContour(arr1, arr2, maxTuple, minTuple):
             return False
     except:
         return False
+
+def compareImg(img1, img2, thresh):
+    imgGray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    imgGray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+    diffArr = cv2.subtract(imgGray1, imgGray2)
+
+    imgMean = np.mean(diffArr)
+    nonZero = np.nonzero(diffArr)
+    #imgMean2 = np.mean(nonZero)
+    
+    print(imgMean)
+    
+
+    foo = [["X", "Y", "Subtracted", "Original 1", "Original 2"]]
+
+    for i in range(len(nonZero[0])):
+        if (int(imgGray1[nonZero[0][i-1], nonZero[1][i-1]]) > 30 and 30 < int(imgGray2[nonZero[0][i-1], nonZero[1][i-1]])):
+            try:
+                foo1 = [int(nonZero[1][i-1]), int(nonZero[0][i-1]), int(diffArr[nonZero[0][i-1], nonZero[1][i-1]]),int(imgGray1[nonZero[0][i-1], nonZero[1][i-1]]),int(imgGray2[nonZero[0][i-1], nonZero[1][i-1]])]
+                foo.append(foo1)
+                #cv2.circle(img1,(nonZero[1][i-1], nonZero[0][i-1]), 1, (255,0,0), -1)
+            except:
+                continue
+
+    #cv2.imwrite("imageDatTest.png", img1)
+
+    print(len(foo))
+
+    return foo
+    #return diffArr
