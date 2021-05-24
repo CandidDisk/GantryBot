@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- Fixed changing exposure, turns out has to be negative integer < 0 && >= -11
 - Refactored dotTest.py unit test to be more pythonic & remove reoccuring clutter
 
 ### Removed
