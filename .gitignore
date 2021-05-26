@@ -53,3 +53,9 @@ dataContour3.json
 *.pyc
 */__pycache__/*
 tests/testImg2.png
+
+
+swingTest/*
+tests/testImg/*
+tempdump/*
+imgData/*
