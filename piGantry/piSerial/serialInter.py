@@ -33,16 +33,17 @@ def readDial(port):
         return sendDial
 
 def readLaser(port):
-    #Laser rangefinder requires write "iACM" before it starts sending reading
-    port.write("iACM".encode('utf-8'))
+    # Needs to call on initializeLaser once prior to reading
+    bytesToRead = port.inWaiting()
+    if bytesToRead > 10:
+        inputLaser = port.read(bytesToRead).decode("utf-8", "ignore")
+        slicedLaser = inputLaser[1:8]
+        return slicedLaser
 
-    #Flushing input buffer as laser rangefinder output buffer is quite large
-    #Not flushing the input will result in delayed readings
-    port.flushInput()
-    port.flushOutput()
-
-    #Giving time for laser rangefinder to fill buffer
-    time.sleep(0.5)
-
-    unformatLaser = port.read_until()
-    sendLaser = unformatLaser.decode("ascii").strip()
+def initializeLaser(port):
+    # Laser rangefinder requires write hex start addr before it starts sending reading
+    while port.inWaiting() == 0:
+        packet = b'\x80\x06\x03\x77'
+        port.write(packet)
+        time.sleep(0.2)
+        print("waiting..!")

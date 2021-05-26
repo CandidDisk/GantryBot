@@ -6,10 +6,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 - Fixed changing exposure, turns out has to be negative integer < 0 && >= -11
 - Refactored dotTest.py unit test to be more pythonic & remove reoccuring clutter
+- serialDeviceTest.py unit test now completely uses serialInter module
+- laser rangefinder functions in serialInter module now refactored for new laser rangefinder
 
 ### Removed
+- Outdated code in serialDeviceTest.py unit test
 
 ### Added
+- initializeLaser function in serialInter module, handles sending start msg / addr to laser rangefinder
+- New relaible laser rangefinder
+- swing test / imsub test & data collection (imgsub values & thresholding imsub) added to dotTest.py unit test
 - imgData dir
 - matPlot best fit graphs
 - imgData laser leveller mounted camera 24v PSU img data set

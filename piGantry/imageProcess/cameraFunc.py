@@ -8,19 +8,21 @@ from operator import itemgetter
 
 #Initializes camera as new instance of opencv videocapture class when called on
 class cameraObj(object):
-    def __init__(self, width, height):
-        self.cam = cv2.VideoCapture(0)
+    def __init__(self, width, height, exposure):
+        self.cam = cv2.VideoCapture(1)
         self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         self.cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
-        self.cam.set(cv2.CAP_PROP_EXPOSURE, 0.05)
+        self.cam.set(cv2.CAP_PROP_EXPOSURE, exposure)
 
     def grabFrame(self):
         ret, frame = self.cam.read()
-        if not ret:
-            return "Failed to grab frame"
-        self.cam.release()
-        return frame
+        print(ret)
+        print(frame)
+        if ret:
+            frameReturn = np.array(frame)
+            return frameReturn
+        
         
 def preProcImg(img):
     t1 = time.perf_counter()
@@ -130,7 +132,7 @@ def compareContour(arr1, arr2, maxTuple, minTuple):
     except:
         return False
 
-def compareImg(img1, img2, thresh):
+def compareImg(img1, img2, thresh, imgName):
     imgGray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
     imgGray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
     diffArr = cv2.subtract(imgGray1, imgGray2)
@@ -144,18 +146,27 @@ def compareImg(img1, img2, thresh):
 
     foo = [["X", "Y", "Subtracted", "Original 1", "Original 2"]]
 
-    for i in range(len(nonZero[0])):
-        if (int(imgGray1[nonZero[0][i-1], nonZero[1][i-1]]) > 30 and 30 < int(imgGray2[nonZero[0][i-1], nonZero[1][i-1]])):
-            try:
-                foo1 = [int(nonZero[1][i-1]), int(nonZero[0][i-1]), int(diffArr[nonZero[0][i-1], nonZero[1][i-1]]),int(imgGray1[nonZero[0][i-1], nonZero[1][i-1]]),int(imgGray2[nonZero[0][i-1], nonZero[1][i-1]])]
-                foo.append(foo1)
-                #cv2.circle(img1,(nonZero[1][i-1], nonZero[0][i-1]), 1, (255,0,0), -1)
-            except:
-                continue
+    numThresh = 0
+    maxVal = 0
 
-    #cv2.imwrite("imageDatTest.png", img1)
+    for i in range(len(nonZero[0])):
+        #if (int(imgGray1[nonZero[0][i-1], nonZero[1][i-1]]) > 30 and 30 < int(imgGray2[nonZero[0][i-1], nonZero[1][i-1]])):
+        try:
+            foo1 = [int(nonZero[1][i-1]), int(nonZero[0][i-1]), int(diffArr[nonZero[0][i-1], nonZero[1][i-1]]),int(imgGray1[nonZero[0][i-1], nonZero[1][i-1]]),int(imgGray2[nonZero[0][i-1], nonZero[1][i-1]])]
+            foo.append(foo1)
+            if (int(diffArr[nonZero[0][i-1], nonZero[1][i-1]]) > maxVal):
+                maxVal = int(diffArr[nonZero[0][i-1], nonZero[1][i-1]])
+            #cv2.circle(img1,(nonZero[1][i-1], nonZero[0][i-1]), 1, (255,0,0), -1)
+        except:
+            continue
+
+        if (int(diffArr[nonZero[0][i-1], nonZero[1][i-1]]) > 50):
+            numThresh += 1
+
+    #cv2.imwrite("{}.png".format(imgName), img1)
+    foo2 = [imgName, len(foo), numThresh, maxVal]
 
     print(len(foo))
 
-    return foo
+    return (foo, foo2)
     #return diffArr

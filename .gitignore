@@ -50,3 +50,7 @@ opencv_frame_7.png
 23.56v_6Contour.png
 dataContour0.json
 dataContour3.json
+swingTest/*
+*.pyc
+*/__pycache__/*
+tests/testImg2.png
