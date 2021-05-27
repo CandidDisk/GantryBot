@@ -15,30 +15,37 @@ class serialObject(object):
         self.newDataOut = True
 
     def readIn(self):
-        msgInString = "no new message"
-        if (self.port.inWaiting() > 0):
-            msg = self.port.read_until()
-            msgInString = msg.decode("ascii").strip()
-            self.newDataIn = True
-            return msgInString
-        else:
-            self.newDataIn = False
-        return msgInString
+        msgInString = False
+        while not msgInString:
+            if (self.port.inWaiting() > 0):
+                msg = self.port.read_until()
+                msgInString = msg.decode("ascii").strip()
+                print(msgInString)
+                self.newDataIn = True
+                return msgInString
+            else:
+                self.newDataIn = False
+
             
 def readDial(port):
-    bytesToReadDial = port.inWaiting()
-    if (bytesToReadDial > 8):
-        slicedDial = port.read(bytesToReadDial)[0:9]
-        sendDial = str(slicedDial)
-        return sendDial
+    sendDial = False
+    while not sendDial:
+        bytesToReadDial = port.inWaiting()
+        if (bytesToReadDial > 8):
+            slicedDial = port.read(bytesToReadDial)[0:9]
+            sendDial = str(slicedDial)
+            return sendDial
 
 def readLaser(port):
     # Needs to call on initializeLaser once prior to reading
-    bytesToRead = port.inWaiting()
-    if bytesToRead > 10:
-        inputLaser = port.read(bytesToRead).decode("utf-8", "ignore")
-        slicedLaser = inputLaser[1:8]
-        return slicedLaser
+    slicedLaser = False
+    while not slicedLaser:
+        bytesToRead = port.inWaiting()
+        if bytesToRead > 10:
+            inputLaser = port.read(bytesToRead).decode("utf-8", "ignore")
+            slicedLaser = inputLaser[1:8]
+            return slicedLaser
+
 
 def initializeLaser(port):
     # Laser rangefinder requires write hex start addr before it starts sending reading

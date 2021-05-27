@@ -91,6 +91,7 @@ void setup() {
             setupDone = true;
             break;
         }
+        delay(10);
     }
     velocityLimit = 500000;
 
@@ -104,48 +105,30 @@ void loop() {
 }
 
 void moveTest() {
-
+    int stepsToMove = 0;
+    while (stepsToMove == 0){
+        //Serial.println("Waiting!");
+        String stepsToMoveStr = readDataPi();
+        stepsToMove = stepsToMoveStr.toInt();
+        //Serial.println(stepsToMove);
+        //Serial.println(stepsToMove != 0);
+        delay(10);
+        if (stepsToMove != 0){
+            //Serial.println(stepsToMove != 0);
+            break;  
+        }
+    }
     while (!moveReady) {
-        if (commHandShake("move1")) {
+
+        if (commHandShake("move")) {
+            Serial.println("Waiting2!");
             moveReady = true;
-            moveDistance(640000);
+            moveDistance(stepsToMove);
             moveReady = false;
             break;
         }
+        delay(10);
     }
-
-    delay(2000);
-    
-    while (!moveReady) {
-        if (commHandShake("move1z")) {
-            moveReady = true;
-            moveDistance(-640000);
-            moveReady = false;
-            break;
-        }
-    }
-
-    delay(2000);
-
-    while (!moveReady) {
-        if (commHandShake("move2")) {
-            moveReady = true;
-            moveDistance(2560000);
-            moveReady = false;
-            break;
-        }
-    }
-    delay(2000);
-    while (!moveReady) {
-        if (commHandShake("move2z")) {
-            moveReady = true;
-            moveDistance(-2560000);
-            moveReady = false;
-            break;
-        }
-    }
-    delay(2000);
-
 
 }
 
