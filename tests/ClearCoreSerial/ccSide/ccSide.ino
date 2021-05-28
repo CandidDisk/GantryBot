@@ -77,20 +77,19 @@ void setup() {
     if (digitalRead(SENSOR_DIG) == LOW) {
         moveAtVelocity(0);
     }
-
+    Serial.println("zero");
     while (!zeroDone) {
         zeroMotor(readDataPi());
-        if (tempVal > 50) {
-            zeroDone = true;
-        }
     }
-    newData = true;
+
+    //newData = true;
 
     while (!setupDone) {
         if (commHandShake("done")) {
             setupDone = true;
             break;
         }
+        delay(20);
     }
     velocityLimit = 500000;
 
@@ -106,63 +105,40 @@ void loop() {
 void moveTest() {
 
     while (!moveReady) {
-        if (commHandShake("move1")) {
-            moveReady = true;
-            moveDistance(640000);
+
+        if (commHandShake("move")) { 
+            int stepsToMove = 0;
+            while (stepsToMove == 0){
+                String stepsToMoveStr = readDataPi();
+                stepsToMove = stepsToMoveStr.toInt();
+
+                delay(10);
+                if (stepsToMove != 0){
+                    break;  
+                }
+            }
+            moveDistance(stepsToMove);
+            stepsToMove = 0;
             moveReady = false;
+            Serial.println("moveDone");
             break;
         }
+        delay(10);
     }
-
-    delay(2000);
-    
-    while (!moveReady) {
-        if (commHandShake("move1z")) {
-            moveReady = true;
-            moveDistance(-640000);
-            moveReady = false;
-            break;
-        }
-    }
-
-    delay(2000);
-
-    while (!moveReady) {
-        if (commHandShake("move2")) {
-            moveReady = true;
-            moveDistance(2560000);
-            moveReady = false;
-            break;
-        }
-    }
-    delay(2000);
-    while (!moveReady) {
-        if (commHandShake("move2z")) {
-            moveReady = true;
-            moveDistance(-2560000);
-            moveReady = false;
-            break;
-        }
-    }
-    delay(2000);
-
 
 }
 
 bool commHandShake(String check) {
     const char* checkStr = check.c_str(); 
-    if (newData) {
-        Serial.println(check);
-        newData = false;
-    } else {
-        if (strcmp(readDataPi(), checkStr)==0) {
-            
-            return true;
-        } else{
-            return false;
-        };
-        newData = true;
-    }
+
+    Serial.println(check);
+
+    if (strcmp(readDataPi(), checkStr)==0) {
+        return true;
+    } else{
+        return false;
+    };
+    delay(10);
 }
 
 char* readDataPi(){
@@ -195,7 +171,7 @@ void zeroMotor(char* received){
     if (strcmp(received,"stp")==0) {
         motor.MoveStopAbrupt();
         moveAtVelocity(0);
-        tempVal++;
+        zeroDone = true;
     } else {
         if (strcmp(received,"m0-")==0) {
             moveAtVelocity(-1000);

@@ -6,7 +6,7 @@ class serialObject(object):
         self.newDataOut = False
         self.newDataIn = False
         self.confirmMessage = False
-        self.port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 10,  write_timeout=10, rtscts = False)
+        self.port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 1,  write_timeout=10, rtscts = False)
 
     def writeOut(self, msg):
         msg = msg + '\n'
@@ -15,34 +15,46 @@ class serialObject(object):
         self.newDataOut = True
 
     def readIn(self):
-        msgInString = "no new message"
-        if (self.port.inWaiting() > 0):
-            msg = self.port.read_until()
-            msgInString = msg.decode("ascii").strip()
-            self.newDataIn = True
-            return msgInString
-        else:
-            self.newDataIn = False
-        return msgInString
-            
+        msgInString = False
+        while not msgInString:
+            if (self.port.inWaiting() > 0):
+                msg = self.port.read_until()
+                msgInString = msg.decode("ascii").strip()
+                self.newDataIn = True
+                return msgInString
+            else:
+                self.newDataIn = False
+
+# Will collapse readDial & readLaser w/ DRY in mind   
 def readDial(port):
-    bytesToReadDial = port.inWaiting()
-    if (bytesToReadDial > 8):
-        slicedDial = port.read(bytesToReadDial)[0:9]
-        sendDial = str(slicedDial)
-        return sendDial
-
-def readLaser(port):
-    #Laser rangefinder requires write "iACM" before it starts sending reading
-    port.write("iACM".encode('utf-8'))
-
-    #Flushing input buffer as laser rangefinder output buffer is quite large
-    #Not flushing the input will result in delayed readings
+    sendDial = False
     port.flushInput()
     port.flushOutput()
+    while not sendDial:
+        bytesToReadDial = port.inWaiting()
+        if (bytesToReadDial > 8):
+            slicedDial = port.read(bytesToReadDial)[0:9]
+            sendDial = str(slicedDial)
+            return sendDial
 
-    #Giving time for laser rangefinder to fill buffer
-    time.sleep(0.5)
+def readLaser(port):
+    # Needs to call on initializeLaser once prior to reading
+    slicedLaser = False
+    port.flushInput()
+    port.flushOutput()
+    time.sleep(0.1)
+    while not slicedLaser:
+        bytesToRead = port.inWaiting()
+        if bytesToRead > 10:
+            inputLaser = port.read(bytesToRead).decode("utf-8", "ignore")
+            slicedLaser = inputLaser[1:8]
+            return slicedLaser
 
-    unformatLaser = port.read_until()
-    sendLaser = unformatLaser.decode("ascii").strip()
+
+def initializeLaser(port):
+    # Laser rangefinder requires write hex start addr before it starts sending reading
+    while port.inWaiting() == 0:
+        packet = b'\x80\x06\x03\x77'
+        port.write(packet)
+        time.sleep(0.2)
+        print("waiting..!")

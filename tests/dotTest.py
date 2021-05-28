@@ -7,17 +7,30 @@ import json
 
 
 # Set width & height to high value to set resolution as max 
-cam = camera.cameraObj(10000, 10000)
+cam = camera.cameraObj(10000, 10000, -3)
 
 def main():
+    
     while True:
         try:
             img = cam.grabFrame()
-            cv2.imwrite("tests/testImg.png", img)
-            break
+            if img is not None:
+                cv2.imwrite("tests/testImg.png", img)
+                break
         except Exception as e:
             print(e)
     print("camera done")
+
+    while True:
+        try:
+            imgWa = cam.grabFrame()
+            if imgWa is not None:
+                cv2.imwrite("tests/testImg2.png", imgWa)
+                break
+        except Exception as e:
+            print(e)
+    cam.cam.release()
+    print("camera done2")
 
     t3 = time.perf_counter()
     exposureVal = 4
