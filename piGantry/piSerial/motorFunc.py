@@ -3,6 +3,7 @@ class motor():
         self.zeroDone = False
         self.startZero = False
         self.moveReady = False
+        self.moveDone = False
         self.moveCount = 0
 
 def formatMsg(dialRead):

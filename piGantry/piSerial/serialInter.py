@@ -6,7 +6,7 @@ class serialObject(object):
         self.newDataOut = False
         self.newDataIn = False
         self.confirmMessage = False
-        self.port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 10,  write_timeout=10, rtscts = False)
+        self.port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 1,  write_timeout=10, rtscts = False)
 
     def writeOut(self, msg):
         msg = msg + '\n'
@@ -20,15 +20,16 @@ class serialObject(object):
             if (self.port.inWaiting() > 0):
                 msg = self.port.read_until()
                 msgInString = msg.decode("ascii").strip()
-                print(msgInString)
                 self.newDataIn = True
                 return msgInString
             else:
                 self.newDataIn = False
 
-            
+# Will collapse readDial & readLaser w/ DRY in mind   
 def readDial(port):
     sendDial = False
+    port.flushInput()
+    port.flushOutput()
     while not sendDial:
         bytesToReadDial = port.inWaiting()
         if (bytesToReadDial > 8):
@@ -39,6 +40,9 @@ def readDial(port):
 def readLaser(port):
     # Needs to call on initializeLaser once prior to reading
     slicedLaser = False
+    port.flushInput()
+    port.flushOutput()
+    time.sleep(0.1)
     while not slicedLaser:
         bytesToRead = port.inWaiting()
         if bytesToRead > 10:

@@ -3,7 +3,6 @@ from piGantry.piSerial import motorFunc
 from piGantry.piSerial import mathFunc
 import serial
 import time
-import threading
 
 #python -m tests.serialInterTest.py
 
@@ -16,24 +15,20 @@ laser = serial.Serial(port= "COM16", baudrate = 9600, bytesize=serial.EIGHTBITS,
 
 data = []
 
-currentMsg = None
-
-def readCC():
-    global currentMsg
-    currentMsg = clearCore.readIn()
-    print(f"received msg = {currentMsg}")
 
 def runZero():
-    global currentMsg
     while not motor.startZero:
         if (clearCore.readIn() == "start"):
             motor.startZero = True
             clearCore.writeOut("start")
             #print("cool")
             stpCount = 0
+            while (clearCore.readIn() != "zero"):
+                if (clearCore.readIn() == "zero"):
+                    break
             while not motor.zeroDone:
                 #print(clearCore.readIn())
-                if (stpCount == 50 or currentMsg == "done"):
+                if (stpCount > 1 and clearCore.readIn() == "done"):
                     motor.zeroDone = True
                     clearCore.writeOut("done")
                     break
@@ -45,59 +40,66 @@ def runZero():
                     clearCore.writeOut(out)
                     if (out == "stp"):
                         stpCount += 1
-                    
 
 def runMoves(steps, amountOfSteps):
-    global currentMsg
     serialComm.initializeLaser(laser)
-    motor.moveReady = True
+    initialLaser = serialComm.readLaser(laser)
+    totalLaser = 0
 
-    for i in range(amountOfSteps*2):
-        print(i)
-        if i > amountOfSteps:
-            steps = steps * -1
+    for i in range(amountOfSteps+1):
+        stepsAdjusted = steps
+        if (i >= amountOfSteps):
+            stepsAdjusted = (steps*amountOfSteps) * -1
         msg = "no msg"
-                
+        
+        while (not motor.moveReady):
+            if (clearCore.readIn() == "move"):
+                motor.moveReady = True
+                motor.moveDone = False
+            
+
         if (motor.moveReady):
-            inputUser = "not"
+            dial = serialComm.readDial(micro.port)
+            laserReadSt = serialComm.readLaser(laser)
+            print(f"\nCurrent index {i}")
+            clearCore.writeOut("move")
+            print(f"Sent to clearCore move")
+            clearCore.writeOut(f"{stepsAdjusted}")
+            print(f"Sent to clearCore {stepsAdjusted} steps")
+            motor.moveReady = False
+        while (not motor.moveDone):
+            if (clearCore.readIn() == "moveDone"):
+                print("move done")
+                motor.moveDone = True
+        time.sleep(2)
+        laserReadEnd = serialComm.readLaser(laser)
+        print(f"Start laser = {laserReadSt}m")
+        print(f"End laser = {laserReadEnd}m")
+        laserDist = float(laserReadEnd) - float(laserReadSt)
+        print(f"Laser distance = {laserDist}m\n")
+        mmDistance = mathFunc.calcDist(6400, stepsAdjusted)
+        meterDistance = float(mmDistance) / 1000
+        calcDiff = meterDistance - laserDist
+        print(f"Steps distance = {meterDistance}m\n")
+        print(f"Steps distance - laser distance = {calcDiff*1000}mm\n")
+        dataMove = {"steps": stepsAdjusted,
+                    "dial": dial,
+                    "laser": laserDist,
+                    "calcMeters": meterDistance}
+        data.append(dataMove)
+        time.sleep(0.5)
+        if (stepsAdjusted > 0):
+            totalLaser = float(laserReadEnd) - float(initialLaser)
+    
+            totalStep = float(mathFunc.calcDist(6400, steps * (i + 1)))/1000
+            print(f"\nTotal laser distance = {totalLaser}m")
+            print(f"Total calcualted step distance = {totalStep}m")
+            print(f"Total calculated steps - total laser distance = {(float(totalStep) - float(totalLaser))*1000}mm\n")
 
-            while (input != "q"):
-                inputUser = input("\nPress q to send continue move | w to take read | r to skip: ")
-                if (inputUser == "r"):
-                    break
-                if (inputUser == "w"):
-                    dial = serialComm.readDial(micro.port)
-                    laserRead = serialComm.readLaser(laser)
-                    while not laserRead:
-                        laserRead = serialComm.readLaser(laser)
-                        continue
-                    mmDistance = mathFunc.calcDist(6400, steps)
-                    meterDistance = float(mmDistance) / 1000
-                    dataMove = {
-                        "steps": steps,
-                        "dial": dial,
-                        "laser": laserRead,
-                        "calcMeters": meterDistance
-                    }
-                    print(dataMove)
-                    data.append(dataMove)
-                if (inputUser == "q"):
-                    clearCore.writeOut("move")
-                    clearCore.writeOut(f"{steps}")
 
-readThread = threading.Thread(target=readCC())
-readThread.start()
 runZero()
-runMoves(128000, 5)
+runMoves(128000, 20)
 print(data)
 print("finished!")
 
-#while True:
-#    input = serialComm.readDial(micro.port)
-#    if (input != None):
-#        print(motor.zeroDone)
-#        print(input)
-#        out = motorFunc.formatMsg(input)
-#        print(out)
-#        if (out == "stp"):
-#            motor.zeroDone = True
+
