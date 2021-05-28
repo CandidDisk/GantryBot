@@ -39,6 +39,3 @@ $ pip install -r requirements.txt
 
 * also stick to camel case for now plz
 
-## Project Overview
-
-![](./mermaidJs/overviewGraph/flow-md-mermaid.png)
