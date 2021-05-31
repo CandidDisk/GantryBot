@@ -59,6 +59,7 @@ void setup() {
 
     newData = true;
 
+    // Wait until pi-clearCore handshake is complete
     while (true) {
         if (strcmp(readDataPi(),"start")==0) {
             zeroDone = false;
@@ -68,8 +69,10 @@ void setup() {
 
     }
 
+    // Wait until motor is ready
     while (motor.HlfbState() != MotorDriver::HLFB_ASSERTED) {continue;}
 
+    // Move if magnetic is not triggered
     if (digitalRead(SENSOR_DIG) == HIGH) {moveAtVelocity(-10000);}
 
     while (digitalRead(SENSOR_DIG) == HIGH) {}
@@ -77,13 +80,15 @@ void setup() {
     if (digitalRead(SENSOR_DIG) == LOW) {
         moveAtVelocity(0);
     }
+
+    // Start zero process
     Serial.println("zero");
     while (!zeroDone) {
         zeroMotor(readDataPi());
     }
 
-    //newData = true;
 
+    // Comfirm w/ pi that ready to start move set
     while (!setupDone) {
         if (commHandShake("done")) {
             setupDone = true;
@@ -91,6 +96,7 @@ void setup() {
         }
         delay(20);
     }
+
     velocityLimit = 500000;
 
     accelerationLimit = 100000;
@@ -128,6 +134,7 @@ void moveTest() {
 
 }
 
+// Send msg to pi & wait until pi returns same msg
 bool commHandShake(String check) {
     const char* checkStr = check.c_str(); 
 
@@ -141,6 +148,7 @@ bool commHandShake(String check) {
     delay(10);
 }
 
+// build char* array out of pi output 
 char* readDataPi(){
     static byte ndx = 0;
     char val;
