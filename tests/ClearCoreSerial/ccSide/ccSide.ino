@@ -171,7 +171,10 @@ void zeroMotor(char* received){
     if (strcmp(received,"stp")==0) {
         motor.MoveStopAbrupt();
         moveAtVelocity(0);
-        zeroDone = true;
+        tempVal ++;
+        if (tempVal > 50){
+            zeroDone = true;
+        }
     } else {
         if (strcmp(received,"m0-")==0) {
             moveAtVelocity(-1000);

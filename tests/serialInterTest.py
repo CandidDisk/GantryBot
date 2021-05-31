@@ -28,7 +28,7 @@ def runZero():
                     break
             while not motor.zeroDone:
                 #print(clearCore.readIn())
-                if (stpCount > 1 and clearCore.readIn() == "done"):
+                if (stpCount > 49 and clearCore.readIn() == "done"):
                     motor.zeroDone = True
                     clearCore.writeOut("done")
                     break
@@ -98,7 +98,8 @@ def runMoves(steps, amountOfSteps):
 
 
 runZero()
-runMoves(128000, 20)
+time.sleep(5)
+runMoves(128000, 32)
 print(data)
 print("finished!")
 

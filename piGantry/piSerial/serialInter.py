@@ -54,7 +54,9 @@ def readLaser(port):
 def initializeLaser(port):
     # Laser rangefinder requires write hex start addr before it starts sending reading
     while port.inWaiting() == 0:
-        packet = b'\x80\x06\x03\x77'
-        port.write(packet)
+        packetInit = b'\xFA\x04\x0C\x02\xF4'
+        packetStart = b'\x80\x06\x03\x77'
+        port.write(packetInit)
         time.sleep(0.2)
+        port.write(packetStart)
         print("waiting..!")
