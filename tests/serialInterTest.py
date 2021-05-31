@@ -1,3 +1,6 @@
+# This function test verifies zeroing, Pi-clearCore serial communication, serial devices,
+# reading collection, and issuing of moves to clearCore
+
 from piGantry.piSerial import serialInter as serialComm
 from piGantry.piSerial import motorFunc
 from piGantry.piSerial import mathFunc

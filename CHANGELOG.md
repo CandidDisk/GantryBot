@@ -24,13 +24,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
-- Commented out and decluttered dotTest function test
-- Commented out mathFunc module
-- Commented out serialInterTest function test
-- Commented out motorFunc module
-- Commented out serialInter module
 - initializeLaser function in serialInter module, handles sending start msg / addr to laser rangefinder
-- New relaible laser rangefinder
+- New reliable laser rangefinder
 - swing test / imsub test & data collection (imgsub values & thresholding imsub) added to dotTest.py function test
 - imgData dir
 - matPlot best fit graphs

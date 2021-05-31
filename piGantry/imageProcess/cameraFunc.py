@@ -132,6 +132,7 @@ def compareContour(arr1, arr2, maxTuple, minTuple):
     except:
         return False
 
+# Subtracts two images & returns new imsub array + max value & # of pixels through threshold
 def compareImg(img1, img2, thresh, imgName):
     imgGray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
     imgGray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
@@ -139,7 +140,6 @@ def compareImg(img1, img2, thresh, imgName):
 
     imgMean = np.mean(diffArr)
     nonZero = np.nonzero(diffArr)
-    #imgMean2 = np.mean(nonZero)
     
     print(imgMean)
     
@@ -160,6 +160,7 @@ def compareImg(img1, img2, thresh, imgName):
         except:
             continue
 
+        # If pixel is over threshold
         if (int(diffArr[nonZero[0][i-1], nonZero[1][i-1]]) > 50):
             numThresh += 1
 
