@@ -24,6 +24,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
+- Commented out mathFunc module
 - Commented out serialInterTest function test
 - Commented out motorFunc module
 - Commented out serialInter module
