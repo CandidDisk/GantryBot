@@ -4,37 +4,40 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- Changed all references in changelog of unit tests to function tests
 - readDial flushes i/o before taking a reading
 - readLaser flushes i/o before taking a reading
-- Automated serialInterTest.py unit test
-- serialInterTest.py & ccSide.ino unit test refactored to support pi pass clearcore # of steps
+- Automated serialInterTest.py function test
+- serialInterTest.py & ccSide.ino function test refactored to support pi pass clearcore # of steps
 - Refactored serialInterTest & ccSide to be synchronous for most actions
     - ccSide commHandSake no longer waits for newData before it sends request
 - Fixed changing exposure, turns out has to be negative integer < 0 && >= -11
-- Refactored dotTest.py unit test to be more pythonic & remove reoccuring clutter
-- serialDeviceTest.py unit test now completely uses serialInter module
+- Refactored dotTest.py function test to be more pythonic & remove reoccuring clutter
+- serialDeviceTest.py function test now completely uses serialInter module
 - laser rangefinder functions in serialInter module now refactored for new laser rangefinder
 
 ### Removed
 - data_file.json, data_file1.json & data_file2.json. Outdated clutter
-- piSide.py, redundant now that serialInter module serialInterTest.py & ccSide.ino unit test is ready
-- readSerialInput.ino, redundant now that serialInter module serialInterTest.py & ccSide.ino unit test is ready
-- sendInput.py, redundant now that serialInterTest.py unit test is ready
-- Outdated code in serialDeviceTest.py unit test
+- piSide.py, redundant now that serialInter module serialInterTest.py & ccSide.ino function test is ready
+- readSerialInput.ino, redundant now that serialInter module serialInterTest.py & ccSide.ino function test is ready
+- sendInput.py, redundant now that serialInterTest.py function test is ready
+- Outdated code in serialDeviceTest.py function test
 
 ### Added
+- Commented out motorFunc module
+- Commented out serialInter module
 - initializeLaser function in serialInter module, handles sending start msg / addr to laser rangefinder
 - New relaible laser rangefinder
-- swing test / imsub test & data collection (imgsub values & thresholding imsub) added to dotTest.py unit test
+- swing test / imsub test & data collection (imgsub values & thresholding imsub) added to dotTest.py function test
 - imgData dir
 - matPlot best fit graphs
 - imgData laser leveller mounted camera 24v PSU img data set
 - imgData laser leveller mounted camera img data set
 - imgData regular tripod mounted camera img data set
 - imgData wall mounted camera img data set
-- takeImg.py Lightrod imsub & photo taking test unit
+- takeImg.py Lightrod imsub & photo taking test function
 - compareImg write to csv imsub values between two given images
-- dotTest.py unit test includes bestFitPoly 
+- dotTest.py function test includes bestFitPoly 
 - bestFitPoly for mathFunc module to find best fit given x list y list & degree
 
 
@@ -50,7 +53,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - imageProcess redundant files 
 ### Added
 - compareContour function for comparison of two image's contour center dots, AKA "check camera wobble / is lightrod still" 
-- dotTest.py unit test for imageProcess module
+- dotTest.py function test for imageProcess module
 - cameraFunc.py for handling image processing functions
 - Added average.py for pixelwise alternative to opencv contouring
 - mathFunc.py for handling math related functions

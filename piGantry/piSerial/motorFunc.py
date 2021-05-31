@@ -6,6 +6,8 @@ class motor():
         self.moveDone = False
         self.moveCount = 0
 
+# This takes the digital dial reading & produces instructions 
+# for the clearCore during zeroing 
 def formatMsg(dialRead):
     outMsg = "no"
 
