@@ -130,7 +130,8 @@ runZero()
 # 128000, 20 3 meters
 # 1280000, 1 1.5 meters
 
-print(runMoves(819200, 4))
+#print(runMoves(819200, 4))
+print(motorFunc.runMoves(819200, 4, motor, (clearCore, micro, laser)))
 print("finished!")
 
 
