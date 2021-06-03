@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- Refactored zeroing to have pi feed steps directly to clearCore
 - Changed all references in changelog of unit tests to function tests
 - readDial flushes i/o before taking a reading
 - readLaser flushes i/o before taking a reading

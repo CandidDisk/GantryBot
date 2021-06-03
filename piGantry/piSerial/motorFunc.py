@@ -12,7 +12,7 @@ class motor():
 
 # This takes the digital dial reading & produces instructions 
 # for the clearCore during zeroing 
-def formatMsg(dialRead):
+def formatMsgOld(dialRead):
     outMsg = "no"
 
     try:
@@ -39,6 +39,33 @@ def formatMsg(dialRead):
     except:
         return "no"
 
+def formatMsg(dialRead):
+    outMsg = "no"
+
+    try:
+        one = int(dialRead[6])
+        tenth = int(dialRead[8])
+        hundredth = int(dialRead[9])
+        thousandth = int(dialRead[10])
+
+        if (one == 2):
+            if (tenth+hundredth+thousandth == 0):
+                outMsg = "stp"
+            else:
+                outMsg = "1"
+        else:
+            if (one == 1):
+                if (tenth > 7):
+
+                    outMsg="-1"
+                else:
+                    outMsg = "-200"
+            else:
+                outMsg = "-1000"
+        return outMsg
+    except:
+        return "no"
+
 # serialDevices should be tuple of 3 devices, (clearCore, micro, laser)
 
 # Handles zeroing process by reading digital dial & issuing instructions to clearCore
@@ -53,9 +80,9 @@ def runZero(motor, serialDevices):
                     break
             while not motor.zeroDone:
                 # If "stp" command issued 50 times, read clearCore output for "done" msg
-                if (stpCount > 170 and serialDevices[0].readIn() == "done"):
+                if (stpCount > 100):
                     motor.zeroDone = True
-                    serialDevices[0].writeOut("done")
+                    serialDevices[0].writeOut("stpFinal")
                     break
                 else:
                     # Call on readDial function passing micro.port initialized in class constructor
@@ -66,6 +93,7 @@ def runZero(motor, serialDevices):
                         stpCount += 1
                     else:
                         stpCount = 0
+    serialDevices[0].writeOut("done")
 
 # Handles running a set of moves w/ same amount of steps per move
 # Issues clearCore steps to move after taking a reading 
