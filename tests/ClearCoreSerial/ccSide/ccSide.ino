@@ -182,7 +182,7 @@ void zeroMotor(char* received){
         motor.MoveStopAbrupt();
         moveAtVelocity(0);
         tempVal ++;
-        if (tempVal > 50){
+        if (tempVal > 150){
             zeroDone = true;
         }
     } else {

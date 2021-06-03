@@ -53,7 +53,7 @@ def runZero(motor, serialDevices):
                     break
             while not motor.zeroDone:
                 # If "stp" command issued 50 times, read clearCore output for "done" msg
-                if (stpCount > 49 and serialDevices[0].readIn() == "done"):
+                if (stpCount > 170 and serialDevices[0].readIn() == "done"):
                     motor.zeroDone = True
                     serialDevices[0].writeOut("done")
                     break
