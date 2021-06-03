@@ -2,7 +2,7 @@ import serial
 import time
 
 class serialObject(object):
-    def __init__(self, baudRate, serialPortName):
+    def __init__(self, baudRate, serialPortName, timeout=1, writeTimeOut= 10):
         self.newDataOut = False
         self.newDataIn = False
         self.confirmMessage = False
