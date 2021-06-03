@@ -181,26 +181,25 @@ void zeroMotor(char* received){
     if (strcmp(received,"stp")==0) {
         motor.MoveStopAbrupt();
         moveAtVelocity(0);
-        tempVal ++;
-        if (tempVal > 50){
-            zeroDone = true;
-        }
+    } else if (strcmp(received, "stpFinal")== 0){
+        motor.MoveStopAbrupt();
+        moveAtVelocity(0);
+        zeroDone = true;
     } else {
-        if (strcmp(received,"m0-")==0) {
-            moveAtVelocity(-1000);
+        int stepsToMove = 0;
+        while (stepsToMove == 0){
+            String stepsToMoveStr = readDataPi();
+            stepsToMove = stepsToMoveStr.toInt();
+            delay(5);
+            if(stepsToMove != 0){
+                break;
+            }
         }
-        if (strcmp(received,"s1-")==0) {
-            moveAtVelocity(-200);
+        if (stepsToMove < -10) {
+            moveAtVelocity(stepsToMove);
+        } else {
+            moveDistance(stepsToMove);
         }
-        if (strcmp(received,"s2-")==0) {
-            moveDistance(-1);
-            delay(50);
-        }
-        if (strcmp(received,"s0+")==0) {
-            moveDistance(1);
-            delay(50);
-        }
-        tempVal = 0;
     }
 }
 
