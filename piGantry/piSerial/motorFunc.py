@@ -80,7 +80,7 @@ def runZero(motor, serialDevices):
                     break
             while not motor.zeroDone:
                 # If "stp" command issued 50 times, read clearCore output for "done" msg
-                if (stpCount > 100):
+                if (stpCount > 50):
                     motor.zeroDone = True
                     serialDevices[0].writeOut("stpFinal")
                     break
@@ -88,6 +88,7 @@ def runZero(motor, serialDevices):
                     # Call on readDial function passing micro.port initialized in class constructor
                     input = serialComm.readDial(serialDevices[1].port)
                     out = formatMsg(input)
+                    print(out)
                     serialDevices[0].writeOut(out)
                     if (out == "stp"):
                         stpCount += 1
@@ -102,9 +103,9 @@ def runZero(motor, serialDevices):
 # 128000, 20 3 meters | 1280000, 1 1.5 meters
 
 def runMoves(steps, amountOfSteps, motor, serialDevices, straightHome = True):
-    serialComm.initializeLaser(serialDevices[2])
+    serialComm.initializeLaser(serialDevices[2].port)
     time.sleep(2)
-    initialLaser = serialComm.readLaser(serialDevices[2])
+    initialLaser = serialComm.readLaser(serialDevices[2].port)
     laserReadSt = initialLaser
     totalLaser = 0
 
@@ -146,12 +147,12 @@ def runMoves(steps, amountOfSteps, motor, serialDevices, straightHome = True):
                 motor.moveDone = True
         
         time.sleep(5)
-        laserReadEnd = serialComm.readLaser(serialDevices[2])
+        laserReadEnd = serialComm.readLaser(serialDevices[2].port)
         laserDist = float(laserReadEnd) - float(laserReadSt)
         mmDistance = mathFunc.calcDist(6400, stepsAdjusted)
         meterDistance = float(mmDistance / 1000)
         calcDiff = meterDistance - laserDist
-        laserReadSt = serialComm.readLaser(serialDevices[2])
+        laserReadSt = serialComm.readLaser(serialDevices[2].port)
 
         print(f"\nEnd laser = {laserReadEnd}m\nLaser distance = {laserDist}m\n")
         print(f"Steps distance = {meterDistance}m\nSteps distance - laser distance = {calcDiff*1000}mm\n")

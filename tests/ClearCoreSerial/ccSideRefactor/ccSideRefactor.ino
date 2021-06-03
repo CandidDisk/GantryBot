@@ -84,6 +84,7 @@ void setup() {
     }
 
     // Start zero process
+    Serial.println("zero");
     while (!zeroDone) {
         zeroMotor(readDataPi());
     }
@@ -186,7 +187,7 @@ void zeroMotor(char* received){
         zeroDone = true;
     } else {
         int stepsToMove = 0;
-        while (stepsTomove == 0){
+        while (stepsToMove == 0){
             String stepsToMoveStr = readDataPi();
             stepsToMove = stepsToMoveStr.toInt();
             delay(5);
