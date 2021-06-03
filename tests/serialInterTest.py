@@ -44,9 +44,12 @@ def runZero():
                     # Call on readDial function passing micro.port initialized in class constructor
                     input = serialComm.readDial(micro.port)
                     out = motorFunc.formatMsg(input)
+                    print(out)
                     clearCore.writeOut(out)
                     if (out == "stp"):
                         stpCount += 1
+                    else:
+                        stpCount = 0
 
 
 # Handles running a set of moves w/ same amount of steps per move
@@ -54,7 +57,9 @@ def runZero():
 def runMoves(steps, amountOfSteps):
     
     serialComm.initializeLaser(laser)
+    time.sleep(2)
     initialLaser = serialComm.readLaser(laser)
+    laserReadSt = initialLaser
     totalLaser = 0
 
     # list of move data
@@ -63,6 +68,7 @@ def runMoves(steps, amountOfSteps):
     # amountOfSteps+1 for returning back to zero in one move, 
     # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
     for i in range(amountOfSteps+1):
+        print(f"Start laser = {laserReadSt}m")
         stepsAdjusted = steps
         if (i >= amountOfSteps):
             stepsAdjusted = (steps*amountOfSteps) * -1
@@ -75,8 +81,7 @@ def runMoves(steps, amountOfSteps):
 
         if (motor.moveReady):
             dial = serialComm.readDial(micro.port)
-            time.sleep(30)
-            laserReadSt = serialComm.readLaser(laser)
+            time.sleep(5)
             print(f"\nCurrent index {i}")
             clearCore.writeOut("move")
             print(f"Sent to clearCore move")
@@ -89,14 +94,15 @@ def runMoves(steps, amountOfSteps):
                 print("move done")
                 motor.moveDone = True
 
-        time.sleep(2)
+        time.sleep(5)
         laserReadEnd = serialComm.readLaser(laser)
         laserDist = float(laserReadEnd) - float(laserReadSt)
         mmDistance = mathFunc.calcDist(6400, stepsAdjusted)
         meterDistance = float(mmDistance) / 1000
         calcDiff = meterDistance - laserDist
+        laserReadSt = serialComm.readLaser(laser)
 
-        print(f"Start laser = {laserReadSt}m\nEnd laser = {laserReadEnd}m\nLaser distance = {laserDist}m\n")
+        print(f"\nEnd laser = {laserReadEnd}m\nLaser distance = {laserDist}m\n")
         print(f"Steps distance = {meterDistance}m\nSteps distance - laser distance = {calcDiff*1000}mm\n")
 
         dataMove = {"steps": stepsAdjusted,
@@ -109,19 +115,22 @@ def runMoves(steps, amountOfSteps):
         # If the move isn't a returning to zero move, then count as cumulative measurement
         if (stepsAdjusted > 0):
             totalLaser = float(laserReadEnd) - float(initialLaser)
-            totalStep = float(mathFunc.calcDist(6400, steps * (i + 1)))/1000
+            totalStep = float(mathFunc.calcDist(6400, steps * (i + 1))/1000)
             print(f"\nTotal laser distance = {totalLaser}m")
             print(f"Total calcualted step distance = {totalStep}m")
             print(f"Total calculated steps - total laser distance = {(float(totalStep) - float(totalLaser))*1000}mm\n")
+        input("Press Enter to continue...")
         time.sleep(5)
     return data
 
 runZero()
 
 # 128000, 31 almost full travel 4.8 meters
+# 819200, 4 3.84 meters
 # 128000, 20 3 meters
+# 1280000, 1 1.5 meters
 
-print(runMoves(1280000, 1))
+print(runMoves(819200, 4))
 print("finished!")
 
 

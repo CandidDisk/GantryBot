@@ -10,10 +10,13 @@ class serialObject(object):
         self.port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 1,  write_timeout=10, rtscts = False)
 
     def writeOut(self, msg):
-        msg = msg + '\n'
-        out = msg.encode("ascii")
-        self.port.write(out)
-        self.newDataOut = True
+        try:
+            msg = msg + '\n'
+            out = msg.encode("ascii")
+            self.port.write(out)
+            self.newDataOut = True
+        except:
+            print("Write failed, trying again")
 
     def readIn(self):
         msgInString = False

@@ -59,3 +59,8 @@ swingTest/*
 tests/testImg/*
 tempdump/*
 imgData/*
+piGantry/imageProcess/__pycache__/cameraFunc.cpython-38.pyc
+piGantry/piSerial/__pycache__/motorFunc.cpython-38.pyc
+piGantry/piSerial/__pycache__/serialInter.cpython-38.pyc
+piGantry/piSerial/__pycache__/TkInterUI.cpython-38.pyc
+*.pyc

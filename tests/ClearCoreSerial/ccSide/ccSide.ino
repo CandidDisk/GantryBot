@@ -20,6 +20,8 @@ char inputData[numChars];
 
 int tempVal = 0;
 
+bool receiveStp = false;
+
 bool newData = false;
 
 bool zeroDone = true;
@@ -198,6 +200,7 @@ void zeroMotor(char* received){
             moveDistance(1);
             delay(50);
         }
+        tempVal = 0;
     }
 }
 
