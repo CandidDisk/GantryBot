@@ -22,6 +22,8 @@ laser = serial.Serial(port= "COM16", baudrate = 9600, bytesize=serial.EIGHTBITS,
                       timeout=10, write_timeout=10, parity=serial.PARITY_NONE, 
                       stopbits=serial.STOPBITS_ONE, rtscts=False)
 
+# serialDevices should be tuple of 3 devices, (clearCore, micro, laser)
+serialDevices = (clearCore, micro, laser)
 
 
 # Handles zeroing process by reading digital dial & issuing instructions to clearCore
@@ -51,87 +53,9 @@ def runZero():
                     else:
                         stpCount = 0
 
+motorFunc.runZero(motor, serialDevices)
 
-# Handles running a set of moves w/ same amount of steps per move
-# Issues clearCore steps to move after taking a reading 
-def runMoves(steps, amountOfSteps):
-    
-    serialComm.initializeLaser(laser)
-    time.sleep(2)
-    initialLaser = serialComm.readLaser(laser)
-    laserReadSt = initialLaser
-    totalLaser = 0
-
-    # list of move data
-    data = []
-
-    # amountOfSteps+1 for returning back to zero in one move, 
-    # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
-    for i in range(amountOfSteps+1):
-        print(f"Start laser = {laserReadSt}m")
-        stepsAdjusted = steps
-        if (i >= amountOfSteps):
-            stepsAdjusted = (steps*amountOfSteps) * -1
-        
-        while (not motor.moveReady):
-            if (clearCore.readIn() == "move"):
-                motor.moveReady = True
-                motor.moveDone = False
-            
-
-        if (motor.moveReady):
-            dial = serialComm.readDial(micro.port)
-            time.sleep(5)
-            print(f"\nCurrent index {i}")
-            clearCore.writeOut("move")
-            print(f"Sent to clearCore move")
-            clearCore.writeOut(f"{stepsAdjusted}")
-            print(f"Sent to clearCore {stepsAdjusted} steps")
-            motor.moveReady = False
-
-        while (not motor.moveDone):
-            if (clearCore.readIn() == "moveDone"):
-                print("move done")
-                motor.moveDone = True
-
-        time.sleep(5)
-        laserReadEnd = serialComm.readLaser(laser)
-        laserDist = float(laserReadEnd) - float(laserReadSt)
-        mmDistance = mathFunc.calcDist(6400, stepsAdjusted)
-        meterDistance = float(mmDistance) / 1000
-        calcDiff = meterDistance - laserDist
-        laserReadSt = serialComm.readLaser(laser)
-
-        print(f"\nEnd laser = {laserReadEnd}m\nLaser distance = {laserDist}m\n")
-        print(f"Steps distance = {meterDistance}m\nSteps distance - laser distance = {calcDiff*1000}mm\n")
-
-        dataMove = {"steps": stepsAdjusted,
-                    "dial": dial,
-                    "laser": laserDist,
-                    "calcMeters": meterDistance} 
-        data.append(dataMove)
-
-        time.sleep(0.5)
-        # If the move isn't a returning to zero move, then count as cumulative measurement
-        if (stepsAdjusted > 0):
-            totalLaser = float(laserReadEnd) - float(initialLaser)
-            totalStep = float(mathFunc.calcDist(6400, steps * (i + 1))/1000)
-            print(f"\nTotal laser distance = {totalLaser}m")
-            print(f"Total calcualted step distance = {totalStep}m")
-            print(f"Total calculated steps - total laser distance = {(float(totalStep) - float(totalLaser))*1000}mm\n")
-        input("Press Enter to continue...")
-        time.sleep(5)
-    return data
-
-runZero()
-
-# 128000, 31 almost full travel 4.8 meters
-# 819200, 4 3.84 meters
-# 128000, 20 3 meters
-# 1280000, 1 1.5 meters
-
-#print(runMoves(819200, 4))
-print(motorFunc.runMoves(819200, 4, motor, (clearCore, micro, laser)))
+print(motorFunc.runMoves(819200, 4, motor, serialDevices))
 print("finished!")
 
 

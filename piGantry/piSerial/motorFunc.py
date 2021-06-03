@@ -39,7 +39,40 @@ def formatMsg(dialRead):
     except:
         return "no"
 
-#serialDevices should be tuple of 3 devices, (clearCore, micro, laser)
+# serialDevices should be tuple of 3 devices, (clearCore, micro, laser)
+
+# Handles zeroing process by reading digital dial & issuing instructions to clearCore
+def runZero(motor, serialDevices):
+    while not motor.startZero:
+        if (serialDevices[0].readIn() == "start"):
+            motor.startZero = True
+            serialDevices[0].writeOut("start")
+            stpCount = 0
+            while (serialDevices[0].readIn() != "zero"):
+                if (serialDevices[0].readIn() == "zero"):
+                    break
+            while not motor.zeroDone:
+                # If "stp" command issued 50 times, read clearCore output for "done" msg
+                if (stpCount > 49 and serialDevices[0].readIn() == "done"):
+                    motor.zeroDone = True
+                    serialDevices[0].writeOut("done")
+                    break
+                else:
+                    # Call on readDial function passing micro.port initialized in class constructor
+                    input = serialComm.readDial(serialDevices[1].port)
+                    out = formatMsg(input)
+                    serialDevices[0].writeOut(out)
+                    if (out == "stp"):
+                        stpCount += 1
+                    else:
+                        stpCount = 0
+
+# Handles running a set of moves w/ same amount of steps per move
+# Issues clearCore steps to move after taking a reading 
+
+# 128000, 31 almost full travel 4.8 meters | 819200, 4 3.84 meters
+# 128000, 20 3 meters | 1280000, 1 1.5 meters
+
 def runMoves(steps, amountOfSteps, motor, serialDevices, straightHome = True):
     serialComm.initializeLaser(serialDevices[2])
     time.sleep(2)
@@ -49,6 +82,8 @@ def runMoves(steps, amountOfSteps, motor, serialDevices, straightHome = True):
 
     data = []
 
+    # amountOfSteps+1 for returning back to zero in one move, 
+    # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
     if straightHome:
         stepsRange = amountOfSteps+1
         stepMulti = amountOfSteps*-1

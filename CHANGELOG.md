@@ -24,6 +24,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
+- runZero function from serialInterTest function test now a function under motorFunc module
 - runMoves function from serialInterTest function test now a function under motorFunc module
 - initializeLaser function in serialInter module, handles sending start msg / addr to laser rangefinder
 - New reliable laser rangefinder
