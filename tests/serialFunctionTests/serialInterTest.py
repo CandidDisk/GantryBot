@@ -12,7 +12,7 @@ import time
 motor = motorFunc.motor()
 
 # Initialize new serialObject instances for each device
-micro = serialComm.serialObject(9600, "COM8")    
+micro = serialComm.serialObject(9600, "COM21")    
 clearCore = serialComm.serialObject(1000000, "COM18")
 laser = serialComm.serialObject(9600, "COM16", timeout=10, writeTimeOut=10)
 
