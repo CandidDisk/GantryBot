@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- Further abstracted runMoves function by taking out individual move & refactoring into new runOneMove function
 - Refactored zeroing to have pi feed steps directly to clearCore
 - Changed all references in changelog of unit tests to function tests
 - readDial flushes i/o before taking a reading
@@ -25,6 +26,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
+- serialDeviceTest new framework for testing laser reading
+- Added new argument for laser functions to support continuous or one time reading
 - runZero function from serialInterTest function test now a function under motorFunc module
 - runMoves function from serialInterTest function test now a function under motorFunc module
 - initializeLaser function in serialInter module, handles sending start msg / addr to laser rangefinder

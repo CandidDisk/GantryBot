@@ -12,7 +12,7 @@ import time
 motor = motorFunc.motor()
 
 # Initialize new serialObject instances for each device
-micro = serialComm.serialObject(9600, "COM21")    
+micro = serialComm.serialObject(9600, "COM13")    
 clearCore = serialComm.serialObject(1000000, "COM18")
 laser = serialComm.serialObject(9600, "COM16", timeout=10, writeTimeOut=10)
 
@@ -21,7 +21,8 @@ serialDevices = (clearCore, micro, laser)
 
 motorFunc.runZero(motor, serialDevices)
 
-print(motorFunc.runMoves(819200, 4, motor, serialDevices))
+# 819200, 6400 for 0.96 m | 1638400, 12800 for 0.96 m | 3276800, 25600 for 0.96 m
+print(motorFunc.runMoves(1638400, 4, motor, serialDevices, straightHome=True))
 print("finished!")
 
 

@@ -101,7 +101,7 @@ void setup() {
 
     velocityLimit = 500000;
 
-    accelerationLimit = 100000;
+    accelerationLimit = 1000;
 }
 
 void loop() {
