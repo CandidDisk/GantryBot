@@ -1,5 +1,5 @@
-from piSerial import serialInter as serialComm
-from piSerial import mathFunc
+from piGantry.piSerial import serialInter as serialComm
+from piGantry.piSerial import mathFunc
 import time
 
 class motor():
@@ -13,32 +13,22 @@ class motor():
 # This takes the digital dial reading & produces # of steps 
 # for the clearCore during zeroing 
 
-def formatMsg(dialRead):
+def formatMsg(dialRead, target):
     outMsg = "no"
 
-    try:
-        one = int(dialRead[6])
-        tenth = int(dialRead[8])
-        hundredth = int(dialRead[9])
-        thousandth = int(dialRead[10])
-
-        if (one == 2):
-            if (tenth+hundredth+thousandth == 0):
-                outMsg = "stp"
+    if (dialRead == target):
+        outMsg = "stp"
+    if (dialRead > target):
+        outMsg = "1"
+    else:
+        if (dialRead < target):
+            if (dialRead < (target/1.2)):
+                outMsg = "-1"
             else:
-                outMsg = "1"
+                outMsg = "-200"
         else:
-            if (one == 1):
-                if (tenth > 7):
-
-                    outMsg="-1"
-                else:
-                    outMsg = "-200"
-            else:
-                outMsg = "-1000"
-        return outMsg
-    except:
-        return "no"
+            outMsg = "-500"
+    return outMsg
 
 # serialDevices should be tuple of 3 devices, (clearCore, micro, laser)
 
@@ -66,8 +56,9 @@ def runZero(motor, serialDevices, microZero=True):
                     else:
                         # Call on readDial function passing micro.port initialized in class constructor
                         input = serialComm.readDial(serialDevices[1].port)
-                        out = formatMsg(input)
+                        out = formatMsg(input, 12)
                         clearCore.writeOut(out)
+                        print(out)
                         if (out == "stp"):
                             stpCount += 1
                         else:
@@ -109,7 +100,7 @@ def runMoves(steps1, motor, serialDevices, steps2 = False, straightHome = True):
         motor2 = motor[1]
         
     amountOfSteps = steps1[1]
-    steps = steps2[0]
+    steps = steps1[0]
     if straightHome:
         stepsRange = amountOfSteps+1
         stepMulti = amountOfSteps*-1

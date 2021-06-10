@@ -42,7 +42,7 @@ def readDial(port):
         if (bytesToReadDial > 8):
             slicedDial = port.read(bytesToReadDial)[0:9]
             sendDial = str(slicedDial)
-            return sendDial
+            return float(sendDial[2:11])
 
 def readLaser(port, continuous=True):
     # Needs to call on initializeLaser once prior to reading
