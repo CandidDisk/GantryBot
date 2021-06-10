@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- Refactored positional & keyword arguments & their references of runMoves, runZero, runOneMove to support dual motor & to be polymorphic
+- Changed references to X & Y to be agnostic (i.e 1 & 2 instead of X & Y) | This is so that order of motors is not hard coded & a separate function isn't required
 - Further abstracted runMoves function by taking out individual move & refactoring into new runOneMove function
 - Refactored zeroing to have pi feed steps directly to clearCore
 - Changed all references in changelog of unit tests to function tests
@@ -26,6 +28,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
+- Non-micrometer support for runZero
+- Removed references of laser rangefinder except in serialInter module
+- Added second clearCore to serialInterTest function test
 - serialDeviceTest new framework for testing laser reading
 - Added new argument for laser functions to support continuous or one time reading
 - runZero function from serialInterTest function test now a function under motorFunc module
