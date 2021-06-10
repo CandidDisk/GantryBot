@@ -44,7 +44,7 @@ def formatMsg(dialRead):
 
 # Handles zeroing process by reading digital dial & issuing instructions to clearCore
 def runZero(motor, serialDevices, microZero=True):
-    if microZero:
+    if (type(serialDevices) is tuple):
         clearCore = serialDevices[0]
     else:
         clearCore = serialDevices
@@ -96,13 +96,20 @@ def runOneMove(motor, clearCore, stepsAdjusted):
             print("move done")
             motor.moveDone = True
 
-def runMoves(steps, amountOfSteps, motor, serialDevices, straightHome = True):
+def runMoves(stepsX, motor, serialDevices, stepsY = False, straightHome = True):
     # amountOfSteps+1 for returning back to zero in one move, 
     # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
-    try:
+    if (type(serialDevices) is tuple):
         clearCore = serialDevices[0]
-    except:
+        clearCoreY = serialDevices[1]
+    else:
         clearCore = serialDevices
+    if (type(motor) is tuple):
+        motor = motor[0]
+        motorY = motor[1]
+        
+    amountOfSteps = stepsX[1]
+    steps = stepsX[0]
     if straightHome:
         stepsRange = amountOfSteps+1
         stepMulti = amountOfSteps*-1
@@ -123,4 +130,6 @@ def runMoves(steps, amountOfSteps, motor, serialDevices, straightHome = True):
 
         print(f"Total calcualted step distance = {totalStep}m")
         time.sleep(1)
+        if stepsY:
+            runMoves(stepsY, motorY, clearCoreY)
     return True
