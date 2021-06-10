@@ -29,8 +29,8 @@ print("Zero Y finished!")
 #motorFunc.runZero(motorY, clearCoreY, microZero=False)
 
 # 819200, 6400 for 0.96 m | 1638400, 12800 for 0.96 m | 3276800, 25600 for 0.96 m
-#print(motorFunc.runMoves((409600, 4), motorGroup, (clearCoreY, clearCoreX, micro), stepsY = (163840, 3)))
+print(motorFunc.runMoves((409600, 4), motorGroup, (clearCoreY, clearCoreX, micro), steps2 = (163840, 3)))
 #print(motorFunc.runMoves((819200, 4), motorY, clearCoreY))
-print("runMoves Y finished!")
+print("runMoves finished!")
 
 

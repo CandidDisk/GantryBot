@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- runZero now compares w/ float instead of messily cutting string
+- readDial now returns clean float instead of string
 - Refactored positional & keyword arguments & their references of runMoves, runZero, runOneMove to support dual motor & to be polymorphic
 - Changed references to X & Y to be agnostic (i.e 1 & 2 instead of X & Y) | This is so that order of motors is not hard coded & a separate function isn't required
 - Further abstracted runMoves function by taking out individual move & refactoring into new runOneMove function

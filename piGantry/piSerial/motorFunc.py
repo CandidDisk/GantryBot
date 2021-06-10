@@ -22,12 +22,12 @@ def formatMsg(dialRead, target):
         outMsg = "1"
     else:
         if (dialRead < target):
-            if (dialRead < (target/1.2)):
+            if (dialRead > (target/1.2)):
+                print(dialRead)
+                print((target/1.2))
                 outMsg = "-1"
             else:
                 outMsg = "-200"
-        else:
-            outMsg = "-500"
     return outMsg
 
 # serialDevices should be tuple of 3 devices, (clearCore, micro, laser)
@@ -56,7 +56,7 @@ def runZero(motor, serialDevices, microZero=True):
                     else:
                         # Call on readDial function passing micro.port initialized in class constructor
                         input = serialComm.readDial(serialDevices[1].port)
-                        out = formatMsg(input, 12)
+                        out = formatMsg(input, 6)
                         clearCore.writeOut(out)
                         print(out)
                         if (out == "stp"):
