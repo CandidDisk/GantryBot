@@ -25,7 +25,7 @@ motorFunc.runZero(motorX, (clearCoreX, micro))
 motorFunc.runZero(motorY, clearCoreY, microZero=False)
 
 # 819200, 6400 for 0.96 m | 1638400, 12800 for 0.96 m | 3276800, 25600 for 0.96 m
-print(motorFunc.runMoves((1638400, 4), motorGroup, serialDevices, stepsY = (1638400, 3)))
+print(motorFunc.runMoves((1638400, 4), motorGroup, (clearCoreY, clearCoreX, micro), stepsY = (1638400, 3)))
 print("finished!")
 
 

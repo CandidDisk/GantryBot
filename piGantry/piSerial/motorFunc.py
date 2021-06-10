@@ -96,20 +96,20 @@ def runOneMove(motor, clearCore, stepsAdjusted):
             print("move done")
             motor.moveDone = True
 
-def runMoves(stepsX, motor, serialDevices, stepsY = False, straightHome = True):
+def runMoves(steps1, motor, serialDevices, steps2 = False, straightHome = True):
     # amountOfSteps+1 for returning back to zero in one move, 
     # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
     if (type(serialDevices) is tuple):
         clearCore = serialDevices[0]
-        clearCoreY = serialDevices[1]
+        clearCore2 = serialDevices[1]
     else:
         clearCore = serialDevices
     if (type(motor) is tuple):
         motor = motor[0]
-        motorY = motor[1]
+        motor2 = motor[1]
         
-    amountOfSteps = stepsX[1]
-    steps = stepsX[0]
+    amountOfSteps = steps1[1]
+    steps = steps2[0]
     if straightHome:
         stepsRange = amountOfSteps+1
         stepMulti = amountOfSteps*-1
@@ -130,6 +130,6 @@ def runMoves(stepsX, motor, serialDevices, stepsY = False, straightHome = True):
 
         print(f"Total calcualted step distance = {totalStep}m")
         time.sleep(1)
-        if stepsY:
-            runMoves(stepsY, motorY, clearCoreY)
+        if steps2:
+            runMoves(steps2, motor2, clearCore2)
     return True
