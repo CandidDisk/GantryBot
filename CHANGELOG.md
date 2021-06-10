@@ -30,6 +30,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
+- ccSideY function test for 2nd clearCore
 - Non-micrometer support for runZero
 - Removed references of laser rangefinder except in serialInter module
 - Added second clearCore to serialInterTest function test
