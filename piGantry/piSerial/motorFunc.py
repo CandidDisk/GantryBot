@@ -1,5 +1,5 @@
-from piGantry.piSerial import serialInter as serialComm
-from piGantry.piSerial import mathFunc
+from piSerial import serialInter as serialComm
+from piSerial import mathFunc
 import time
 
 class motor():
