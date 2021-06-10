@@ -83,16 +83,16 @@ def runZero(motor, serialDevices, microZero=True):
 
 def runOneMove(motor, clearCore, stepsAdjusted):
     while (not motor.moveReady):
-        if (serialDevices[0].readIn() == "move"):
+        if (clearCore.readIn() == "move"):
             motor.moveReady = True
             motor.moveDone = False
     if (motor.moveReady):
         time.sleep(5)
-        serialDevices[0].writeOut("move")
-        serialDevices[0].writeOut(f"{stepsAdjusted}")
+        clearCore.writeOut("move")
+        clearCore.writeOut(f"{stepsAdjusted}")
         motor.moveReady = False
     while (not motor.moveDone):
-        if (serialDevices[0].readIn() == "moveDone"):
+        if (clearCore.readIn() == "moveDone"):
             print("move done")
             motor.moveDone = True
 
