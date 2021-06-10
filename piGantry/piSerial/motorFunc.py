@@ -81,7 +81,7 @@ def runZero(motor, serialDevices, microZero=True):
 # 128000, 31 almost full travel 4.8 meters | 819200, 4 3.84 meters
 # 128000, 20 3 meters | 1280000, 1 1.5 meters
 
-def runOneMove(motor, serialDevices, stepsAdjusted):
+def runOneMove(motor, clearCore, stepsAdjusted):
     while (not motor.moveReady):
         if (serialDevices[0].readIn() == "move"):
             motor.moveReady = True
@@ -97,11 +97,12 @@ def runOneMove(motor, serialDevices, stepsAdjusted):
             motor.moveDone = True
 
 def runMoves(steps, amountOfSteps, motor, serialDevices, straightHome = True):
-    time.sleep(2)
-    dial = serialComm.readDial(serialDevices[1].port)
-
     # amountOfSteps+1 for returning back to zero in one move, 
     # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
+    try:
+        clearCore = serialDevices[0]
+    except:
+        clearCore = serialDevices
     if straightHome:
         stepsRange = amountOfSteps+1
         stepMulti = amountOfSteps*-1
@@ -114,7 +115,7 @@ def runMoves(steps, amountOfSteps, motor, serialDevices, straightHome = True):
         if (i >= amountOfSteps):
             stepsAdjusted = (steps*stepMulti)
 
-        runOneMove(motor, serialDevices, stepsAdjusted)
+        runOneMove(motor, clearCore, stepsAdjusted)
 
         mmDistance = mathFunc.calcDist(6400, stepsAdjusted)
         meterDistance = float(mmDistance / 1000)

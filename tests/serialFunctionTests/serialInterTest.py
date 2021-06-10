@@ -22,7 +22,7 @@ clearCoreY = serialComm.serialObject(1000000, "COM18")
 serialDevices = (clearCoreX, micro)
 
 motorFunc.runZero(motorX, serialDevices)
-motorFunc.runZero(motorY, (clearCoreY), microZero=False)
+motorFunc.runZero(motorY, clearCoreX, microZero=False)
 
 # 819200, 6400 for 0.96 m | 1638400, 12800 for 0.96 m | 3276800, 25600 for 0.96 m
 print(motorFunc.runMoves(1638400, 4, motorX, serialDevices, straightHome=True))
