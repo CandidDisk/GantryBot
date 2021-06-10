@@ -9,20 +9,23 @@ import time
 #python -m tests.serialInterTest.py
 
 # Initialize new motor object for state management
-motor = motorFunc.motor()
+motorX = motorFunc.motor()
+motorY = motorFunc.motor()
 
 # Initialize new serialObject instances for each device
-micro = serialComm.serialObject(9600, "COM13")    
-clearCore = serialComm.serialObject(1000000, "COM18")
-laser = serialComm.serialObject(9600, "COM16", timeout=10, writeTimeOut=10)
+micro = serialComm.serialObject(9600, "COM21")    
+clearCoreX = serialComm.serialObject(1000000, "COM18")
+clearCoreY = serialComm.serialObject(1000000, "COM18")
 
-# serialDevices should be tuple of 3 devices, (clearCore, micro, laser)
-serialDevices = (clearCore, micro, laser)
 
-motorFunc.runZero(motor, serialDevices)
+# serialDevices should be tuple of 2 devices, (clearCore, micro)
+serialDevices = (clearCoreX, micro)
+
+motorFunc.runZero(motorX, serialDevices)
+motorFunc.runZero(motorY, (clearCoreY), microZero=False)
 
 # 819200, 6400 for 0.96 m | 1638400, 12800 for 0.96 m | 3276800, 25600 for 0.96 m
-print(motorFunc.runMoves(1638400, 4, motor, serialDevices, straightHome=True))
+print(motorFunc.runMoves(1638400, 4, motorX, serialDevices, straightHome=True))
 print("finished!")
 
 

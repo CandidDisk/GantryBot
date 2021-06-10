@@ -43,31 +43,37 @@ def formatMsg(dialRead):
 # serialDevices should be tuple of 3 devices, (clearCore, micro, laser)
 
 # Handles zeroing process by reading digital dial & issuing instructions to clearCore
-def runZero(motor, serialDevices):
+def runZero(motor, serialDevices, microZero=True):
+    if microZero:
+        clearCore = serialDevices[0]
+    else:
+        clearCore = serialDevices
     while not motor.startZero:
-        if (serialDevices[0].readIn() == "start"):
+        if (clearCore.readIn() == "start"):
             motor.startZero = True
-            serialDevices[0].writeOut("start")
-            stpCount = 0
-            while (serialDevices[0].readIn() != "zero"):
-                if (serialDevices[0].readIn() == "zero"):
-                    break
-            while not motor.zeroDone:
-                # If "stp" command issued 50 times, read clearCore output for "done" msg
-                if (stpCount > 50):
-                    motor.zeroDone = True
-                    serialDevices[0].writeOut("stpFinal")
-                    break
-                else:
-                    # Call on readDial function passing micro.port initialized in class constructor
-                    input = serialComm.readDial(serialDevices[1].port)
-                    out = formatMsg(input)
-                    serialDevices[0].writeOut(out)
-                    if (out == "stp"):
-                        stpCount += 1
+            clearCore.writeOut("start")
+            if microZero:
+                stpCount = 0
+                while (clearCore.readIn() != "zero"):
+                    if (clearCore.readIn() == "zero"):
+                        break
+                while not motor.zeroDone:
+                    # If "stp" command issued 50 times, read clearCore output for "done" msg
+                    if (stpCount > 50):
+                        motor.zeroDone = True
+                        clearCore.writeOut("stpFinal")
+                        break
                     else:
-                        stpCount = 0
-    serialDevices[0].writeOut("done")
+                        # Call on readDial function passing micro.port initialized in class constructor
+                        input = serialComm.readDial(serialDevices[1].port)
+                        out = formatMsg(input)
+                        clearCore.writeOut(out)
+                        if (out == "stp"):
+                            stpCount += 1
+                        else:
+                            stpCount = 0
+    if microZero:
+        clearCore.writeOut("done")
 
 # Handles running a set of moves w/ same amount of steps per move
 # Issues clearCore steps to move after taking a reading 
@@ -90,18 +96,9 @@ def runOneMove(motor, serialDevices, stepsAdjusted):
             print("move done")
             motor.moveDone = True
 
-#def calcLaserOffset(laserReading, ):
-
 def runMoves(steps, amountOfSteps, motor, serialDevices, straightHome = True):
-    serialComm.initializeLaser(serialDevices[2].port)
     time.sleep(2)
     dial = serialComm.readDial(serialDevices[1].port)
-
-    initialLaser = serialComm.readLaser(serialDevices[2].port)
-    laserReadSt = initialLaser
-    totalLaser = 0
-
-    data = []
 
     # amountOfSteps+1 for returning back to zero in one move, 
     # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
@@ -113,38 +110,16 @@ def runMoves(steps, amountOfSteps, motor, serialDevices, straightHome = True):
         stepMulti = -1
 
     for i in range(stepsRange):
-        print(f"Start laser = {laserReadSt}m")
         stepsAdjusted = steps
         if (i >= amountOfSteps):
             stepsAdjusted = (steps*stepMulti)
 
         runOneMove(motor, serialDevices, stepsAdjusted)
-        
-        time.sleep(5)
-        laserReadEnd = serialComm.readLaser(serialDevices[2].port)
-        laserDist = float(laserReadEnd) - float(laserReadSt)
+
         mmDistance = mathFunc.calcDist(6400, stepsAdjusted)
         meterDistance = float(mmDistance / 1000)
-        calcDiff = meterDistance - laserDist
-        laserReadSt = serialComm.readLaser(serialDevices[2].port)
-
-        print(f"\nEnd laser = {laserReadEnd}m\nLaser distance = {laserDist}m\n")
-        #print(f"Steps distance = {meterDistance}m\nSteps distance - laser distance = {calcDiff*1000}mm\n")
-
-        dataMove = {"steps": stepsAdjusted,
-                    "dial": dial,
-                    "laser": laserDist,
-                    "calcMeters": meterDistance} 
-        data.append(dataMove)
-
-        time.sleep(0.5)
-        # If the move isn't a returning to zero move, then count as cumulative measurement
-
-        totalLaser = float(laserReadEnd) - float(initialLaser)
         totalStep = float(mathFunc.calcDist(6400, steps * (i + 1))/1000)
-        print(f"\nTotal laser distance = {totalLaser}m")
-        #print(f"Total calcualted step distance = {totalStep}m")
-        #print(f"Total calculated steps - total laser distance = {(float(totalStep) - float(totalLaser))*1000}mm\n")
-        input("Press Enter to continue...")
-        time.sleep(5)
-    return data
+
+        print(f"Total calcualted step distance = {totalStep}m")
+        time.sleep(1)
+    return True
