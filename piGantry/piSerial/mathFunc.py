@@ -7,11 +7,16 @@ class inputProcess():
         self.steps
 
 # Converts steps to mm given pulses/revolution & number of steps
-def calcDist(stpPerTurn, steps):
+def calcDist(stpPerTurn, unit, convertMMToSteps=False):
     stepPerGBTurn = float(stpPerTurn) * 20 #20 = gear ratio
     stepPerMM = float(stepPerGBTurn) / 150 #150 = mm/turn
-    traveledDistMM = float(steps) / float(stepPerMM)
-    return traveledDistMM
+    
+    if convertMMToSteps:
+        traveledDistSteps = float(unit) * float(stepPerMM)
+        return traveledDistSteps
+    else:
+        traveledDistMM = float(unit) / float(stepPerMM)
+        return traveledDistMM
 
 # Solves & plots best fit given x,y center points
 def bestFitPoly(xList, yList, deg, imgOrig):
@@ -25,3 +30,18 @@ def bestFitPoly(xList, yList, deg, imgOrig):
     coefsPoly = np.poly1d(coefs)
     ax.plot(xList, coefsPoly(xList))
     plt.show()
+
+def calcAvailableSPM(stpPerTurn, totalDist):
+    numMoves = float(int(totalDist) / int(stpPerTurn))
+    if (numMoves).is_integer():
+        return (True, numMoves)
+    else:
+        newNumMoves = numMoves
+        newStpPerTurn = stpPerTurn
+        travelDist = int(int(totalDist) // int(stpPerTurn) * stpPerTurn)
+        remainder = int(totalDist) % int(stpPerTurn)
+        while not (newNumMoves).is_integer():
+            newStpPerTurn += 1
+            newNumMoves = float(int(totalDist) / int(newStpPerTurn))
+        return (False, (round(numMoves), travelDist, remainder), (newNumMoves, newStpPerTurn))
+

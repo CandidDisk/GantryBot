@@ -42,15 +42,17 @@ def readDial(port):
         if (bytesToReadDial > 8):
             slicedDial = port.read(bytesToReadDial)[0:9]
             sendDial = str(slicedDial)
-            return sendDial
+            return float(sendDial[2:11])
 
-def readLaser(port):
+def readLaser(port, continuous=True):
     # Needs to call on initializeLaser once prior to reading
     slicedLaser = False
     # Flush i/o to get updated readings
     port.flushInput()
     port.flushOutput()
     time.sleep(0.1)
+    if not continuous:
+        port.write(b'\x80\x06\x02\x78')
     # Only return slicedLaser if reading is valid
     while not slicedLaser:
         bytesToRead = port.inWaiting()
@@ -58,16 +60,21 @@ def readLaser(port):
             inputLaser = port.read(bytesToRead).decode("utf-8", "ignore")
             slicedLaser = inputLaser[1:8]
             return slicedLaser
+    if not continuous:
+        port.write(b'\x80\x04\x02\x7A')
 
 
-def initializeLaser(port):
+def initializeLaser(port, continuous=True):
     # Laser rangefinder requires write hex start addr before it starts sending reading
     while port.inWaiting() == 0:
         # Sets resolution to 0.1 mm 
         packetInit = b'\xFA\x04\x0C\x02\xF4'
         # Start continuous reading
-        packetStart = b'\x80\x06\x03\x77'
         port.write(packetInit)
         time.sleep(0.2)
-        port.write(packetStart)
-        print("waiting..!")
+        if continuous:
+            packetStart = b'\x80\x06\x03\x77'
+            port.write(packetStart)
+            print("waiting..!")
+        
+        

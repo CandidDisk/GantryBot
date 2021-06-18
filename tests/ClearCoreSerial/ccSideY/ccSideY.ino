@@ -8,7 +8,7 @@
 
 #define SENSOR_DIG IO4
 
-int velocityLimit = 500000;
+int velocityLimit = 10000;
 
 int accelerationLimit = 100000;
 
@@ -85,25 +85,9 @@ void setup() {
         moveAtVelocity(0);
     }
 
-    // Start zero process
-    Serial.println("zero");
-    while (!zeroDone) {
-        zeroMotor(readDataPi());
-    }
-
-
-    // Comfirm w/ pi that ready to start move set
-    while (!setupDone) {
-        if (commHandShake("done")) {
-            setupDone = true;
-            break;
-        }
-        delay(20);
-    }
-
     velocityLimit = 500000;
 
-    accelerationLimit = 1000;
+    accelerationLimit = 10000;
 }
 
 void loop() {
@@ -145,7 +129,7 @@ bool commHandShake(String check, bool sendCheck) {
     if (sendCheck) {
         Serial.println(check);
     }
-
+    
     if (strcmp(readDataPi(), checkStr)==0) {
         return true;
     } else{
@@ -153,6 +137,7 @@ bool commHandShake(String check, bool sendCheck) {
     };
     delay(10);
 }
+
 
 // build char* array out of pi output 
 char* readDataPi(){
