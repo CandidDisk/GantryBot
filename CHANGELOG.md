@@ -23,6 +23,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - laser rangefinder functions in serialInter module now refactored for new laser rangefinder
 
 ### Removed
+- TkInter.py, redundant now that pyGUI module is ready
 - data_file.json, data_file1.json & data_file2.json. Outdated clutter
 - piSide.py, redundant now that serialInter module serialInterTest.py & ccSide.ino function test is ready
 - readSerialInput.ino, redundant now that serialInter module serialInterTest.py & ccSide.ino function test is ready
@@ -30,6 +31,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
+- Added motorFunc calcAvailableSPM function to handle generating motion profile
+- Added MM to Steps functionality to mathFunc calcDist
+- Middling UI
+- Motion parameter UI
+- pyGUI module for handling UI
 - ccSideY function test for 2nd clearCore
 - Non-micrometer support for runZero
 - Removed references of laser rangefinder except in serialInter module

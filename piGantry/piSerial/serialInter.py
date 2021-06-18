@@ -38,14 +38,11 @@ def readDial(port):
     port.flushOutput()
     # Only return sendDial if reading is valid
     while not sendDial:
-        try:
-            bytesToReadDial = port.inWaiting()
-            if (bytesToReadDial > 8):
-                slicedDial = port.read(bytesToReadDial)[0:9]
-                sendDial = str(slicedDial)
-                return float(sendDial[2:11])
-        except Exception as e:
-            print(e)
+        bytesToReadDial = port.inWaiting()
+        if (bytesToReadDial > 8):
+            slicedDial = port.read(bytesToReadDial)[0:9]
+            sendDial = str(slicedDial)
+            return float(sendDial[2:11])
 
 def readLaser(port, continuous=True):
     # Needs to call on initializeLaser once prior to reading

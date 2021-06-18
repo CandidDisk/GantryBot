@@ -36,6 +36,8 @@ bool moveAtVelocity(int32_t velocity);
 
 bool MoveAbsolutePosition(int32_t position);
 
+bool commHandShake(String check, bool sendCheck=true);
+
 
 void setup() {
     SerialPort.begin(baudRateSerial); 
@@ -85,7 +87,7 @@ void setup() {
 
     velocityLimit = 500000;
 
-    accelerationLimit = 1000;
+    accelerationLimit = 10000;
 }
 
 void loop() {
@@ -121,11 +123,13 @@ void moveTest() {
 }
 
 // Send msg to pi & wait until pi returns same msg
-bool commHandShake(String check) {
+bool commHandShake(String check, bool sendCheck) {
     const char* checkStr = check.c_str(); 
 
-    Serial.println(check);
-
+    if (sendCheck) {
+        Serial.println(check);
+    }
+    
     if (strcmp(readDataPi(), checkStr)==0) {
         return true;
     } else{
@@ -133,6 +137,7 @@ bool commHandShake(String check) {
     };
     delay(10);
 }
+
 
 // build char* array out of pi output 
 char* readDataPi(){

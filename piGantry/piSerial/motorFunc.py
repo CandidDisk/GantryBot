@@ -8,7 +8,13 @@ class motor():
         self.startZero = False
         self.moveReady = False
         self.moveDone = False
+        self.middleDone = False
         self.moveCount = 0
+        self.middleOffset = int(0)
+        self.maxTravel = int(0)
+        self.startOffset = int(0)
+        self.endOffset = int(0)
+        self.pulsePerRev = int(12800)
 
 # This takes the digital dial reading & produces # of steps 
 # for the clearCore during zeroing 
@@ -20,14 +26,13 @@ def formatMsg(dialRead, target):
         outMsg = "stp"
     if (dialRead > target):
         outMsg = "1"
-    else:
-        if (dialRead < target):
-            if (dialRead > (target/1.2)):
-                print(dialRead)
-                print((target/1.2))
-                outMsg = "-1"
-            else:
-                outMsg = "-200"
+    if (dialRead < target):
+        if (dialRead > (target/1.2)):
+            print(dialRead)
+            print((target/1.2))
+            outMsg = "-1"
+        else:
+            outMsg = "-200"
     return outMsg
 
 # serialDevices should be tuple of 3 devices, (clearCore, micro, laser)
@@ -38,7 +43,7 @@ def runZero(motor, serialDevices, microZero=True):
         clearCore = serialDevices[0]
     else:
         clearCore = serialDevices
-    while not motor.startZero:
+    while not motor.startZero :
         if (clearCore.readIn() == "start"):
             motor.startZero = True
             clearCore.writeOut("start")
@@ -56,7 +61,7 @@ def runZero(motor, serialDevices, microZero=True):
                     else:
                         # Call on readDial function passing micro.port initialized in class constructor
                         input = serialComm.readDial(serialDevices[1].port)
-                        out = formatMsg(input, 6)
+                        out = formatMsg(input, 4)
                         clearCore.writeOut(out)
                         print(out)
                         if (out == "stp"):
@@ -78,7 +83,7 @@ def runOneMove(motor, clearCore, stepsAdjusted):
             motor.moveReady = True
             motor.moveDone = False
     if (motor.moveReady):
-        time.sleep(5)
+        time.sleep(2)
         clearCore.writeOut("move")
         clearCore.writeOut(f"{stepsAdjusted}")
         motor.moveReady = False
@@ -87,17 +92,22 @@ def runOneMove(motor, clearCore, stepsAdjusted):
             print("move done")
             motor.moveDone = True
 
-def runMoves(steps1, motor, serialDevices, steps2 = False, straightHome = True):
+def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = True):
     # amountOfSteps+1 for returning back to zero in one move, 
     # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
+    print(f"{type(motorObj)} yo")
     if (type(serialDevices) is tuple):
         clearCore = serialDevices[0]
         clearCore2 = serialDevices[1]
     else:
         clearCore = serialDevices
-    if (type(motor) is tuple):
-        motor = motor[0]
-        motor2 = motor[1]
+    if (type(motorObj) is tuple):
+        print(f"{type(motorObj)} yo2")
+        motor = motorObj[0]
+        print(f"{type(motorObj)} yo3")
+        motor2 = motorObj[1]
+    else:
+        motor = motorObj
         
     amountOfSteps = steps1[1]
     steps = steps1[0]
@@ -113,14 +123,12 @@ def runMoves(steps1, motor, serialDevices, steps2 = False, straightHome = True):
         if (i >= amountOfSteps):
             stepsAdjusted = (steps*stepMulti)
 
-        runOneMove(motor, clearCore, stepsAdjusted)
-
-        mmDistance = mathFunc.calcDist(6400, stepsAdjusted)
+        mmDistance = mathFunc.calcDist(12800, stepsAdjusted)
         meterDistance = float(mmDistance / 1000)
-        totalStep = float(mathFunc.calcDist(6400, steps * (i + 1))/1000)
+        totalStep = float(mathFunc.calcDist(12800, steps * (i + 1))/1000)
 
         print(f"Total calcualted step distance = {totalStep}m")
-        time.sleep(1)
         if steps2:
             runMoves(steps2, motor2, clearCore2)
+        runOneMove(motor, clearCore, stepsAdjusted)
     return True

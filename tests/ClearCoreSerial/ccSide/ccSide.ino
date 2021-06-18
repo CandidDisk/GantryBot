@@ -8,7 +8,7 @@
 
 #define SENSOR_DIG IO4
 
-int velocityLimit = 10000;
+int velocityLimit = 500000;
 
 int accelerationLimit = 100000;
 
@@ -35,6 +35,8 @@ bool moveDistance(int32_t distance);
 bool moveAtVelocity(int32_t velocity);
 
 bool MoveAbsolutePosition(int32_t position);
+
+bool commHandShake(String check, bool sendCheck=true);
 
 
 void setup() {
@@ -137,10 +139,12 @@ void moveTest() {
 }
 
 // Send msg to pi & wait until pi returns same msg
-bool commHandShake(String check) {
+bool commHandShake(String check, bool sendCheck) {
     const char* checkStr = check.c_str(); 
 
-    Serial.println(check);
+    if (sendCheck) {
+        Serial.println(check);
+    }
 
     if (strcmp(readDataPi(), checkStr)==0) {
         return true;
