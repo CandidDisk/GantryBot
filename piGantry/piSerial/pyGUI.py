@@ -1,13 +1,12 @@
 import PySimpleGUI as sg
 import cv2
 import numpy as np
-from sys import exit
 
 from piGantry.piSerial import motorFunc
 from piGantry.piSerial import mathFunc
 
 
-def middleWindow(motors):
+def middleWindow(motors, clearCore):
 
     axisOffsets = [[sg.Text("Current offset X")],[sg.InputText("0", key="offsetXOut", size=(15, 1), disabled=True)],
                    [sg.Text("Current offset Y")],[sg.InputText("0", key="offsetYOut", size=(15, 1), disabled=True)]]
@@ -38,8 +37,10 @@ def middleWindow(motors):
             height = int(frame.shape[0] * scaleVal / 100)
             width = int(frame.shape[1] * scaleVal / 100)
             dim = (width, height)
+
+            vis = np.concatenate((frame, frame), axis=0)
             
-            imgbytes = cv2.imencode(".png", cv2.resize(frame, dim, cv2.INTER_AREA))[1].tobytes()  
+            imgbytes = cv2.imencode(".png", cv2.resize(vis, dim, cv2.INTER_AREA))[1].tobytes()  
             window["image"].update(data=imgbytes)
             window["image2"].update(data=imgbytes)
             window["offsetXOut"].update(f"{motors[0].middleOffset}")
@@ -49,11 +50,11 @@ def middleWindow(motors):
                 motors[1].middleDone = True
                 break
             elif event == "Jog X motor":
+                motorFunc.runOneMove(motors[0], clearCore[0], int(window["jogXMotor"].get()))
                 motors[0].middleOffset += int(window["jogXMotor"].get())
             elif event == "Jog Y motor":
+                motorFunc.runOneMove(motors[1], clearCore[1], int(window["jogYMotor"].get()))
                 motors[1].middleOffset += int(window["jogYMotor"].get())
-            print((width, height))
-            print((motors[0].zeroDone, motors[1].zeroDone))
         else:
             sg.popup("Zero motors first!")
             break
@@ -86,8 +87,10 @@ def motionProfileWindow(motors):
     def paramRemainder(axis):
         param = [[sg.Text(f"{axis} axis unadjusted parameter w/ remainder")],
                   sg.Column([[sg.Text("Number of moves")], [sg.InputText("0", key=f"pR{axis}Moves", size=(15, 1), disabled=True)],
-                 [sg.Text("Steps per move")],[sg.InputText("0", key=f"pR{axis}Steps", size=(15, 1), disabled=True)]]),
-                  sg.Column([[sg.Text("Travelled distance")],[sg.InputText("0", key=f"pR{axis}Dist", size=(15, 1), disabled=True)],
+                 [sg.Text("Steps per move")],[sg.InputText("0", key=f"pR{axis}Steps", size=(15, 1), disabled=True)],
+                 [sg.Text("MM per move")],[sg.InputText("0", key=f"pR{axis}StepsMM", size=(15, 1), disabled=True)]]),
+                  sg.Column([[sg.Text("Travelled distance steps")],[sg.InputText("0", key=f"pR{axis}DistSteps", size=(15, 1), disabled=True)],
+                  [sg.Text("Travelled distance mm")],[sg.InputText("0", key=f"pR{axis}DistMM", size=(15, 1), disabled=True)],
                  [sg.Text("Total remainder")],[sg.InputText("0", key=f"pR{axis}Remain", size=(15, 1), disabled=True)]])]
         return param
 
@@ -126,7 +129,9 @@ def motionProfileWindow(motors):
             remain = "No remainder"
         windowOutput[f"pR{axis}Moves"].update(f"{moves}")
         windowOutput[f"pR{axis}Steps"].update(f"{stepsPerMoves}")
-        windowOutput[f"pR{axis}Dist"].update(f"{dist}")
+        windowOutput[f"pR{axis}StepsMM"].update(f"{mathFunc.calcDist(12800, stepsPerMoves)}")
+        windowOutput[f"pR{axis}DistSteps"].update(f"{dist}")
+        windowOutput[f"pR{axis}DistMM"].update(f"{mathFunc.calcDist(12800, dist)}")
         windowOutput[f"pR{axis}Remain"].update(f"{remain}")
 
     def setParamAOut(axis):
@@ -183,7 +188,7 @@ def motionProfileWindow(motors):
     windowOutput.close()
     window.close()
 
-def mainPage(motors):
+def mainPage(motors, micro, clearCore):
     menuDef = [["&File", ["&Load config", "&Save config", "&Exit",]],
                 ["&Setup", ["&Middling", "&Motion profile"],]]
     
@@ -204,20 +209,26 @@ def mainPage(motors):
             filename = sg.popup_get_file("file to open", no_window=True)
             print(f"selected {filename}")
         elif event == "Middling":
-            middleWindow(motors)
+            middleWindow(motors, clearCore)
         elif event == "Motion profile":
             motionProfileWindow(motors)
         elif event == "Zero X":
-            motors[0].zeroDone = True
+            print("Zero X started!")
+            motorFunc.runZero(motors[0], (clearCore[0], micro[0]), 2)
+            print("Zero X finished!")
+            print(motors[0].zeroDone)
         elif event == "Zero Y":
-            motors[1].zeroDone = True
+            print("Zero Y started!")
+            motorFunc.runZero(motors[1], (clearCore[1], micro[1]), 4)
+            print("Zero Y finished!")
+            print(motors[1].zeroDone)
 
-motorX = motorFunc.motor()
-motorY = motorFunc.motor()
+#motorX = motorFunc.motor()
+#motorY = motorFunc.motor()
 
-motorGroup = (motorX, motorY)
+#motorGroup = (motorX, motorY)
 
-mainPage(motorGroup)
+#mainPage(motorGroup)
 #middleWindow()
 
-exit(0)
+#exit(0)

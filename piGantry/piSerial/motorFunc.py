@@ -38,7 +38,7 @@ def formatMsg(dialRead, target):
 # serialDevices should be tuple of 3 devices, (clearCore, micro, laser)
 
 # Handles zeroing process by reading digital dial & issuing instructions to clearCore
-def runZero(motor, serialDevices, microZero=True):
+def runZero(motor, serialDevices, zeroPoint, microZero=True):
     if (type(serialDevices) is tuple):
         clearCore = serialDevices[0]
     else:
@@ -61,7 +61,7 @@ def runZero(motor, serialDevices, microZero=True):
                     else:
                         # Call on readDial function passing micro.port initialized in class constructor
                         input = serialComm.readDial(serialDevices[1].port)
-                        out = formatMsg(input, 4)
+                        out = formatMsg(input, zeroPoint)
                         clearCore.writeOut(out)
                         print(out)
                         if (out == "stp"):
