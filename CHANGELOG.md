@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- pyGUI now flag for debug which doesn't require passing of actual serial & clearCore devices
+- pyGUI functions now under uiSTATE class for state management
 - runZero now compares w/ float instead of messily cutting string
 - readDial now returns clean float instead of string
 - Refactored positional & keyword arguments & their references of runMoves, runZero, runOneMove to support dual motor & to be polymorphic
@@ -31,6 +33,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
+- new pyUITest unit test
 - UI jogging & zero working
 - Added motorFunc calcAvailableSPM function to handle generating motion profile
 - Added MM to Steps functionality to mathFunc calcDist
