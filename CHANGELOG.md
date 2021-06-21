@@ -31,6 +31,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
+- UI jogging & zero working
 - Added motorFunc calcAvailableSPM function to handle generating motion profile
 - Added MM to Steps functionality to mathFunc calcDist
 - Middling UI
