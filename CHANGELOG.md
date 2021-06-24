@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
+- Dynamic output elements are now proper text elements w/ relief & gray background colour
 - pyGUI now flag for debug which doesn't require passing of actual serial & clearCore devices
 - pyGUI functions now under uiSTATE class for state management
 - runZero now compares w/ float instead of messily cutting string

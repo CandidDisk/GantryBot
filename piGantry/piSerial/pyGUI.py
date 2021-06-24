@@ -11,8 +11,8 @@ class uiSTATE():
 
     def middleWindow(self, motors, clearCore):
 
-        axisOffsets = [[sg.Text("Current offset X")],[sg.Text("0", key="offsetXOut", size=(15, 1), relief="sunken", border_width=2, background_color="gray")],
-                    [sg.Text("Current offset Y")],[sg.Text("0", key="offsetYOut", size=(15, 1), relief="sunken", border_width=2,  background_color="gray")]]
+        axisOffsets = [[sg.Text("Current offset X")],[sg.Text("0", key="offsetXOut", size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("Current offset Y")],[sg.Text("0", key="offsetYOut", size=(13, 1), relief="sunken", border_width=None,  background_color="gray")]]
 
         imageBlockImgL = [[sg.Text("Camera L")],[sg.Image(filename="", key="image")]]
         imageBlockImgR = [[sg.Text("Camera R")],[sg.Image(filename="", key="image2")]]
@@ -20,8 +20,8 @@ class uiSTATE():
 
 
         joggingElement = [[sg.Text("Number of steps to jog (e.g +6400)")],
-                        [sg.InputText(key="jogXMotor", size=(15, 1)), sg.Button("Jog X motor")],
-                        [sg.InputText(key="jogYMotor", size=(15, 1)), sg.Button("Jog Y motor")]]
+                        [sg.InputText(key="jogXMotor", size=(13, 1)), sg.Button("Jog X motor")],
+                        [sg.InputText(key="jogYMotor", size=(13, 1)), sg.Button("Jog Y motor")]]
 
         layout = [imageRow,
                 [sg.Column(axisOffsets), sg.Column(joggingElement)],
@@ -66,22 +66,22 @@ class uiSTATE():
 
         window.close()
     def motionProfileWindow(self, motors):
-        axisMaxTravel = [[sg.Text("X Axis max travel")],[sg.Text("0", key="xMaxTravel", size=(15, 1), relief="sunken", border_width=2, background_color="gray")],
-                    [sg.Text("Y Axis max travel")],[sg.Text("0", key="yMaxTravel",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")]]
-        axisStartOffset = [[sg.Text("X Axis start offset")],[sg.Text("0", key="xstart offset",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")],
-                    [sg.Text("Y Axis start offset")],[sg.Text("0", key="ystart offset",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")]]
+        axisMaxTravel = [[sg.Text("X Axis max travel")],[sg.Text("0", key="xMaxTravel", size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("Y Axis max travel")],[sg.Text("0", key="yMaxTravel",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")]]
+        axisStartOffset = [[sg.Text("X Axis start offset")],[sg.Text("0", key="xstart offset",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("Y Axis start offset")],[sg.Text("0", key="ystart offset",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")]]
         setAxisMaxTravel = [[sg.Text("Set motor max travel")],
-                        [sg.InputText(key="setXMaxTravel", size=(15, 1)), sg.Button("set X max travel")],
-                        [sg.InputText(key="setYMaxTravel", size=(15, 1)), sg.Button("set Y max travel")]]
+                        [sg.InputText(key="setXMaxTravel", size=(13, 1)), sg.Button("set X max travel")],
+                        [sg.InputText(key="setYMaxTravel", size=(13, 1)), sg.Button("set Y max travel")]]
         setAxisPPR = [[sg.Text("Set motor pulse / revolution ratio")],
-                        [sg.InputText("0", key="setPPR", size=(15, 1)), sg.Button("set p/r")],
-                        [sg.Text("Current motor pulse / revolution ratio")], [sg.Text("0", key="showPPR", size=(15, 1), relief="sunken", border_width=2, background_color="gray")]]
-        stepsToMM = [[sg.Text("Convert steps to mm")], [sg.InputText("0", key="stepsToMM", size=(15, 1)), sg.Button("convert steps to mm")]]
-        mmToSteps = [[sg.Text("Convert mm to steps")], [sg.InputText("0", key="mmToSteps", size=(15, 1)), sg.Button("convert mm to steps")]]
+                        [sg.InputText("0", key="setPPR", size=(13, 1)), sg.Button("set p/r")],
+                        [sg.Text("Current motor pulse / revolution ratio")], [sg.Text("0", key="showPPR", size=(13, 1), relief="sunken", border_width=None, background_color="gray")]]
+        stepsToMM = [[sg.Text("Convert steps to mm")], [sg.InputText("0", key="stepsToMM", size=(13, 1)), sg.Button("convert steps to mm")], [sg.Text("0", key="showStepsToMM", size=(13, 1), relief="sunken", border_width=None, background_color="gray")]]
+        mmToSteps = [[sg.Text("Convert mm to steps")], [sg.InputText("0", key="mmToSteps", size=(13, 1)), sg.Button("convert mm to steps")],  [sg.Text("0", key="showMmToSteps", size=(13, 1), relief="sunken", border_width=None, background_color="gray")]]
 
         setAxisSPM = [[sg.Text("Set motor steps per move")],
-                        [sg.InputText(key="setXSPM", size=(15, 1)), sg.Button("set X steps per move")],
-                        [sg.InputText(key="setYSPM", size=(15, 1)), sg.Button("set Y steps per move")]]
+                        [sg.InputText(key="setXSPM", size=(13, 1)), sg.Button("set X steps per move")],
+                        [sg.InputText(key="setYSPM", size=(13, 1)), sg.Button("set Y steps per move")]]
 
         conversionElements = [[setAxisPPR, stepsToMM, mmToSteps]]
 
@@ -92,18 +92,18 @@ class uiSTATE():
 
         def paramRemainder(axis):
             param = [[sg.Text(f"{axis} axis unadjusted parameter w/ remainder")],
-                    sg.Column([[sg.Text("Number of moves")], [sg.Text("0", key=f"pR{axis}Moves",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")],
-                    [sg.Text("Steps per move")],[sg.Text("0", key=f"pR{axis}Steps",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")],
-                    [sg.Text("MM per move")],[sg.Text("0", key=f"pR{axis}StepsMM",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")]]),
-                    sg.Column([[sg.Text("Travelled distance steps")],[sg.Text("0", key=f"pR{axis}DistSteps",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")],
-                    [sg.Text("Travelled distance mm")],[sg.Text("0", key=f"pR{axis}DistMM",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")],
-                    [sg.Text("Total remainder")],[sg.Text("0", key=f"pR{axis}Remain",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")]])]
+                    sg.Column([[sg.Text("Number of moves")], [sg.Text("0", key=f"pR{axis}Moves",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("Steps per move")],[sg.Text("0", key=f"pR{axis}Steps",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("MM per move")],[sg.Text("0", key=f"pR{axis}StepsMM",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")]]),
+                    sg.Column([[sg.Text("Travelled distance steps")],[sg.Text("0", key=f"pR{axis}DistSteps",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("Travelled distance mm")],[sg.Text("0", key=f"pR{axis}DistMM",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("Total remainder")],[sg.Text("0", key=f"pR{axis}Remain",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")]])]
             return param
 
         def paramAdjusted(axis):
             param = [[sg.Text(f"{axis} axis adjusted parameter full travel")],
-                    sg.Column([[sg.Text("Number of moves")], [sg.Text("0", key=f"pA{axis}Moves",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")],
-                    [sg.Text("Steps per move")],[sg.Text("0", key=f"pA{axis}Steps",  size=(15, 1), relief="sunken", border_width=2, background_color="gray")]])]
+                    sg.Column([[sg.Text("Number of moves")], [sg.Text("0", key=f"pA{axis}Moves",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("Steps per move")],[sg.Text("0", key=f"pA{axis}Steps",  size=(13, 1), relief="sunken", border_width=None, background_color="gray")]])]
             return param
 
         paramRemainderX = paramRemainder("X")
@@ -179,10 +179,10 @@ class uiSTATE():
                     motors[1].pulsePerRev = int(windowMotor["setPPR"].get())
                 elif eventMotor == "convert steps to mm":
                     mmDist = mathFunc.calcDist(motors[0].pulsePerRev, int(windowMotor["stepsToMM"].get()))
-                    windowMotor["stepsToMM"].update(f"{mmDist}")
+                    windowMotor["showStepsToMM"].update(f"{mmDist}")
                 elif eventMotor == "convert mm to steps":
                     stepDist = mathFunc.calcDist(motors[0].pulsePerRev, float(windowMotor["mmToSteps"].get()), convertMMToSteps=True)
-                    windowMotor["mmToSteps"].update(f"{stepDist}")
+                    windowMotor["showMmToSteps"].update(f"{stepDist}")
                 window["xMaxTravel"].update(f"{motors[0].maxTravel}")
                 window["yMaxTravel"].update(f"{motors[1].maxTravel}")
                 windowMotor["showPPR"].update(f"{motors[0].pulsePerRev}")
