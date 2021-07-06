@@ -30,6 +30,24 @@ class serialObject(object):
             else:
                 self.newDataIn = False
 
+def initializeArduinoEncoder(encoder):
+    counter = 0
+    while True:
+        if (encoder.readIn() == "start"):
+            encoder.writeOut("start")
+        else:
+            counter += 1
+            time.sleep(0.1)
+            if counter > 5:
+                break
+
+def readArduinoEncoder(encoder):
+
+    valEncoder = encoder.readIn()
+    if valEncoder:
+        return float(valEncoder)*1e-5
+
+
 # Will collapse readDial & readLaser w/ DRY in mind   
 def readDial(port):
     sendDial = False

@@ -70,7 +70,6 @@ void setup() {
             break;
         } else {Serial.println("start");}
         delay(100);
-
     }
 
     // Wait until motor is ready

@@ -80,7 +80,7 @@ def runZero(motor, serialDevices, zeroPoint, microZero=True):
 def runOneMove(motor, clearCore, stepsAdjusted):
     while (not motor.moveReady):
         if (clearCore.readIn() == "move"):
-            motor.moveReady = True
+            motor.moveReady = True 
             motor.moveDone = False
     if (motor.moveReady):
         time.sleep(2)
@@ -91,8 +91,9 @@ def runOneMove(motor, clearCore, stepsAdjusted):
         if (clearCore.readIn() == "moveDone"):
             print("move done")
             motor.moveDone = True
+    time.sleep(15)
 
-def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = True):
+def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = True, encoder = False):
     # amountOfSteps+1 for returning back to zero in one move, 
     # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
     print(f"{type(motorObj)} yo")
@@ -131,4 +132,11 @@ def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = Tru
         if steps2:
             runMoves(steps2, motor2, clearCore2)
         runOneMove(motor, clearCore, stepsAdjusted)
+        if encoder:
+            while (serialComm.readArduinoEncoder(encoder.port) != meterDistance):
+                print(serialComm.readArduinoEncoder(encoder.port))
+                if (serialComm.readArduinoEncoder(encoder.port) < meterDistance):
+                    runOneMove(motor, clearCore, 1)
+                elif (serialComm.readArduinoEncoder(encoder.port) > meterDistance):
+                    runOneMove(motor, clearCore, -1)
     return True
