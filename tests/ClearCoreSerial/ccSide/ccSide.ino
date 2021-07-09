@@ -1,4 +1,4 @@
-#include "ClearCore.h"
+ #include "ClearCore.h"
 
 #define motor ConnectorM0
 
@@ -100,7 +100,7 @@ void setup() {
         delay(20);
     }
 
-    velocityLimit = 500000;
+    velocityLimit = 1250;
 
     accelerationLimit = 1000;
 }

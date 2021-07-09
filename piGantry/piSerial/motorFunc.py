@@ -83,7 +83,7 @@ def runOneMove(motor, clearCore, stepsAdjusted):
             motor.moveReady = True 
             motor.moveDone = False
     if (motor.moveReady):
-        time.sleep(2)
+        time.sleep(0.1)
         clearCore.writeOut("move")
         clearCore.writeOut(f"{stepsAdjusted}")
         motor.moveReady = False
@@ -91,12 +91,22 @@ def runOneMove(motor, clearCore, stepsAdjusted):
         if (clearCore.readIn() == "moveDone"):
             print("move done")
             motor.moveDone = True
-    time.sleep(15)
 
-def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = True, encoder = False):
+def adjustToEncoder(clearCore, encoder, meterDistance):
+    while (serialComm.readArduinoEncoder(encoder) != meterDistance):
+        encoderReading = serialComm.readArduinoEncoder(encoder)
+        print(encoderReading)
+        diff = encoderReading - meterDistance
+        if (serialComm.readArduinoEncoder(encoder) < meterDistance):
+            runOneMove(motor, clearCore, 10)
+        elif (serialComm.readArduinoEncoder(encoder) > meterDistance):
+            runOneMove(motor, clearCore, -10)
+
+def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = True, encoder = False, jiggle = False):
     # amountOfSteps+1 for returning back to zero in one move, 
     # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
     print(f"{type(motorObj)} yo")
+    wiggleHome = False
     if (type(serialDevices) is tuple):
         clearCore = serialDevices[0]
         clearCore2 = serialDevices[1]
@@ -119,10 +129,22 @@ def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = Tru
         stepsRange = amountOfSteps*2
         stepMulti = -1
 
+    if (type(encoder) is tuple):
+        encoderReader = encoder[1]
+
     for i in range(stepsRange):
         stepsAdjusted = steps
         if (i >= amountOfSteps):
             stepsAdjusted = (steps*stepMulti)
+            if not wiggleHome:
+                for i in range(2):
+                    runOneMove(motor, clearCore, 200)
+                    runOneMove(motor, clearCore, -200)
+                wiggleHome = True
+            print("Going home")
+            print(serialComm.readArduinoEncoder(encoderReader))
+            foo = input("Press Enter to continue...")
+            #time.sleep(15)
 
         mmDistance = mathFunc.calcDist(12800, stepsAdjusted)
         meterDistance = float(mmDistance / 1000)
@@ -133,10 +155,14 @@ def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = Tru
             runMoves(steps2, motor2, clearCore2)
         runOneMove(motor, clearCore, stepsAdjusted)
         if encoder:
-            while (serialComm.readArduinoEncoder(encoder.port) != meterDistance):
-                print(serialComm.readArduinoEncoder(encoder.port))
-                if (serialComm.readArduinoEncoder(encoder.port) < meterDistance):
-                    runOneMove(motor, clearCore, 1)
-                elif (serialComm.readArduinoEncoder(encoder.port) > meterDistance):
-                    runOneMove(motor, clearCore, -1)
+            if encoder[0]:
+                adjustToEncoder(clearCore, encoder[1], meterDistance)
+        if jiggle:
+            for i in range(2):
+                runOneMove(motor, clearCore, 200)
+                runOneMove(motor, clearCore, -200)
+        if encoder:
+            print(serialComm.readArduinoEncoder(encoder[1]))
+        #print("Take reading!")
+        #time.sleep(15)
     return True

@@ -42,10 +42,17 @@ def initializeArduinoEncoder(encoder):
                 break
 
 def readArduinoEncoder(encoder):
-
-    valEncoder = encoder.readIn()
-    if valEncoder:
-        return float(valEncoder)*1e-5
+    valEncoder = False
+    encoder.port.flushInput()
+    encoder.port.flushOutput()
+    while not valEncoder:
+        if encoder.port.inWaiting() > 0:
+            valEncoder = encoder.port.readline().decode().strip()
+            if valEncoder:
+                if valEncoder == "start":
+                    print("start :(")
+                else:
+                    return float(valEncoder)*1e-5
 
 
 # Will collapse readDial & readLaser w/ DRY in mind   

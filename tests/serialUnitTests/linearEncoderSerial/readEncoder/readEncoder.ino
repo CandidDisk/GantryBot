@@ -25,12 +25,6 @@ void setup() {
 
     Serial.setTimeout(50);
 
-
-    pinMode(RH_ENCODER_AP, INPUT);
-    pinMode(RH_ENCODER_BP, INPUT);
-    pinMode(RH_ENCODER_AN, INPUT);
-    pinMode(RH_ENCODER_BN, INPUT);
-
     // Wait until pi-clearCore handshake is complete
     while (true) {
         if (strcmp(readDataPi(),"start")==0) {
@@ -38,7 +32,10 @@ void setup() {
         } else {Serial.println("start");}
         delay(100);
     }
-    
+    pinMode(RH_ENCODER_AP, INPUT);
+    pinMode(RH_ENCODER_BP, INPUT);
+    pinMode(RH_ENCODER_AN, INPUT);
+    pinMode(RH_ENCODER_BN, INPUT);
     // initialize hardware interrupts
     attachInterrupt(1, rightEncoderEventN, CHANGE);
     
@@ -46,7 +43,7 @@ void setup() {
 
 void loop() {
     Serial.println(rightCountN);
-    delay(100);
+    delay(150);
 }
 
 void rightEncoderEventN() {
