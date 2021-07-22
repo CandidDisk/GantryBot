@@ -2,12 +2,12 @@ import serial
 import time
 
 class serialObject(object):
-    def __init__(self, baudRate, serialPortName, timeout=1, writeTimeOut= 10):
+    def __init__(self, baudRate, serialPortName, timeout=1, writeTimeOut= 3):
         self.newDataOut = False
         self.newDataIn = False
         self.confirmMessage = False
         # Initialize serial object
-        self.port = serial.Serial(serialPortName, baudrate = baudRate, timeout= 1,  write_timeout=10, rtscts = False)
+        self.port = serial.Serial(serialPortName, baudrate = baudRate, timeout= timeout,  write_timeout=writeTimeOut, rtscts = False)
 
     def writeOut(self, msg):
         try:
@@ -33,6 +33,7 @@ class serialObject(object):
 def initializeArduinoEncoder(encoder):
     counter = 0
     while True:
+        encoder.writeOut("zero")
         if (encoder.readIn() == "start"):
             encoder.writeOut("start")
         else:
@@ -41,18 +42,34 @@ def initializeArduinoEncoder(encoder):
             if counter > 5:
                 break
 
+def zeroArduinoEncoder(encoder):
+    zeroDone = False
+    print("hello")
+    while not zeroDone:
+        encoder.writeOut("zero")
+        time.sleep(0.2)
+        print("hello1")
+        msg = encoder.readIn()
+        print("hello3")
+        print(msg)
+        if (msg == "zero"):
+            zeroDone = True
+            break
+        print("hello2")
+
 def readArduinoEncoder(encoder):
+    encoder.writeOut("read")
     valEncoder = False
     encoder.port.flushInput()
     encoder.port.flushOutput()
     while not valEncoder:
+        print(encoder.port.inWaiting())
         if encoder.port.inWaiting() > 0:
             valEncoder = encoder.port.readline().decode().strip()
-            if valEncoder:
-                if valEncoder == "start":
-                    print("start :(")
-                else:
-                    return float(valEncoder)*1e-5
+            return (float(valEncoder)*5)*1e-6
+        else:
+            encoder.writeOut("read")
+        time.sleep(0.5)
 
 
 # Will collapse readDial & readLaser w/ DRY in mind   

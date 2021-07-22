@@ -1,4 +1,4 @@
- #include "ClearCore.h"
+#include "ClearCore.h"
 
 #define motor ConnectorM0
 
@@ -8,7 +8,7 @@
 
 #define SENSOR_DIG IO4
 
-int velocityLimit = 500000;
+int velocityLimit = 30000;
 
 int accelerationLimit = 100000;
 

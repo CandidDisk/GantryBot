@@ -32,6 +32,7 @@ void setup() {
         } else {Serial.println("start");}
         delay(100);
     }
+    delay(1500);
     pinMode(RH_ENCODER_AP, INPUT);
     pinMode(RH_ENCODER_BP, INPUT);
     pinMode(RH_ENCODER_AN, INPUT);
