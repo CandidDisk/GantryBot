@@ -19,7 +19,7 @@ microX = serialComm.serialObject(9600, "COM13")
 #microY = serialComm.serialObject(9600, "COM14")  
 clearCoreX = serialComm.serialObject(1000000, "COM18")
 #clearCoreY = serialComm.serialObject(1000000, "COM7")
-arduinoEncoder = serialComm.serialObject(9600, "COM7", timeout=0.3)
+arduinoEncoder = serialComm.serialObject(9600, "COM10", timeout=0.3)
 
 
 
@@ -28,7 +28,7 @@ arduinoEncoder = serialComm.serialObject(9600, "COM7", timeout=0.3)
 #serialDevices = (clearCoreX, clearCoreY, micro)
 
 print("Zero X started!")
-motorFunc.runZero(motorX, (clearCoreX, microX), 2)
+motorFunc.runZero(motorX, (clearCoreX, microX), 4)
 print("Zero X finished!")
 #print("Zero Y started!")
 #motorFunc.runZero(motorY, (clearCoreY, microY), 4)
@@ -38,8 +38,7 @@ print("Zero X finished!")
 
 # 819200, 6400 for 0.96 m | 1638400, 12800 for 0.96 m | 3276800, 25600 for 0.96 m
 #print(motorFunc.runMoves((409600, 4), motorGroup, (clearCoreY, clearCoreX, microY), steps2 = (163840, 3)))
-foo = input("Press Enter to continue...")
-time.sleep(2)
+
 #arduinoEncoder.writeOut("zero")
 serialComm.zeroArduinoEncoder(arduinoEncoder)
 time.sleep(5)
@@ -54,7 +53,7 @@ print(serialComm.readArduinoEncoder(arduinoEncoder))
 # 6547000, 1
 # 395000, 20
 
-print(motorFunc.runMoves((378000, 20), motorX, clearCoreX, straightHome = True, encoder=(False, arduinoEncoder), compensation=True))
+print(motorFunc.runMoves((378000, 19), motorX, clearCoreX, straightHome = True, encoder=(False, arduinoEncoder), compensation=False))
 #for i in range(2):
 #    motorFunc.runOneMove(motorX, clearCoreX, 200)
 #    motorFunc.runOneMove(motorX, clearCoreX, -200)

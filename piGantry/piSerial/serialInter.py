@@ -18,7 +18,7 @@ class serialObject(object):
         except:
             print("Write failed, trying again")
 
-    def readIn(self):
+    def readIn(self, sendMsg = False):
         msgInString = False
         while not msgInString:
             if (self.port.inWaiting() > 0):
@@ -29,6 +29,10 @@ class serialObject(object):
                 return msgInString
             else:
                 self.newDataIn = False
+                if sendMsg:
+                    print(f"No input, sending msg : {sendMsg}")
+                    self.writeOut(sendMsg)
+                    time.sleep(0.01)
 
 def initializeArduinoEncoder(encoder):
     counter = 0
@@ -49,7 +53,7 @@ def zeroArduinoEncoder(encoder):
         encoder.writeOut("zero")
         time.sleep(0.2)
         print("hello1")
-        msg = encoder.readIn()
+        msg = encoder.readIn(sendMsg = "zero")
         print("hello3")
         print(msg)
         if (msg == "zero"):

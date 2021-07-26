@@ -10,7 +10,7 @@ char receivedChars[numChars];
 
 bool commHandShake(String check, bool sendCheck=true);
 
-Encoder myEnc(2, 4);
+Encoder myEnc(4, 2);
 
 void setup() {
   Serial.begin(9600);
