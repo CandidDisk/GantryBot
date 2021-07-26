@@ -8,7 +8,7 @@
 
 #define SENSOR_DIG IO4
 
-int velocityLimit = 500000;
+int velocityLimit = 30000;
 
 int accelerationLimit = 100000;
 
@@ -70,7 +70,6 @@ void setup() {
             break;
         } else {Serial.println("start");}
         delay(100);
-
     }
 
     // Wait until motor is ready
@@ -101,7 +100,7 @@ void setup() {
         delay(20);
     }
 
-    velocityLimit = 500000;
+    velocityLimit = 1250;
 
     accelerationLimit = 1000;
 }
