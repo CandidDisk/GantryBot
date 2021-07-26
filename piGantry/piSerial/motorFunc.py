@@ -3,7 +3,7 @@ from piGantry.piSerial import mathFunc
 import time
 
 class motor():
-    def __init__(self):
+    def __init__(self, gearRatio):
         self.zeroDone = False
         self.startZero = False
         self.moveReady = False
@@ -15,6 +15,7 @@ class motor():
         self.startOffset = int(0)
         self.endOffset = int(0)
         self.pulsePerRev = int(12800)
+        self.gearRatio = float(gearRatio)
 
 # This takes the digital dial reading & produces # of steps 
 # for the clearCore during zeroing 
@@ -160,9 +161,9 @@ def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = Tru
             stepsAdjusted = stepsAdjusted + correctionVal
         correctionVal = 0
 
-        mmDistance = mathFunc.calcDist(12800, stepsAdjusted)
+        mmDistance = mathFunc.calcDist(12800, stepsAdjusted, motor.gearRatio)
         meterDistance = float(mmDistance / 1000)
-        totalStep = float(mathFunc.calcDist(12800, steps * (i + 1))/1000)
+        totalStep = float(mathFunc.calcDist(12800, steps * (i + 1), motor.gearRatio)/1000)
 
         print(f"Total calcualted step distance 1 = {totalStep}m")
         if steps2:
@@ -179,7 +180,7 @@ def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = Tru
                 diff = (totalStep - reading)*1000
                 print(f"Diff value: {diff}")
                 print(f"Calculated dist: {totalStep} | Encoder read: {reading}")
-                stepsToTravel = mathFunc.calcDist(19200, diff, convertMMToSteps=True)
+                stepsToTravel = mathFunc.calcDist(19200, diff, motor.gearRatio, convertMMToSteps=True)
                 stepsToTravel = round(stepsToTravel)
                 if compensation:
                     if stepsToTravel > 1 or stepsToTravel < -1:

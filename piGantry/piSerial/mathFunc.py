@@ -7,8 +7,8 @@ class inputProcess():
         self.steps
 
 # Converts steps to mm given pulses/revolution & number of steps
-def calcDist(stpPerTurn, unit, convertMMToSteps=False):
-    stepPerGBTurn = float(stpPerTurn) * 19.970 #19.98 = gear ratio
+def calcDist(stpPerTurn, unit, gearRatio, convertMMToSteps=False):
+    stepPerGBTurn = float(stpPerTurn) * 19.98626075 #19.98 = gear ratio
     stepPerMM = float(stepPerGBTurn) / 150 #150 = mm/turn
     
     if convertMMToSteps:

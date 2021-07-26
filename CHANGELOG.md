@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 ### Changed
-- Discovered more accurate gear ratio (19.98)
+- Discovered more accurate gear ratio (X Axis : 19.98145313, Y Axis : 19.98626075)
 - Dynamic output elements are now proper text elements w/ relief & gray background colour
 - pyGUI now flag for debug which doesn't require passing of actual serial & clearCore devices
 - pyGUI functions now under uiSTATE class for state management
@@ -27,6 +27,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - laser rangefinder functions in serialInter module now refactored for new laser rangefinder
 
 ### Removed
+- initializeArduinoEncoder, was using legacy code
 - TkInter.py, redundant now that pyGUI module is ready
 - data_file.json, data_file1.json & data_file2.json. Outdated clutter
 - piSide.py, redundant now that serialInter module serialInterTest.py & ccSide.ino function test is ready
@@ -35,6 +36,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
+- readArduinoEncoder for getting an arduino encoder reading
+- zeroArduinoEncoder for zeroing arduino encoder
+- linearEncoderTest unit test
+- serialObject readIn function has param to send msg to device if no input received
+- motor class now has gearRatio parameter
 - new pyUITest unit test
 - UI jogging & zero working
 - Added motorFunc calcAvailableSPM function to handle generating motion profile

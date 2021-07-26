@@ -9,17 +9,20 @@ import threading
 #python -m tests.serialInterTest.py
 
 # Initialize new motor object for state management
-motorX = motorFunc.motor()
-motorY = motorFunc.motor()
+motorX = motorFunc.motor(19.98145313)
+motorY = motorFunc.motor(19.98626075)
 
 motorGroup = (motorX, motorY)
+
+#COM9 bluetooth arduino encoder Y Axis
+#COM12 bluetooth arduino encoder X Axis
 
 # Initialize new serialObject instances for each device
 microX = serialComm.serialObject(9600, "COM13")    
 #microY = serialComm.serialObject(9600, "COM14")  
 clearCoreX = serialComm.serialObject(1000000, "COM18")
 #clearCoreY = serialComm.serialObject(1000000, "COM7")
-arduinoEncoder = serialComm.serialObject(9600, "COM10", timeout=0.3)
+arduinoEncoder = serialComm.serialObject(9600, "COM9", timeout=0.3)
 
 
 
