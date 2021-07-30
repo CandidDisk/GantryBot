@@ -108,10 +108,13 @@ void setup() {
 void loop() {
     moveReady = false;
     delay(2000);
-    moveTest();
+    runMove();
+    if (commHandShake("zero", false)) {
+        
+    }
 }
 
-void moveTest() {
+void runMove() {
 
     while (!moveReady) {
 

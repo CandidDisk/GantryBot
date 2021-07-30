@@ -34,18 +34,6 @@ class serialObject(object):
                     self.writeOut(sendMsg)
                     time.sleep(0.01)
 
-def initializeArduinoEncoder(encoder):
-    counter = 0
-    while True:
-        encoder.writeOut("zero")
-        if (encoder.readIn() == "start"):
-            encoder.writeOut("start")
-        else:
-            counter += 1
-            time.sleep(0.1)
-            if counter > 5:
-                break
-
 def zeroArduinoEncoder(encoder):
     zeroDone = False
     print("hello")
