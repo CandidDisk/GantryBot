@@ -76,13 +76,7 @@ void setup() {
     while (motor.HlfbState() != MotorDriver::HLFB_ASSERTED) {continue;}
 
     // Move if magnetic is not triggered
-    if (digitalRead(SENSOR_DIG) == HIGH) {moveAtVelocity(-10000);}
-
-    while (digitalRead(SENSOR_DIG) == HIGH) {}
-
-    if (digitalRead(SENSOR_DIG) == LOW) {
-        moveAtVelocity(0);
-    }
+    runMagnetic();
 
     // Start zero process
     Serial.println("zero");
@@ -110,7 +104,20 @@ void loop() {
     delay(2000);
     runMove();
     if (commHandShake("zero", false)) {
-        
+        zeroDone = false;
+        while (!zeroDone) {
+            zeroMotor(readDataPi());
+        }
+    }
+}
+
+void runMagnetic() {
+    if (digitalRead(SENSOR_DIG) == HIGH) {moveAtVelocity(-10000);}
+
+    while (digitalRead(SENSOR_DIG) == HIGH) {}
+
+    if (digitalRead(SENSOR_DIG) == LOW) {
+        moveAtVelocity(0);
     }
 }
 

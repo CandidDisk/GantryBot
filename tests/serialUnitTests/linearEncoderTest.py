@@ -29,7 +29,7 @@ arduinoEncoder = serialComm.serialObject(9600, "COM12", timeout=0.3)
 # serialDevices should be tuple of 2 devices, (clear
 # CoreX, clearCoreY, micro)
 #serialDevices = (clearCoreX, clearCoreY, micro)
-
+    
 print("Zero X started!")
 motorFunc.runZero(motorX, (clearCoreX, microX), 2)
 print("Zero X finished!")
