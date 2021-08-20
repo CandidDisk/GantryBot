@@ -44,31 +44,29 @@ def runZero(motor, serialDevices, zeroPoint, microZero=True):
         clearCore = serialDevices[0]
     else:
         clearCore = serialDevices
-    while not motor.startZero:
-        if (clearCore.readIn() == "start"):
-            motor.startZero = True
-            clearCore.writeOut("start")
-            if microZero:
-                stpCount = 0
-                while (clearCore.readIn() != "zero"):
-                    if (clearCore.readIn() == "zero"):
-                        break
-                while not motor.zeroDone:
-                    # If "stp" command issued 50 times, read clearCore output for "done" msg
-                    if (stpCount > 50):
-                        motor.zeroDone = True
-                        clearCore.writeOut("stpFinal")
-                        break
+    startZero = False
+    while not startZero:
+        if microZero:
+            stpCount = 0
+            while (clearCore.readIn() != "zero"):
+                if (clearCore.readIn() == "zero"):
+                    break
+            while not motor.zeroDone:
+                # If "stp" command issued 50 times, read clearCore output for "done" msg
+                if (stpCount > 50):
+                    motor.zeroDone = True
+                    clearCore.writeOut("stpFinal")
+                    break
+                else:
+                    # Call on readDial function passing micro.port initialized in class constructor
+                    input = serialComm.readDial(serialDevices[1].port)
+                    out = formatMsg(input, zeroPoint)
+                    clearCore.writeOut(out)
+                    print(out)
+                    if (out == "stp"):
+                        stpCount += 1
                     else:
-                        # Call on readDial function passing micro.port initialized in class constructor
-                        input = serialComm.readDial(serialDevices[1].port)
-                        out = formatMsg(input, zeroPoint)
-                        clearCore.writeOut(out)
-                        print(out)
-                        if (out == "stp"):
-                            stpCount += 1
-                        else:
-                            stpCount = 0
+                        stpCount = 0
     if microZero:
         clearCore.writeOut("done")
 
