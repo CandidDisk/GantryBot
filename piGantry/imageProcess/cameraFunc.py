@@ -8,8 +8,8 @@ from operator import itemgetter
 
 #Initializes camera as new instance of opencv videocapture class when called on
 class cameraObj(object):
-    def __init__(self, width, height, exposure):
-        self.cam = cv2.VideoCapture(1)
+    def __init__(self, width, height, exposure, camID):
+        self.cam = cv2.VideoCapture(camID)
         self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         self.cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
@@ -22,6 +22,14 @@ class cameraObj(object):
         if ret:
             frameReturn = np.array(frame)
             return frameReturn
+
+    def takeImg(self):
+        try:
+            img = self.grabFrame()
+            if img is not None:
+                return img
+        except:
+            return False
         
         
 def preProcImg(img):
