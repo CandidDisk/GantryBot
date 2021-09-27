@@ -22,16 +22,16 @@ microX = serialComm.serialObject(9600, "COM13")
 #microY = serialComm.serialObject(9600, "COM14")  
 clearCoreX = serialComm.serialObject(1000000, "COM18")
 #clearCoreY = serialComm.serialObject(1000000, "COM7")
-arduinoEncoder = serialComm.serialObject(9600, "COM9", timeout=0.3)
+arduinoEncoder = serialComm.serialObject(9600, "COM12", timeout=0.3)
 
 
 
 # serialDevices should be tuple of 2 devices, (clear
 # CoreX, clearCoreY, micro)
 #serialDevices = (clearCoreX, clearCoreY, micro)
-
+    
 print("Zero X started!")
-motorFunc.runZero(motorX, (clearCoreX, microX), 4)
+motorFunc.runZero(motorX, (clearCoreX, microX), 2)
 print("Zero X finished!")
 #print("Zero Y started!")
 #motorFunc.runZero(motorY, (clearCoreY, microY), 4)

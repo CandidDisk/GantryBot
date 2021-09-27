@@ -10,13 +10,29 @@ class uiSTATE():
         self.debugMode = debugMode
 
     def middleWindow(self, motors, clearCore):
+        topDot = (1200,100)
+        topDotM = (1210,100)
 
-        axisOffsets = [[sg.Text("Current offset X")],[sg.Text("0", key="offsetXOut", size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
-                    [sg.Text("Current offset Y")],[sg.Text("0", key="offsetYOut", size=(13, 1), relief="sunken", border_width=None,  background_color="gray")]]
+        cap = cv2.VideoCapture(0)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 10000)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 10000)
+        cap2 = cv2.VideoCapture(1)
+        cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 10000)
+        cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 10000)
+
+        axisOffsets = [[sg.Text("Top dot difference")],[sg.Text("0", key="offsetXOut", size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("Bottom dot difference")],[sg.Text("0", key="offsetYOut", size=(13, 1), relief="sunken", border_width=None,  background_color="gray")]]
+
+        dotCoords = [[sg.Text("Top dot coords")],[sg.Text("0", key="dotCoordsT", size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("Bottom dot coords")],[sg.Text("0", key="dotCoordsB", size=(13, 1), relief="sunken", border_width=None,  background_color="gray")]]
+
+        dotCoordsM = [[sg.Text("Top dot mirror coords")],[sg.Text("0", key="dotCoordsTM", size=(13, 1), relief="sunken", border_width=None, background_color="gray")],
+                    [sg.Text("Bottom dot mirror coords")],[sg.Text("0", key="dotCoordsBM", size=(13, 1), relief="sunken", border_width=None,  background_color="gray")]]
 
         imageBlockImgL = [[sg.Text("Camera L")],[sg.Image(filename="", key="image")]]
         imageBlockImgR = [[sg.Text("Camera R")],[sg.Image(filename="", key="image2")]]
         imageRow = [sg.Column(imageBlockImgL), sg.Column(imageBlockImgR)]
+        #coordRow = [sg.Column(dotCoords), sg.Column(dotCoordsM)]
 
 
         joggingElement = [[sg.Text("Number of steps to jog (e.g +6400)")],
@@ -24,28 +40,34 @@ class uiSTATE():
                         [sg.InputText(key="jogYMotor", size=(13, 1)), sg.Button("Jog Y motor")]]
 
         layout = [imageRow,
-                [sg.Column(axisOffsets), sg.Column(joggingElement)],
+                [sg.Column(axisOffsets), sg.Column(dotCoords), sg.Column(dotCoordsM), sg.Column(joggingElement), sg.Output(size=(40, 10))],
                 [sg.Button("Done")]]
 
         window = sg.Window("Middling setup", layout)
 
-        cap = cv2.VideoCapture(0)
+
 
 
         while True:
             event, values = window.read(timeout=20)
             if (motors[0].zeroDone and motors[1].zeroDone or self.debugMode):
                 ret, frame = cap.read()
-                scaleVal = 30
+                ret2, frame2 = cap2.read()
+                cv2.circle(frame, topDot, 10, (255,0,0), -1)
+                cv2.circle(frame2,topDotM, 10, (255,0,0), -1)
+                frame2 = cv2.flip(frame2, 1)
+
+                #cv2.line(frame,(0,0),(511,511),(255,0,0),5)
+                scaleVal = 23
                 height = int(frame.shape[0] * scaleVal / 100)
                 width = int(frame.shape[1] * scaleVal / 100)
                 dim = (width, height)
-
-                vis = np.concatenate((frame, frame), axis=0)
+                #vis = np.concatenate((frame, frame), axis=0)
                 
-                imgbytes = cv2.imencode(".png", cv2.resize(vis, dim, cv2.INTER_AREA))[1].tobytes()  
+                imgbytes = cv2.imencode(".png", cv2.resize(frame, dim, cv2.INTER_AREA))[1].tobytes()  
+                imgbytes2 = cv2.imencode(".png", cv2.resize(frame2, dim, cv2.INTER_AREA))[1].tobytes()  
                 window["image"].update(data=imgbytes)
-                window["image2"].update(data=imgbytes)
+                window["image2"].update(data=imgbytes2)
                 window["offsetXOut"].update(f"{motors[0].middleOffset}")
                 window["offsetYOut"].update(f"{motors[1].middleOffset}")
                 if event == "Done" or event == sg.WIN_CLOSED:

@@ -36,6 +36,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Outdated code in serialDeviceTest.py function test
 
 ### Added
+- Added new gear ratio to relevant scopes
+- Added dual camera support to cameraFunc
+- Added dual camera support to pyGUI
+- Middle UI element to pyGUI
+- showCrosshair.py | MuMos laser cam display test
+- camTest.py | dual cam unit test
+- middleTest.py | middling unit test
+- Accumulative correction
+- Current move correction
 - readArduinoEncoder for getting an arduino encoder reading
 - zeroArduinoEncoder for zeroing arduino encoder
 - linearEncoderTest unit test

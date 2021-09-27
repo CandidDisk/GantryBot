@@ -63,40 +63,6 @@ void setup() {
 
     newData = true;
 
-    // Wait until pi-clearCore handshake is complete
-    while (true) {
-        if (strcmp(readDataPi(),"start")==0) {
-            zeroDone = false;
-            break;
-        } else {Serial.println("start");}
-        delay(100);
-    }
-
-    // Wait until motor is ready
-    while (motor.HlfbState() != MotorDriver::HLFB_ASSERTED) {continue;}
-
-    // Move if magnetic is not triggered
-    runMagnetic();
-
-    // Start zero process
-    Serial.println("zero");
-    while (!zeroDone) {
-        zeroMotor(readDataPi());
-    }
-
-
-    // Comfirm w/ pi that ready to start move set
-    while (!setupDone) {
-        if (commHandShake("done")) {
-            setupDone = true;
-            break;
-        }
-        delay(20);
-    }
-
-    velocityLimit = 1250;
-
-    accelerationLimit = 1000;
 }
 
 void loop() {
@@ -104,6 +70,7 @@ void loop() {
     delay(2000);
     runMove();
     if (commHandShake("zero", false)) {
+        runMagnetic();
         zeroDone = false;
         while (!zeroDone) {
             zeroMotor(readDataPi());

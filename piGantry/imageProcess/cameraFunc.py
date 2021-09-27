@@ -8,8 +8,8 @@ from operator import itemgetter
 
 #Initializes camera as new instance of opencv videocapture class when called on
 class cameraObj(object):
-    def __init__(self, width, height, exposure):
-        self.cam = cv2.VideoCapture(1)
+    def __init__(self, width, height, exposure, camID):
+        self.cam = cv2.VideoCapture(camID)
         self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         self.cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
@@ -22,6 +22,14 @@ class cameraObj(object):
         if ret:
             frameReturn = np.array(frame)
             return frameReturn
+
+    def takeImg(self):
+        try:
+            img = self.grabFrame()
+            if img is not None:
+                return img
+        except:
+            return False
         
         
 def preProcImg(img):
@@ -40,6 +48,7 @@ def preProcImg(img):
 def retContour(img, origImg, minArea, maxArea, exemptArea, file):
     image2 = np.zeros((2448,3264,3),np.uint8)
     backtorgb = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
+    writeFile = origImg
 
     contours, hierarchy = cv2.findContours(
         img,
@@ -71,10 +80,10 @@ def retContour(img, origImg, minArea, maxArea, exemptArea, file):
                 plotCoords[0].append(contourMoment['m10'] / contourMoment['m00'])
                 plotCoords[1].append(contourMoment['m01'] / contourMoment['m00'])
                 dotCenters.append(center)
-                cv2.circle(origImg,center, 1, (255,0,0), -1)
+                cv2.circle(writeFile,center, 1, (255,0,0), -1)
             except:
                 continue
-    cv2.imwrite(file, origImg)
+    cv2.imwrite(file, writeFile)
     # x, y
     return (dotCenters, plotCoords)
 
@@ -171,3 +180,28 @@ def compareImg(img1, img2, thresh, imgName):
 
     return (foo, foo2)
     #return diffArr
+
+
+def returnTBDot(retContour, retContourM):
+    width = 3264
+    dotCenters = retContour[0]
+    dotCentersM = retContourM[0]
+
+    dotT = dotCenters[0]
+    dotB = dotCenters[len(dotCenters)-1]
+
+    dotTM = dotCentersM[0]
+    dotBM = dotCentersM[len(dotCentersM)-1]
+
+    dotUnflipTMX = width - dotTM[0]-1
+    dotUnflipBMX = width - dotBM[0]-1
+
+    diffTop = dotT[0] - dotUnflipTMX
+    diffBtm = dotB[0] - dotUnflipBMX
+
+    print(dotT)
+    print(dotTM)
+
+    print((diffTop, diffBtm))
+    return diffTop, diffBtm
+    
