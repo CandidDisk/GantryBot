@@ -8,7 +8,7 @@ import cv2
 import time
 import json
 import numpy as np
-
+21
 # Set width & height to high value to set resolution as max 
 #cam = camera.cameraObj(10000, 10000, -3)
 

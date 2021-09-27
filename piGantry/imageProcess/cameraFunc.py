@@ -199,6 +199,9 @@ def returnTBDot(retContour, retContourM):
     diffTop = dotT[0] - dotUnflipTMX
     diffBtm = dotB[0] - dotUnflipBMX
 
+    print(dotT)
+    print(dotTM)
+
     print((diffTop, diffBtm))
     return diffTop, diffBtm
     
