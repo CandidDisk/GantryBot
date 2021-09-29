@@ -9,6 +9,7 @@ class serialObject(object):
         # Initialize serial object
         self.port = serial.Serial(serialPortName, baudrate = baudRate, timeout= timeout,  write_timeout=writeTimeOut, rtscts = False)
 
+    # Writes message out to serial port
     def writeOut(self, msg):
         try:
             msg = msg + '\n'
@@ -34,20 +35,16 @@ class serialObject(object):
                     self.writeOut(sendMsg)
                     time.sleep(0.01)
 
+# Sends command to cart onboard arduino to reset encoder counter
 def zeroArduinoEncoder(encoder):
     zeroDone = False
-    print("hello")
     while not zeroDone:
         encoder.writeOut("zero")
         time.sleep(0.2)
-        print("hello1")
         msg = encoder.readIn(sendMsg = "zero")
-        print("hello3")
-        print(msg)
         if (msg == "zero"):
             zeroDone = True
             break
-        print("hello2")
 
 def readArduinoEncoder(encoder):
     encoder.writeOut("read")
