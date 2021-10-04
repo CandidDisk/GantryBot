@@ -6,8 +6,8 @@ from piGantry.piSerial import motorFunc
 pyUI = pyGUI.uiSTATE()
 
 def main(uiClass, debugMode=True):
-    motorX = motorFunc.motor()
-    motorY = motorFunc.motor()
+    motorX = motorFunc.motor(19.98145313)
+    motorY = motorFunc.motor(19.98626075)
 
     motorGroup = (motorX, motorY)
     if (not debugMode):

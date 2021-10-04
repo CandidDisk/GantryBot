@@ -93,16 +93,22 @@ def runOneMove(motor, clearCore, stepsAdjusted):
             print("move done")
             motor.moveDone = True
 
+# Runs one move to adjust to encoder reading
+
 def adjustToEncoder(clearCore, motor, encoder, meterDistance):
     encoderReading = serialComm.readArduinoEncoder(encoder)
     print(f"encoder reading {encoderReading}")
     print(f"meter dist 1 {meterDistance - 0.0001}")
     print(f"meter dist 2 {meterDistance + 0.0001}")
+    # While within threshold of resolution
     while ((meterDistance - encoderReading) > 0.1 or (meterDistance - encoderReading) > -0.1):
+        # Finding difference between meter distance & encoder reading
+        # & convert to steps
         encoderReading = serialComm.readArduinoEncoder(encoder)
-        diff = (meterDistance - encoderReading)
+        diff = (meterDistance - encoderReading) 
         stepsToTravel = mathFunc.calcDist(19200, diff, convertMMToSteps=True)
-        if stepsToTravel < 1:
+        # ClearCore doesn't execute fractional steps, must be greater than 1
+        if stepsToTravel < 1: 
             break
         stepsToTravel = round(stepsToTravel)
         print(f"steps to travel {stepsToTravel} | diff {diff} | encoder reading {encoderReading}")
@@ -112,7 +118,7 @@ def adjustToEncoder(clearCore, motor, encoder, meterDistance):
 def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = True, encoder = False, jiggle = False, compensation = True):
     # amountOfSteps+1 for returning back to zero in one move, 
     # amountOfSteps*2 for returning back to zero in same amount of moves & steps per move
-    print(f"{type(motorObj)} yo")
+
     wiggleHome = False
     if (type(serialDevices) is tuple):
         clearCore = serialDevices[0]
@@ -125,13 +131,17 @@ def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = Tru
     else:
         motor = motorObj
         
+    # Amount of steps is steps to execute per move
     amountOfSteps = steps1[1]
     steps = steps1[0]
+    # stepMulti is factor to multiply return to move steps by
     if straightHome:
         stepsRange = amountOfSteps+1
+        # 
         stepMulti = amountOfSteps*-1
     else:
         stepsRange = amountOfSteps*2
+        # Just convert steps to negative
         stepMulti = -1
 
     if (type(encoder) is tuple):

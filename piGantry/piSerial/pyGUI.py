@@ -13,10 +13,12 @@ class uiSTATE():
         topDot = (1200,100)
         topDotM = (1210,100)
 
-        cap = cv2.VideoCapture(0)
+        # Initializes cam 0, 1 w/o cam object
+        # Will refactor to use proper cameraFunc object
+        cap = cv2.VideoCapture(0) # Cam 0
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 10000)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 10000)
-        cap2 = cv2.VideoCapture(1)
+        cap2 = cv2.VideoCapture(1) # Cam 1
         cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 10000)
         cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 10000)
 
