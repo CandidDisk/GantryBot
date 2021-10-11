@@ -85,3 +85,4 @@ camTest2.png
 cameraID/opencv_frame_0.png
 cameraID/opencv_frame_2.png
 cameraID/opencv_frame_1.png
+tests/bogosort.py

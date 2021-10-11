@@ -37,7 +37,7 @@ def preProcImg(img):
     #img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
     #y, u, v = cv2.split(img_yuv)
     #l_channel = cv2.cvtColor(img_yuv, cv2.COLOR_RGB2LUV)[:, :, 0]
-    imageGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    imageGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  
     ret, image = cv2.threshold(imageGray, 1, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     el = cv2.getStructuringElement(cv2.MORPH_CROSS, (2, 2))
     image = cv2.dilate(image, el, iterations=1)
