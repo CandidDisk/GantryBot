@@ -82,7 +82,6 @@ def runOneMove(motor, clearCore, stepsAdjusted):
         if (clearCore.readIn() == "move"):
             motor.moveReady = True 
             motor.moveDone = False
-        print("Hello!!")
     if (motor.moveReady):
         time.sleep(0.1)
         clearCore.writeOut("move")
@@ -90,7 +89,7 @@ def runOneMove(motor, clearCore, stepsAdjusted):
         motor.moveReady = False
     while (not motor.moveDone):
         if (clearCore.readIn() == "moveDone"):
-            print("move done")
+            print("Move done")
             motor.moveDone = True
 
 # Runs one move to adjust to encoder reading
@@ -198,7 +197,6 @@ def runMoves(steps1, motorObj, serialDevices, steps2 = False, straightHome = Tru
                     totalCorrectionVal += correctionVal
                 print(f"Steps value: {stepsToTravel} | Correction Value: {correctionVal} | Total correction value: {totalCorrectionVal}")
                 
-
         if jiggle:
             for i in range(2):
                 runOneMove(motor, clearCore, 200)
